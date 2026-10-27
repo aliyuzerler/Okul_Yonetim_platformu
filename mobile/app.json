@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "OpenSchool",
+    "slug": "openschool",
+    "version": "0.2.0",
+    "scheme": "openschool",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#007D9C"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.openschool.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "org.openschool.app",
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#007D9C"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#007D9C"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "00000000-0000-0000-0000-000000000000"
+      }
+    }
+  }
+}
