@@ -13,6 +13,7 @@ func registerWorkflows(groups HTTPGroups, pool *pgxpool.Pool, shared sharedServi
 		workflowsmodule.YearRollover{},
 		workflowsmodule.Leavers{},
 		workflowsmodule.NewStudentIntake(thunderid.NewClient()),
+		workflowsmodule.SubjectChoices{},
 		workflowsmodule.Promotion{},
 		workflowsmodule.TeacherAllocation{},
 		workflowsmodule.Timetable{},
