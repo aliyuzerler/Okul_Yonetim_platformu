@@ -21,8 +21,9 @@ func NewNotificationHandler(service *NotificationService) *NotificationHandler {
 	return &NotificationHandler{service: service}
 }
 
-// RegisterRoutes mounts the composer and authenticated notification center.
-func RegisterRoutes(teacherOrAdmin, protected *gin.RouterGroup, service *NotificationService) {
+// RegisterRoutes mounts the composer, the authenticated notification center
+// and the push device token endpoints.
+func RegisterRoutes(teacherOrAdmin, protected *gin.RouterGroup, service *NotificationService, push *PushService) {
 	h := NewNotificationHandler(service)
 	teacherOrAdmin.POST("/notifications", h.Create)
 	teacherOrAdmin.PUT("/notifications/:id", h.Update)
@@ -40,6 +41,7 @@ func RegisterRoutes(teacherOrAdmin, protected *gin.RouterGroup, service *Notific
 	protected.POST("/me/notifications/:id/read", h.MarkRead)
 	protected.POST("/me/notifications/:id/archive", h.Archive)
 	protected.POST("/me/notifications/:id/unarchive", h.Unarchive)
+	registerPushRoutes(protected, push)
 }
 
 func (h *NotificationHandler) caller(c *gin.Context) (uuid.UUID, string, bool) {

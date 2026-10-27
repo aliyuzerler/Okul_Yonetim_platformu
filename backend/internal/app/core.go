@@ -27,6 +27,7 @@ import (
 type sharedServices struct {
 	audit             *auditmodule.Service
 	notifications     *notificationmodule.NotificationService
+	push              *notificationmodule.PushService
 	leadership        *leadershipmodule.Service
 	studentLeadership *studentleadershipmodule.Service
 	dashboard         *dashboardmodule.Service
@@ -38,7 +39,11 @@ func registerCore(groups HTTPGroups, pool *pgxpool.Pool) sharedServices {
 	})
 
 	auditService := auditmodule.NewService(auditmodule.NewRepository(pool))
-	notifications := notificationmodule.NewNotificationService(notificationmodule.NewNotificationRepository(pool))
+	notificationRepo := notificationmodule.NewNotificationRepository(pool)
+	pushConfig := notificationmodule.PushConfigFromEnv()
+	pushService := notificationmodule.NewPushService(pushConfig, notificationmodule.NewPushTokenRepository(pool))
+	log.Printf("push: enabled=%t gateway=%s access_token=%t", pushConfig.Enabled, pushConfig.BaseURL, pushConfig.AccessToken != "")
+	notifications := notificationmodule.NewNotificationService(notificationRepo, notificationmodule.WithPushSender(pushService))
 	leadershipService := leadershipmodule.NewService(leadershipmodule.NewRepository(pool), auditService)
 	studentLeadershipService := studentleadershipmodule.NewService(studentleadershipmodule.NewRepository(pool))
 	dashboardService := dashboardmodule.NewService(dashboardmodule.NewRepository(pool))
@@ -62,7 +67,7 @@ func registerCore(groups HTTPGroups, pool *pgxpool.Pool) sharedServices {
 	mailmodule.RegisterRoutes(groups.Admin, mailSender, mailmodule.NewRepository(pool))
 
 	return sharedServices{
-		audit: auditService, notifications: notifications, leadership: leadershipService,
+		audit: auditService, notifications: notifications, push: pushService, leadership: leadershipService,
 		studentLeadership: studentLeadershipService, dashboard: dashboardService,
 	}
 }

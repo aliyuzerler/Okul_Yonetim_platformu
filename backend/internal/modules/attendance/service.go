@@ -369,8 +369,8 @@ func (s *Service) notifyAbsent(ctx context.Context, session Session, studentID, 
 	if err != nil {
 		return
 	}
-	message := fmt.Sprintf("%s was marked absent on %s in class %s.", student, session.Date.Time.Format("2006-01-02"), class)
-	_ = s.notifier.SendDirect(ctx, "Absence recorded", message, "attendance", "normal", takenBy, users)
+	message := fmt.Sprintf("%s, %s tarihinde %s sınıfında devamsız olarak işaretlendi.", student, session.Date.Time.Format("2006-01-02"), class)
+	_ = s.notifier.SendDirect(ctx, "Devamsızlık kaydedildi", message, "attendance", "normal", takenBy, users)
 }
 
 func (s *Service) ListBySession(ctx context.Context, actor Actor, sessionID uuid.UUID) ([]SessionRecord, error) {

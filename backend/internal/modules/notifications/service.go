@@ -20,11 +20,50 @@ var (
 )
 
 type NotificationService struct {
-	repo store
+	repo   store
+	pusher PushSender
 }
 
-func NewNotificationService(repo store) *NotificationService {
-	return &NotificationService{repo: repo}
+func NewNotificationService(repo store, opts ...ServiceOption) *NotificationService {
+	service := &NotificationService{repo: repo}
+	for _, opt := range opts {
+		opt(service)
+	}
+	return service
+}
+
+// PushSender delivers a notification to mobile devices as push; implemented
+// by PushService. Push is a second, best-effort channel — the in-app inbox
+// stays the source of truth (ADR 0010).
+type PushSender interface {
+	PushToUsers(ctx context.Context, title, body string, userIDs []uuid.UUID)
+}
+
+// ServiceOption configures a NotificationService at construction.
+type ServiceOption func(*NotificationService)
+
+// WithPushSender attaches the push fan-out channel; without it notifications
+// are in-app only.
+func WithPushSender(sender PushSender) ServiceOption {
+	return func(s *NotificationService) { s.pusher = sender }
+}
+
+// pushTimeout bounds each detached push fan-out; the caller's context is
+// often already cancelled by the time the fan-out runs.
+const pushTimeout = 30 * time.Second
+
+// pushToUsers fans the notification out to mobile devices in the background:
+// detached goroutine, its own 30s budget, failures logged and swallowed — an
+// Expo outage must never fail an HTTP request or a workflow step.
+func (s *NotificationService) pushToUsers(title, message string, userIDs []uuid.UUID) {
+	if s.pusher == nil || len(userIDs) == 0 {
+		return
+	}
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), pushTimeout)
+		defer cancel()
+		s.pusher.PushToUsers(ctx, title, message, userIDs)
+	}()
 }
 
 type notification struct {
@@ -411,17 +450,20 @@ func (s *NotificationService) resolveRecipientUserIDs(ctx context.Context, rules
 	return result, nil
 }
 
-func (s *NotificationService) materializeRecipients(ctx context.Context, notificationID uuid.UUID, rules []RecipientRule) error {
+// materializeRecipients expands the rule set into concrete notification_recipients
+// rows and returns the user IDs it materialized, so callers can fan the same
+// audience out to secondary channels (push).
+func (s *NotificationService) materializeRecipients(ctx context.Context, notificationID uuid.UUID, rules []RecipientRule) ([]uuid.UUID, error) {
 	userIDs, err := s.resolveRecipientUserIDs(ctx, rules)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	for _, userID := range userIDs {
 		if err := s.repo.AddRecipient(ctx, notificationID, userID); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return userIDs, nil
 }
 
 func validateCategoryAndPriority(category, priority string) error {
@@ -466,9 +508,11 @@ func (s *NotificationService) Create(ctx context.Context, req CreateNotification
 	}
 
 	if !req.SaveAsDraft {
-		if err := s.materializeRecipients(ctx, notification.ID, req.RecipientRules); err != nil {
+		userIDs, err := s.materializeRecipients(ctx, notification.ID, req.RecipientRules)
+		if err != nil {
 			return NotificationResponse{}, err
 		}
+		s.pushToUsers(req.Title, req.Message, userIDs)
 	}
 
 	return s.toResponse(notification, ""), nil
@@ -530,9 +574,11 @@ func (s *NotificationService) SendDraft(ctx context.Context, id, callerUserID uu
 	if err != nil {
 		return NotificationResponse{}, err
 	}
-	if err := s.materializeRecipients(ctx, id, rules); err != nil {
+	userIDs, err := s.materializeRecipients(ctx, id, rules)
+	if err != nil {
 		return NotificationResponse{}, err
 	}
+	s.pushToUsers(existing.Title, existing.Message, userIDs)
 	return s.toResponse(updated, ""), nil
 }
 
@@ -611,6 +657,7 @@ func (s *NotificationService) SendDirect(ctx context.Context, title, message, ca
 			return err
 		}
 	}
+	s.pushToUsers(title, message, userIDs)
 	return nil
 }
 

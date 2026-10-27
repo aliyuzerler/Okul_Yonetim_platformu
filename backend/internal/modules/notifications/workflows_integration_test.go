@@ -144,7 +144,7 @@ func notificationRouter(service *NotificationService, userID uuid.UUID, role str
 		c.Set("roles", []string{role})
 		c.Next()
 	})
-	RegisterRoutes(group, group, service)
+	RegisterRoutes(group, group, service, nil)
 	return router
 }
 

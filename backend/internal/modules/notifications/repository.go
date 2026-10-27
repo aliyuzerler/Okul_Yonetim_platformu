@@ -298,3 +298,56 @@ func (r *NotificationRepository) CountBoxes(ctx context.Context, userID uuid.UUI
 	row, err := r.queries.CountMyNotificationBoxes(ctx, userID)
 	return InboxCounts{Unread: row.Unread, Read: row.Read, Archived: row.Archived}, err
 }
+
+// PushTokenRepository owns push device token persistence. It lives in this
+// file on purpose: every sqlc-backed adapter of the module stays in
+// repository.go (the architecture protection test enforces one repository
+// file per module).
+type PushTokenRepository struct {
+	queries *db.Queries
+}
+
+func NewPushTokenRepository(pool *pgxpool.Pool) *PushTokenRepository {
+	return &PushTokenRepository{queries: db.New(pool)}
+}
+
+func (r *PushTokenRepository) UpsertPushToken(ctx context.Context, userID uuid.UUID, token, platform string) (pushToken, error) {
+	row, err := r.queries.UpsertPushToken(ctx, db.UpsertPushTokenParams{UserID: userID, Token: token, Platform: platform})
+	return mapPushToken(row), err
+}
+
+func (r *PushTokenRepository) ListMyPushTokens(ctx context.Context, userID uuid.UUID) ([]pushToken, error) {
+	rows, err := r.queries.ListMyPushTokens(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]pushToken, len(rows))
+	for i, row := range rows {
+		out[i] = mapPushToken(row)
+	}
+	return out, nil
+}
+
+func (r *PushTokenRepository) DisablePushToken(ctx context.Context, userID uuid.UUID, token string) (int64, error) {
+	return r.queries.DisablePushToken(ctx, db.DisablePushTokenParams{UserID: userID, Token: token})
+}
+
+func (r *PushTokenRepository) ListEnabledPushTokensByUsers(ctx context.Context, userIDs []uuid.UUID) ([]pushToken, error) {
+	rows, err := r.queries.ListEnabledPushTokensByUsers(ctx, userIDs)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]pushToken, len(rows))
+	for i, row := range rows {
+		out[i] = pushToken{UserID: row.UserID, Token: row.Token, Platform: row.Platform}
+	}
+	return out, nil
+}
+
+func (r *PushTokenRepository) PrunePushTokens(ctx context.Context, tokens []string) (int64, error) {
+	return r.queries.PrunePushTokens(ctx, tokens)
+}
+
+func mapPushToken(row db.PushToken) pushToken {
+	return pushToken{UserID: row.UserID, Token: row.Token, Platform: row.Platform, Enabled: row.Enabled, CreatedAt: row.CreatedAt, UpdatedAt: row.UpdatedAt}
+}
