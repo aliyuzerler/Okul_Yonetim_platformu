@@ -1,8 +1,34 @@
 // SecureStore-backed session persistence. Keys are restricted to
 // [A-Za-z0-9._-] by SecureStore, hence the dotted naming.
+import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
 import { parseJwt, resolveRole, tokenExpiresAt, type JwtPayload, type Role } from "./jwt";
+
+// expo-secure-store ships an empty stub on web; fall back to localStorage so
+// the exported web bundle (Expo Web preview) can hold a session too.
+const store = {
+  async getItemAsync(key: string): Promise<string | null> {
+    if (Platform.OS === "web") {
+      return window.localStorage.getItem(key);
+    }
+    return store.getItemAsync(key);
+  },
+  async setItemAsync(key: string, value: string): Promise<void> {
+    if (Platform.OS === "web") {
+      window.localStorage.setItem(key, value);
+      return;
+    }
+    await store.setItemAsync(key, value);
+  },
+  async deleteItemAsync(key: string): Promise<void> {
+    if (Platform.OS === "web") {
+      window.localStorage.removeItem(key);
+      return;
+    }
+    await store.deleteItemAsync(key);
+  },
+};
 
 export const SessionKeys = {
   accessToken: "os.access.token",
@@ -21,9 +47,9 @@ export interface StoredSession {
 }
 
 export async function loadSession(): Promise<StoredSession | null> {
-  const accessToken = await SecureStore.getItemAsync(SessionKeys.accessToken);
+  const accessToken = await store.getItemAsync(SessionKeys.accessToken);
   if (!accessToken) return null;
-  const refreshToken = await SecureStore.getItemAsync(SessionKeys.refreshToken);
+  const refreshToken = await store.getItemAsync(SessionKeys.refreshToken);
   const payload = parseJwt(accessToken);
   return {
     accessToken,
@@ -40,13 +66,13 @@ export async function saveSession(
 ): Promise<StoredSession> {
   // ThunderID rotates refresh tokens; only overwrite when the server sent one.
   if (refreshToken) {
-    await SecureStore.setItemAsync(SessionKeys.refreshToken, refreshToken);
+    await store.setItemAsync(SessionKeys.refreshToken, refreshToken);
   }
-  await SecureStore.setItemAsync(SessionKeys.accessToken, accessToken);
+  await store.setItemAsync(SessionKeys.accessToken, accessToken);
   const payload = parseJwt(accessToken) ?? { sub: "" };
   return {
     accessToken,
-    refreshToken: refreshToken ?? (await SecureStore.getItemAsync(SessionKeys.refreshToken)),
+    refreshToken: refreshToken ?? (await store.getItemAsync(SessionKeys.refreshToken)),
     payload,
     role: resolveRole(payload),
     expiresAt: tokenExpiresAt(payload),
@@ -54,34 +80,34 @@ export async function saveSession(
 }
 
 export async function clearSession(): Promise<void> {
-  await SecureStore.deleteItemAsync(SessionKeys.accessToken);
-  await SecureStore.deleteItemAsync(SessionKeys.refreshToken);
+  await store.deleteItemAsync(SessionKeys.accessToken);
+  await store.deleteItemAsync(SessionKeys.refreshToken);
 }
 
 export async function getPushEnabled(): Promise<boolean> {
-  return (await SecureStore.getItemAsync(SessionKeys.pushEnabled)) === "true";
+  return (await store.getItemAsync(SessionKeys.pushEnabled)) === "true";
 }
 
 export async function setPushEnabled(enabled: boolean): Promise<void> {
-  await SecureStore.setItemAsync(SessionKeys.pushEnabled, enabled ? "true" : "false");
+  await store.setItemAsync(SessionKeys.pushEnabled, enabled ? "true" : "false");
 }
 
 export async function getPushToken(): Promise<string | null> {
-  return SecureStore.getItemAsync(SessionKeys.pushToken);
+  return store.getItemAsync(SessionKeys.pushToken);
 }
 
 export async function setPushToken(token: string | null): Promise<void> {
   if (token) {
-    await SecureStore.setItemAsync(SessionKeys.pushToken, token);
+    await store.setItemAsync(SessionKeys.pushToken, token);
   } else {
-    await SecureStore.deleteItemAsync(SessionKeys.pushToken);
+    await store.deleteItemAsync(SessionKeys.pushToken);
   }
 }
 
 export async function getStoredLanguage(): Promise<string | null> {
-  return SecureStore.getItemAsync(SessionKeys.language);
+  return store.getItemAsync(SessionKeys.language);
 }
 
 export async function setStoredLanguage(language: string): Promise<void> {
-  await SecureStore.setItemAsync(SessionKeys.language, language);
+  await store.setItemAsync(SessionKeys.language, language);
 }
