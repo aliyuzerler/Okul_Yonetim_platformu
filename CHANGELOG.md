@@ -28,6 +28,15 @@ and follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Admin and teacher web navigation tabs were hardcoded in English: both nav
+  definitions now carry `labelKey`s (like the student/parent portals) and the
+  Turkish catalog covers every group and item, so all four web portals render
+  their tabs in the chosen language.
+- New users provisioned from the IdP started with English UI because the
+  `users.preferred_language` column defaulted to `'en'`; migration 000057
+  changes the default to `'tr'` (matching the frontend fallback) and moves
+  accounts that never picked a language to Turkish. Existing non-English
+  preferences are untouched.
 - Subject choices (W3) workflow was implemented but never registered in the
   production pipeline; it is now registered before promotion so year-end
   subject choices run again.

@@ -1,26 +1,31 @@
 import {
   Home, Building, Table, Renew, Idea, EventSchedule, Calendar, Notification, Settings, Report, ChartLine,
 } from "@carbon/icons-react";
-import type { NavGroup } from "@/layouts/nav/types";
+import type { NavGroup, NavItem } from "@/layouts/nav/types";
 
 // Only a Section Head can act on the review queue, so others do not get the item.
 function teachingGroups(isSectionHead: boolean): NavGroup[] {
+  const reviewItems: NavItem[] = isSectionHead
+    ? [{ path: "/t/timetable/review", label: "Review Timetables", labelKey: "nav.reviewTimetables", Icon: Renew, exact: true }]
+    : [];
   return [
     {
       label: "Academics",
+      labelKey: "nav.group.academics",
       items: [
-        { path: "/t/classes", label: "My Classes", Icon: Building },
-        { path: "/t/timetable", label: "My Timetable", Icon: Table, exact: true },
-        { path: "/t/marks", label: "Record Marks", Icon: Report },
-        ...(isSectionHead ? [{ path: "/t/timetable/review", label: "Review Timetables", Icon: Renew, exact: true }] : []),
-        { path: "/t/my-society", label: "My Society", Icon: Idea, exact: true },
+        { path: "/t/classes", label: "My Classes", labelKey: "nav.teacherClasses", Icon: Building },
+        { path: "/t/timetable", label: "My Timetable", labelKey: "nav.timetable", Icon: Table, exact: true },
+        { path: "/t/marks", label: "Record Marks", labelKey: "nav.recordMarks", Icon: Report },
+        ...reviewItems,
+        { path: "/t/my-society", label: "My Society", labelKey: "nav.mySociety", Icon: Idea, exact: true },
       ],
     },
     {
       label: "Operations",
+      labelKey: "nav.group.operations",
       items: [
-        { path: "/t/attendance", label: "Class Attendance", Icon: EventSchedule },
-        { path: "/t/my-attendance", label: "My Attendance", Icon: Calendar, exact: true },
+        { path: "/t/attendance", label: "Class Attendance", labelKey: "nav.classAttendance", Icon: EventSchedule },
+        { path: "/t/my-attendance", label: "My Attendance", labelKey: "nav.attendance", Icon: Calendar, exact: true },
       ],
     },
   ];
@@ -30,24 +35,26 @@ function teachingGroups(isSectionHead: boolean): NavGroup[] {
 const LEADERSHIP_GROUPS: NavGroup[] = [
   {
     label: "School",
+    labelKey: "nav.group.school",
     items: [
-      { path: "/t/analytics", label: "Analytics", Icon: ChartLine, exact: true },
-      { path: "/t/all-timetables", label: "All Timetables", Icon: Table, exact: true },
+      { path: "/t/analytics", label: "Analytics", labelKey: "nav.analytics", Icon: ChartLine, exact: true },
+      { path: "/t/all-timetables", label: "All Timetables", labelKey: "nav.allTimetables", Icon: Table, exact: true },
     ],
   },
 ];
 
 const SYSTEM_GROUP: NavGroup = {
   label: "System",
+  labelKey: "nav.group.system",
   items: [
-    { path: "/t/notifications", label: "Notifications", Icon: Notification, exact: true },
-    { path: "/t/profile", label: "My Profile", Icon: Settings },
+    { path: "/t/notifications", label: "Notifications", labelKey: "nav.notifications", Icon: Notification, exact: true },
+    { path: "/t/profile", label: "My Profile", labelKey: "nav.profile", Icon: Settings },
   ],
 };
 
 export function teacherNav(opts: { isLeadership: boolean; isSectionHead: boolean }): NavGroup[] {
   return [
-    { label: "Overview", items: [{ path: "/", label: "Overview", Icon: Home }] },
+    { label: "Overview", labelKey: "nav.overview", items: [{ path: "/", label: "Overview", labelKey: "nav.overview", Icon: Home }] },
     ...(opts.isLeadership ? LEADERSHIP_GROUPS : teachingGroups(opts.isSectionHead)),
     SYSTEM_GROUP,
   ];

@@ -39,28 +39,33 @@ ile gelir.
 
 | | |
 | --- | --- |
-| ![Okul genel görünümü](docs/screenshots/web-admin-dashboard.png) | ![Öğrenciler](docs/screenshots/web-admin-students.png) |
-| ![Öğretmenler](docs/screenshots/web-admin-teachers.png) | ![Ders programı](docs/screenshots/web-admin-timetable.png) |
-| ![Raporlar](docs/screenshots/web-admin-reports.png) | ![Analitik](docs/screenshots/web-admin-analytics.png) |
+| ![Yönetim menüsü](docs/screenshots/web-admin-nav.png) | ![Okul genel görünümü](docs/screenshots/web-admin-dashboard.png) |
+| ![Öğrenciler](docs/screenshots/web-admin-students.png) | ![Öğretmenler](docs/screenshots/web-admin-teachers.png) |
+| ![Ders programı](docs/screenshots/web-admin-timetable.png) | ![Raporlar](docs/screenshots/web-admin-reports.png) |
+| ![Analitik](docs/screenshots/web-admin-analytics.png) | ![Ayarlar](docs/screenshots/web-admin-settings.png) |
 
 ### Öğretmen paneli (web)
 
 | | |
 | --- | --- |
-| ![Öğretmen genel görünümü](docs/screenshots/web-teacher-dashboard.png) | ![Sınıflarım](docs/screenshots/web-teacher-classes.png) |
-| ![Not girişi](docs/screenshots/web-teacher-marks.png) | ![Sınıf yoklaması](docs/screenshots/web-teacher-attendance.png) |
+| ![Öğretmen menüsü](docs/screenshots/web-teacher-nav.png) | ![Öğretmen genel görünümü](docs/screenshots/web-teacher-dashboard.png) |
+| ![Sınıflarım](docs/screenshots/web-teacher-classes.png) | ![Not girişi](docs/screenshots/web-teacher-marks.png) |
+| ![Sınıf yoklaması](docs/screenshots/web-teacher-attendance.png) | ![Ders programım](docs/screenshots/web-teacher-timetable.png) |
 
 ### Öğrenci paneli (web)
 
 | | |
 | --- | --- |
-| ![Öğrenci paneli](docs/screenshots/web-student-dashboard.png) | ![Notlarım](docs/screenshots/web-student-marks.png) |
+| ![Öğrenci menüsü](docs/screenshots/web-student-nav.png) | ![Öğrenci paneli](docs/screenshots/web-student-dashboard.png) |
+| ![Notlarım](docs/screenshots/web-student-marks.png) | ![Ders programım](docs/screenshots/web-student-timetable.png) |
+| ![Devam kaydım](docs/screenshots/web-student-attendance.png) | |
 
 ### Veli paneli (web)
 
 | | |
 | --- | --- |
-| ![Çocuklarım](docs/screenshots/web-parent-children.png) | ![Çocuk detayı](docs/screenshots/web-parent-child-detail.png) |
+| ![Veli menüsü](docs/screenshots/web-parent-nav.png) | ![Çocuklarım](docs/screenshots/web-parent-children.png) |
+| ![Çocuk detayı](docs/screenshots/web-parent-child-detail.png) | |
 
 ### Mobil uygulama (veli + öğrenci)
 
