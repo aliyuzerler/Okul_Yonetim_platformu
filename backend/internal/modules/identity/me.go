@@ -19,7 +19,7 @@ type userProvisioner interface {
 }
 
 // supportedLanguages mirrors the users.preferred_language CHECK constraint.
-var supportedLanguages = map[string]bool{"en": true, "si": true, "ta": true}
+var supportedLanguages = map[string]bool{"en": true, "si": true, "ta": true, "tr": true}
 
 type ensureUserCommand struct {
 	ID       uuid.UUID

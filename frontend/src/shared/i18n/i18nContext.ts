@@ -1,19 +1,20 @@
 import { createContext } from "react";
 import { en, type MessageKey } from "@/shared/i18n/messages/en";
 
-export type Lang = "en" | "si" | "ta";
+export type Lang = "en" | "si" | "ta" | "tr";
 export type Vars = Record<string, string | number>;
 export type Translate = (key: MessageKey, vars?: Vars) => string;
 
 // Each language is named in its own script so a reader can always find theirs.
 export const LANGUAGES: { value: Lang; label: string }[] = [
+  { value: "tr", label: "Türkçe" },
   { value: "en", label: "English" },
   { value: "si", label: "සිංහල" },
   { value: "ta", label: "தமிழ்" },
 ];
 
 export function isLang(value: unknown): value is Lang {
-  return value === "en" || value === "si" || value === "ta";
+  return value === "en" || value === "si" || value === "ta" || value === "tr";
 }
 
 export function interpolate(template: string, vars?: Vars): string {

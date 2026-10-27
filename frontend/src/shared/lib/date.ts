@@ -27,6 +27,7 @@ function resolveLocale(tag: string, fallback: string): string {
 }
 
 const LOCALES: Record<string, string> = {
+  tr: resolveLocale("tr-TR", "tr"),
   en: resolveLocale("en-LK", "en-GB"),
   si: resolveLocale("si-LK", "si"),
   ta: resolveLocale("ta-LK", "ta"),
