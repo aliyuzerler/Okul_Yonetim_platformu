@@ -7,6 +7,36 @@ and follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Turkish (TR) as a first-class language: full frontend translation of all
+  20 feature areas and portal UIs, a Turkish message catalog made the
+  deployment default (`tr`), backend user-facing messages, emails and
+  workflow texts (~540 strings) localized, plus a terminology glossary
+  (`docs/TERMINOLOGY.tr.md`) anchoring MEB-consistent terms.
+- Mobile app (`mobile/`) built with Expo for the parent and student panels:
+  ThunderID sign-in with PKCE, session refresh, attendance, marks and
+  timetable views shared across roles, an in-app notification inbox with
+  unread badge, and push notifications as a second delivery channel
+  ([ADR 0010](docs/adr/0010-push-notifications.md),
+  [docs/MOBILE.tr.md](docs/MOBILE.tr.md)).
+- Push notification infrastructure in the backend: `push_tokens` migration
+  and queries, a dependency-free Expo push client with 100-message batching
+  and `DeviceNotRegistered` pruning, `POST/GET/DELETE /me/push-tokens`
+  routes, and an optional `PushSender` wired into `NotificationService`
+  (detached goroutine, 30-second timeout, log-only failures).
+
+### Fixed
+
+- Subject choices (W3) workflow was implemented but never registered in the
+  production pipeline; it is now registered before promotion so year-end
+  subject choices run again.
+- `PUT /me/language` rejected the Turkish value with HTTP 500 because the
+  `users_preferred_language_check` constraint only allowed `en/si/ta`;
+  migration 000056 widens it to include `tr`.
+- Mobile session storage falls back to `localStorage` on web, where
+  `expo-secure-store` ships an empty stub; native behavior is unchanged.
+
 ## [0.3.0] - 2026-09-30
 
 ### Added
