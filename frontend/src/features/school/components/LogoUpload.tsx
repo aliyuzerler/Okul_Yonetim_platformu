@@ -18,27 +18,27 @@ export default function LogoUpload({ value, editing, onChange }: LogoUploadProps
     setError(null);
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("Please choose an image file.");
+      setError("Lütfen bir resim dosyası seçin.");
       return;
     }
     if (file.size > MAX_LOGO_BYTES) {
-      setError("Image is too large - please choose one under 500KB.");
+      setError("Resim çok büyük; lütfen 500 KB altında bir resim seçin.");
       return;
     }
     const reader = new FileReader();
     reader.onload = () => onChange(String(reader.result));
-    reader.onerror = () => setError("Could not read that file.");
+    reader.onerror = () => setError("Dosya okunamadı.");
     reader.readAsDataURL(file);
   };
 
   return (
     <div>
-      <p className="os-text-xs os-c-secondary os-mb-2">School logo (optional)</p>
+      <p className="os-text-xs os-c-secondary os-mb-2">Okul logosu (isteğe bağlı)</p>
       <div className="os-flex os-items-center os-gap-4">
         <div className="os-w-4 os-h-4 os-rounded-lg os-border os-bg-layer-hover os-flex os-items-center os-justify-center os-overflow-hidden os-shrink-0"
         >
           {value ? (
-            <img src={value} alt="School logo" className="os-max-w-full os-max-h-full os-object-contain" />
+            <img src={value} alt="Okul logosu" className="os-max-w-full os-max-h-full os-object-contain" />
           ) : (
             <Building size={24} className="os-fill-disabled" />
           )}
@@ -46,11 +46,11 @@ export default function LogoUpload({ value, editing, onChange }: LogoUploadProps
         {editing && (
           <div className="os-flex os-gap-2">
             <Button kind="tertiary" size="sm" renderIcon={Upload} onClick={() => inputRef.current?.click()}>
-              {value ? "Change" : "Upload"}
+              {value ? "Değiştir" : "Yükle"}
             </Button>
             {value && (
               <Button kind="ghost" size="sm" renderIcon={TrashCan} onClick={() => onChange("")}>
-                Remove
+                Kaldır
               </Button>
             )}
             <input

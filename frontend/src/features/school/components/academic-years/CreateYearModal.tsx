@@ -45,41 +45,41 @@ export default function CreateYearModal({
   return (
     <FormModal
       open={open}
-      title="New academic year"
+      title="Yeni eğitim-öğretim yılı"
       onClose={onClose}
       onSubmit={onCreate}
       isPending={createYear.isPending}
       submitDisabled={!isValid}
-      submitLabel="Create"
-      pendingLabel="Creating…"
+      submitLabel="Oluştur"
+      pendingLabel="Oluşturuluyor…"
       isError={createYear.isError}
       error={createYear.error}
-      errorFallback="Failed to create academic year"
+      errorFallback="Eğitim-öğretim yılı oluşturulamadı"
     >
       <div className="os-grid os-gap-4">
         <TextInput
           id="ay-label"
-          labelText="Label"
-          placeholder="e.g. 2027"
+          labelText="Etiket"
+          placeholder="örn. 2027"
           value={form.label}
           onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
           onBlur={() => setTouched((t) => ({ ...t, label: true }))}
           invalid={!!touched.label && !form.label.trim()}
-          invalidText="A label is required."
+          invalidText="Etiket gerekli."
         />
         <DateField value={form.start_date} onChange={(ymd) => setForm((f) => ({ ...f, start_date: ymd }))} id="ay-start"
-            labelText="Start date"
+            labelText="Başlangıç tarihi"
             onBlur={() => setTouched((t) => ({ ...t, start_date: true }))}
             invalid={!!touched.start_date && !form.start_date}
-            invalidText="A start date is required." />
+            invalidText="Başlangıç tarihi gerekli." />
         <DateField value={form.end_date} onChange={(ymd) => setForm((f) => ({ ...f, end_date: ymd }))} id="ay-end"
-            labelText="End date"
+            labelText="Bitiş tarihi"
             onBlur={() => setTouched((t) => ({ ...t, end_date: true }))}
             invalid={!!touched.end_date && (!form.end_date || dateRangeInvalid)}
-            invalidText={dateRangeInvalid ? "End date must be after the start date." : "An end date is required."} />
+            invalidText={dateRangeInvalid ? "Bitiş tarihi başlangıç tarihinden sonra olmalı." : "Bitiş tarihi gerekli."} />
         <Checkbox
           id="ay-current"
-          labelText="Set as current academic year"
+          labelText="Güncel eğitim-öğretim yılı olarak ayarla"
           checked={form.is_current}
           onChange={(_e, { checked }) => setForm((f) => ({ ...f, is_current: checked }))}
         />

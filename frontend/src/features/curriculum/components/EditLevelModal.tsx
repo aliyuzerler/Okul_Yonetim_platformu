@@ -32,46 +32,46 @@ export default function EditLevelModal({
   return (
     <FormModal
       open={!!toEdit}
-      title={`Edit ${toEdit?.label ?? ""}`}
+      title={`${toEdit?.label ?? ""} düzenle`}
       size="md"
       onClose={onClose}
       onSubmit={onSave}
       isPending={updateLevel.isPending}
       submitDisabled={!editForm.label.trim()}
-      submitLabel="Save changes"
+      submitLabel="Değişiklikleri kaydet"
       isError={updateLevel.isError}
       error={updateLevel.error}
-      errorFallback="Failed to update level"
+      errorFallback="Seviye güncellenemedi"
     >
       <p className="os-text-md os-c-secondary os-mb-4">
-        Renaming a level leaves its selection groups and student choices untouched - only the label, grade link,
-        and ordering change.
+        Seviyenin adını değiştirmek seçim gruplarına ve öğrenci seçimlerine dokunmaz - yalnızca etiket, sınıf seviyesi bağlantısı
+        ve sıralama değişir.
       </p>
       <div className="os-grid os-gap-5">
         <TextInput
           id="edit-label"
-          labelText="Label"
+          labelText="Etiket"
           value={editForm.label}
           onChange={(e) => setEditForm((f) => ({ ...f, label: e.target.value }))}
           onBlur={() => setEditLabelTouched(true)}
           invalid={editLabelTouched && !editForm.label.trim()}
-          invalidText="A label is required."
+          invalidText="Etiket zorunludur."
         />
         <div className="os-grid os-grid-cols-2-1 os-gap-4">
           <Select
             id="edit-grade"
-            labelText="Grade (optional)"
+            labelText="Sınıf seviyesi (isteğe bağlı)"
             value={editForm.grade_id}
             onChange={(e) => setEditForm((f) => ({ ...f, grade_id: e.target.value }))}
           >
-            <SelectItem value="" text="No grade" />
+            <SelectItem value="" text="Sınıf seviyesi yok" />
             {grades?.map((g) => (
               <SelectItem key={g.id} value={g.id} text={g.name} />
             ))}
           </Select>
           <NumberInput
             id="edit-sort"
-            label="Sort order"
+            label="Sıralama"
             min={0}
             value={editForm.sort_order}
             onChange={(_e, { value }) => setEditForm((f) => ({ ...f, sort_order: Number(value) || 0 }))}

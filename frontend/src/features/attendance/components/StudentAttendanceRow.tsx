@@ -5,6 +5,14 @@ import StatusButton from "@/features/attendance/components/StatusButton";
 import Avatar from "@/shared/ui/Avatar";
 import { displayName } from "@/shared/lib/name";
 
+// Durum kodları backend'den gelir; görünen etiketler yerel haritadan Türkçedir (shared/ etiketleri İngilizce kalır).
+const STATUS_TR: Record<"present" | "absent" | "late" | "excused", string> = {
+  present: "Mevcut",
+  absent: "Devamsız",
+  late: "Geç",
+  excused: "İzinli",
+};
+
 export default function StudentAttendanceRow({
   student,
   idx,
@@ -33,13 +41,13 @@ export default function StudentAttendanceRow({
           <span className="os-fw-500 os-text-md" title={student.full_name}>{displayName(student)}</span>
         </div>
       </td>
-      <td className="os-table__mono" data-label="Index no.">{student.index_number}</td>
-      <td data-label="Attendance">
+      <td className="os-table__mono" data-label="Okul no.">{student.index_number}</td>
+      <td data-label="Yoklama">
         {readOnly ? (
           status ? (
-            <StatusTag {...STATUS_STYLES[status]} />
+            <StatusTag {...STATUS_STYLES[status]} label={STATUS_TR[status]} />
           ) : (
-            <span className="os-c-disabled os-text-xs">Not marked</span>
+            <span className="os-c-disabled os-text-xs">İşaretlenmedi</span>
           )
         ) : (
           <div className="os-flex os-gap-1h os-wrap">
@@ -49,14 +57,14 @@ export default function StudentAttendanceRow({
           </div>
         )}
       </td>
-      <td data-label="Note">
+      <td data-label="Açıklama">
         {readOnly ? (
           <span className={`os-text-xs ${note ? "os-c-secondary" : "os-c-disabled"}`}>{note || "-"}</span>
         ) : status === "absent" || status === "late" || status === "excused" ? (
           <input
             className="os-note-input"
-            placeholder="Optional note…"
-            aria-label={`Note for ${displayName(student)}`}
+            placeholder="İsteğe bağlı açıklama…"
+            aria-label={`${displayName(student)} için açıklama`}
             value={note}
             onChange={(e) => onNoteChange(e.target.value)}
           />

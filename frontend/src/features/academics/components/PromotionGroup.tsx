@@ -86,7 +86,7 @@ export default function PromotionGroup({
             <>
               {lockedCount > 0 && (
                 <span className="os-text-xs os-c-tertiary">
-                  {lockedCount} medium-locked, excluded from distribution
+                  {lockedCount} öğrenci öğretim dili kilitli, dağıtım dışı bırakıldı
                 </span>
               )}
               <Button
@@ -94,12 +94,12 @@ export default function PromotionGroup({
                 size="sm"
                 onClick={distributeByMarks}
                 disabled={!hasMarks || !canShuffle}
-                title={hasMarks ? undefined : "Pick a term and enable “Sort by total marks” above first"}
+                title={hasMarks ? undefined : "Önce yukarıdan bir dönem seçip “Toplam nota göre sırala” seçeneğini etkinleştirin"}
               >
-                Distribute by marks
+                Notlara göre dağıt
               </Button>
               <Button kind="ghost" size="sm" onClick={distributeRandomly} disabled={!canShuffle}>
-                Assign randomly
+                Rastgele ata
               </Button>
             </>
           )}
@@ -109,7 +109,7 @@ export default function PromotionGroup({
 
       {!isGraduating && selectedInGroup.length > 0 && (
         <div className="os-flex os-items-center os-gap-3 os-py-3 os-px-6 os-bg-accent-light os-border-b">
-          <span className="os-text-sm">{selectedInGroup.length} selected</span>
+          <span className="os-text-sm">{selectedInGroup.length} öğrenci seçildi</span>
           <div className="os-min-w-16">
             <EntityCombobox
               id={`bulk-class-${gradeId}`}
@@ -118,11 +118,11 @@ export default function PromotionGroup({
               onSelect={setBulkClassId}
               getId={(c) => c.id}
               itemToString={(c) => c.name}
-              placeholder="Move selected to…"
+              placeholder="Seçili öğrencileri taşı…"
             />
           </div>
           <Button kind="tertiary" size="sm" onClick={applyBulk} disabled={!bulkClassId}>
-            Apply
+            Uygula
           </Button>
         </div>
       )}
@@ -131,10 +131,10 @@ export default function PromotionGroup({
         <thead>
           <tr>
             {!isGraduating && <th className="os-w-2h" />}
-            <th>Student</th>
-            <th>Current class</th>
-            {rankByMarks && <th>Marks</th>}
-            {!isGraduating && <th>Target class</th>}
+            <th>Öğrenci</th>
+            <th>Mevcut sınıf</th>
+            {rankByMarks && <th>Notlar</th>}
+            {!isGraduating && <th>Hedef sınıf</th>}
           </tr>
         </thead>
         <tbody>
@@ -144,7 +144,7 @@ export default function PromotionGroup({
                 <td>
                   <Checkbox
                     id={`select-${r.student_id}`}
-                    labelText={`Select ${r.student_name}`}
+                    labelText={`${r.student_name} seç`}
                     hideLabel
                     checked={selected.has(r.student_id)}
                     onChange={() => onToggleSelected(r.student_id)}
@@ -161,9 +161,9 @@ export default function PromotionGroup({
                   <Tag
                     type="purple"
                     size="sm" className="os-ml-2"
-                    title="Medium-designated class - carries over to the same medium and is left out of distribution"
+                    title="Öğretim dili belirlenmiş sınıf - aynı öğretim diline taşınır ve dağıtım dışında tutulur"
                   >
-                    {r.current_medium_name ?? "Medium"}
+                    {r.current_medium_name ?? "Öğretim dili"}
                   </Tag>
                 )}
               </td>
@@ -189,7 +189,7 @@ export default function PromotionGroup({
                         onSelect={(id) => onAssign(r.student_id, id)}
                         getId={(c) => c.id}
                         itemToString={(c) => c.name}
-                        placeholder="Choose class…"
+                        placeholder="Sınıf seçin…"
                       />
                     </div>
                     {r.suggested_class_name && assignments[r.student_id] === r.suggested_class_id && (
@@ -198,12 +198,12 @@ export default function PromotionGroup({
                         size="sm"
                         title={
                           r.medium_locked
-                            ? "Same-medium carryover suggestion"
-                            : "Same-name carryover suggestion"
+                            ? "Aynı öğretim diline taşıma önerisi"
+                            : "Aynı ada göre taşıma önerisi"
                         }
                       >
                         <ArrowRight size={10} className="os-mr-h" />
-                        Suggested
+                        Önerilen
                       </Tag>
                     )}
                   </div>

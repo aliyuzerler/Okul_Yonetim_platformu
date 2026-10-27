@@ -65,7 +65,7 @@ export function useAttendanceMarking(sessionId: string, records: AttendanceRecor
 
   useEffect(() => {
     if (!restoredDraftFor) return;
-    showToast({ kind: "info", title: "Restored your unsaved marks from earlier" });
+    showToast({ kind: "info", title: "Kaydedilmemiş işaretleriniz geri yüklendi" });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fires once per restoredDraftFor transition; showToast is stable enough for this
   }, [restoredDraftFor]);
 

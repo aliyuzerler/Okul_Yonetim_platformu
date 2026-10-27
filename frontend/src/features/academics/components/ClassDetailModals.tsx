@@ -140,19 +140,19 @@ export function useClassDetailModals(id: string, cls: ClassRow | undefined, deta
       />
       <ConfirmDeleteModal
         open={!!toUnenroll}
-        title="Remove student from class"
-        description={<>Remove <strong>{toUnenroll && displayName(toUnenroll)}</strong> from this class? Their student profile is not deleted.</>}
-        subject="Student"
-        successVerb="removed"
+        title="Öğrenciyi sınıftan çıkar"
+        description={<><strong>{toUnenroll && displayName(toUnenroll)}</strong> adlı öğrenci bu sınıftan çıkarılsın mı? Öğrencinin profil kaydı silinmez.</>}
+        subject="Öğrenci"
+        successVerb="sınıftan çıkarıldı"
         mutation={unenrollStudent}
         onClose={() => setToUnenroll(null)}
         onConfirm={() => toUnenroll && unenrollStudent.mutate(toUnenroll.id)}
       />
       <ConfirmDeleteModal
         open={!!toDeleteSession}
-        title="Delete attendance session"
-        description={<>Delete the session for <strong>{toDeleteSession?.date}</strong>? Every attendance record already marked for it is deleted too.</>}
-        subject="Attendance session"
+        title="Yoklama oturumunu sil"
+        description={<><strong>{toDeleteSession?.date}</strong> tarihli oturum silinsin mi? Bu oturum için işaretlenmiş tüm yoklama kayıtları da silinir.</>}
+        subject="Yoklama oturumu"
         mutation={deleteSession}
         onClose={() => setToDeleteSession(null)}
         onConfirm={() => toDeleteSession && deleteSession.mutate(toDeleteSession.id)}

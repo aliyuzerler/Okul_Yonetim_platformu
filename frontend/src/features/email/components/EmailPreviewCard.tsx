@@ -21,27 +21,27 @@ export default function EmailPreviewCard() {
   };
 
   return (
-    <SectionCard title="Email templates">
+    <SectionCard title="E-posta şablonları">
       <div className="os-flex os-gap-4 os-items-end os-wrap os-mb-4">
-        <Select id="email-template" labelText="Template" value={key} onChange={(e) => choose(e.target.value)}>
+        <Select id="email-template" labelText="Şablon" value={key} onChange={(e) => choose(e.target.value)}>
           {templates?.map((t) => <SelectItem key={t.key} value={t.key} text={t.name} />)}
         </Select>
         <Button kind="secondary" size="md" renderIcon={Send} disabled={!key || sendTest.isPending} onClick={() => sendTest.mutate(key)}>
-          {sendTest.isPending ? "Sending…" : "Send test to me"}
+          {sendTest.isPending ? "Gönderiliyor…" : "Bana test e-postası gönder"}
         </Button>
       </div>
       {sendTest.isSuccess && (
-        <InlineNotification kind="success" lowContrast title="Test email sent" subtitle={`Check the inbox of ${sendTest.data.sent_to}.`} onClose={() => sendTest.reset()} className="os-mb-4 os-max-w-full" />
+        <InlineNotification kind="success" lowContrast title="Test e-postası gönderildi" subtitle={`${sendTest.data.sent_to} gelen kutusunu kontrol edin.`} onClose={() => sendTest.reset()} className="os-mb-4 os-max-w-full" />
       )}
-      <MutationErrorNotification isError={sendTest.isError} error={sendTest.error} title="Could not send the test email" className="os-mb-4" />
+      <MutationErrorNotification isError={sendTest.isError} error={sendTest.error} title="Test e-postası gönderilemedi" className="os-mb-4" />
 
       {isLoading && <LoadingSpinner />}
-      {isError && <ErrorMessage message="Could not load the preview." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Önizleme yüklenemedi." onRetry={refetch} />}
       {preview && (
         <>
-          <p className="os-text-sm os-c-secondary os-mt-0 os-mb-2">Subject: <strong className="os-c-primary">{preview.subject}</strong></p>
+          <p className="os-text-sm os-c-secondary os-mt-0 os-mb-2">Konu: <strong className="os-c-primary">{preview.subject}</strong></p>
           {/* sandbox with no permissions: the preview can't run scripts or reach the app. */}
-          <iframe title="Email preview" sandbox="" srcDoc={preview.html} className="os-email-preview" />
+          <iframe title="E-posta önizlemesi" sandbox="" srcDoc={preview.html} className="os-email-preview" />
         </>
       )}
     </SectionCard>

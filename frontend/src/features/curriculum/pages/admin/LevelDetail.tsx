@@ -205,7 +205,7 @@ export default function LevelDetail() {
   if (isError || !tree) {
     return (
       <div className="os-page">
-        <ErrorMessage message="Could not load this level." onRetry={refetch} />
+        <ErrorMessage message="Bu seviye yüklenemedi." onRetry={refetch} />
       </div>
     );
   }
@@ -216,19 +216,19 @@ export default function LevelDetail() {
         <div className="os-page__header-left">
           <h1 className="os-page__title">{tree.level.label}</h1>
           <div className="os-page__subtitle os-page__subtitle--tip">
-            Subject groups and the pick rule for each.
-            <InfoTip>To make every subject compulsory, set min and max to the number of subjects in the group.</InfoTip>
+            Ders grupları ve her birinin seçim kuralı.
+            <InfoTip>Tüm dersleri zorunlu yapmak için en az ve en çok değerlerini gruptaki ders sayısına eşitleyin.</InfoTip>
           </div>
         </div>
         <div className="os-flex os-gap-2">
           <Button renderIcon={ArrowLeft} kind="ghost" size="md" onClick={() => navigate("/curriculum")}>
-            Back
+            Geri
           </Button>
           <Button renderIcon={Add} kind="primary" size="md" onClick={openCreateGroup}>
-            New group
+            Yeni grup
           </Button>
           <Button kind="primary" size="md" disabled={!subjectsDirty || savingSubjects} onClick={() => void saveSubjects()}>
-            {savingSubjects ? "Saving subjects…" : "Save subjects"}
+            {savingSubjects ? "Dersler kaydediliyor…" : "Dersleri kaydet"}
           </Button>
         </div>
       </div>
@@ -236,8 +236,8 @@ export default function LevelDetail() {
       {subjectsDirty && (
         <InlineNotification
           kind="info"
-          title="Unsaved subject changes"
-          subtitle="Add or remove subjects from the groups below, then save them together."
+          title="Kaydedilmemiş ders değişiklikleri"
+          subtitle="Aşağıdaki gruplara ders ekleyin veya gruptan çıkarın, sonra bunları birlikte kaydedin."
           lowContrast
           hideCloseButton
           className="os-mb-4"
@@ -246,8 +246,8 @@ export default function LevelDetail() {
       {subjectsSaveError && (
         <InlineNotification
           kind="error"
-          title="Could not save subjects"
-          subtitle="Some changes may not have been saved. Review the groups and try again."
+          title="Dersler kaydedilemedi"
+          subtitle="Bazı değişiklikler kaydedilmemiş olabilir. Grupları gözden geçirin ve yeniden deneyin."
           lowContrast
           onClose={() => setSubjectsSaveError(false)}
           className="os-mb-4"
@@ -292,15 +292,14 @@ export default function LevelDetail() {
 
       <ConfirmActionModal
         open={!!toRemoveSubject}
-        title="Remove subject from group"
+        title="Dersi gruptan çıkar"
         description={
           <>
-            Remove <strong>{toRemoveSubject?.subject.subject_name}</strong> from{" "}
-            <strong>{toRemoveSubject?.group.label}</strong>? The subject stays in
-            the catalogue.
+            <strong>{toRemoveSubject?.subject.subject_name}</strong>, {" "}
+            <strong>{toRemoveSubject?.group.label}</strong> grubundan çıkarılsın mı? Ders katalogda kalır.
           </>
         }
-        confirmLabel="Remove from group"
+        confirmLabel="Gruptan çıkar"
         danger
         onClose={() => setToRemoveSubject(null)}
         onConfirm={handleRemoveSubject}
@@ -308,14 +307,13 @@ export default function LevelDetail() {
 
       <ConfirmDeleteModal
         open={!!toDeleteGroup}
-        title="Delete selection group"
+        title="Seçim grubunu sil"
         description={
           <>
-            Delete <strong>{toDeleteGroup?.label}</strong>? Its subjects stay in
-            the catalogue.
+            <strong>{toDeleteGroup?.label}</strong> silinsin mi? Dersleri katalogda kalır.
           </>
         }
-        subject="Selection group"
+        subject="Seçim grubu"
         mutation={deleteGroup}
         onClose={() => setToDeleteGroup(null)}
         onConfirm={handleDeleteGroup}
@@ -323,9 +321,9 @@ export default function LevelDetail() {
 
       <ConfirmActionModal
         open={blocker.state === "blocked"}
-        title="Leave with unsaved subject changes?"
-        description="Your staged subject changes will be lost if you leave this page before saving them."
-        confirmLabel="Leave page"
+        title="Kaydedilmemiş ders değişiklikleri var"
+        description="Değişiklikleri kaydetmeden bu sayfadan ayrılırsanız yaptığınız ders değişiklikleri kaybolur."
+        confirmLabel="Sayfadan ayrıl"
         danger
         onClose={() => blocker.reset?.()}
         onConfirm={() => blocker.proceed?.()}

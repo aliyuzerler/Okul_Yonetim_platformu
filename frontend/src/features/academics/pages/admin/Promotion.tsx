@@ -65,7 +65,7 @@ export default function Promotion() {
     for (const row of preview ?? []) {
       // Reads the same `graduating` flag `unassignedCount` uses, rather than inferring it from a null next_grade_id.
       const key = row.graduating ? "graduating" : row.next_grade_id!;
-      const label = row.graduating ? "Graduating (no next grade)" : row.next_grade_name!;
+      const label = row.graduating ? "Mezun olacaklar (üst seviye yok)" : row.next_grade_name!;
       if (!byGrade.has(key)) byGrade.set(key, { gradeName: label, rows: [] });
       byGrade.get(key)!.rows.push(row);
     }
@@ -98,10 +98,10 @@ export default function Promotion() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Academic year promotion</h1>
+          <h1 className="os-page__title">Sınıf geçme ve sınıf oluşturma</h1>
           <div className="os-page__subtitle os-page__subtitle--tip">
-            Move students to their next grade and class for a new academic year.
-            <InfoTip>Nothing changes for the rest of the school until you set that year as current.</InfoTip>
+            Öğrencileri yeni bir eğitim-öğretim yılı için bir sonraki sınıf seviyelerine ve sınıflarına taşıyın.
+            <InfoTip>Hedef yılı güncel yıl olarak ayarlayana kadar okulun geri kalanı için hiçbir şey değişmez.</InfoTip>
           </div>
         </div>
       </div>
@@ -111,14 +111,14 @@ export default function Promotion() {
           kind="info"
           lowContrast
           hideCloseButton
-          title="No other academic year to promote into"
-          subtitle="Create the new academic year (and its classes) first, then come back here." className="os-mb-2 os-max-w-full"
+          title="Geçiş yapılacak başka eğitim-öğretim yılı yok"
+          subtitle="Önce yeni eğitim-öğretim yılını (ve sınıflarını) oluşturun, sonra buraya dönün." className="os-mb-2 os-max-w-full"
         />
       )}
       {!yearsLoading && otherYears.length === 0 && (
         <div className="os-mb-6">
           <Link to="/academic-years" className="os-text-sm">
-            Go to Academic Years →
+            Eğitim-öğretim yıllarına git →
           </Link>
         </div>
       )}
@@ -127,7 +127,7 @@ export default function Promotion() {
         <div className="os-section__body os-grid os-grid-form-3-auto os-gap-4 os-items-grid-end os-py-5 os-px-6">
           <Select
             id="source-year"
-            labelText="Source year"
+            labelText="Kaynak yıl"
             value={effectiveSourceYearId}
             onChange={(e) => {
               const nextSourceYearId = e.target.value;
@@ -138,31 +138,31 @@ export default function Promotion() {
               }
             }}
           >
-            <SelectItem value="" text={currentYear ? `${currentYear.label} (current)` : "Select…"} />
+            <SelectItem value="" text={currentYear ? `${currentYear.label} (güncel)` : "Seçin…"} />
             {(years ?? []).map((y) => (
-              <SelectItem key={y.id} value={y.id} text={y.label + (y.is_current ? " (current)" : "")} />
+              <SelectItem key={y.id} value={y.id} text={y.label + (y.is_current ? " (güncel)" : "")} />
             ))}
           </Select>
           <Select
             id="target-year"
-            labelText="Target year"
+            labelText="Hedef yıl"
             value={targetYearId}
             onChange={(e) => setTargetYearId(e.target.value)}
           >
-            <SelectItem value="" text="Select…" />
+            <SelectItem value="" text="Seçin…" />
             {otherYears.map((y) => (
               <SelectItem key={y.id} value={y.id} text={y.label} />
             ))}
           </Select>
-          <Select id="rank-term" labelText="Sort by marks (optional)" value={termId} onChange={(e) => setTermId(e.target.value)}>
-            <SelectItem value="" text="None" />
+          <Select id="rank-term" labelText="Notlara göre sırala (isteğe bağlı)" value={termId} onChange={(e) => setTermId(e.target.value)}>
+            <SelectItem value="" text="Yok" />
             {(terms ?? []).map((t) => (
               <SelectItem key={t.id} value={t.id} text={t.name} />
             ))}
           </Select>
           <Checkbox
             id="rank-by-marks"
-            labelText="Sort by total marks"
+            labelText="Toplam nota göre sırala"
             checked={rankByMarks}
             disabled={!termId}
             onChange={(_e, { checked }) => setRankByMarks(checked)}
@@ -172,29 +172,29 @@ export default function Promotion() {
 
       {previewError && (
         <div className="os-mb-6">
-          <ErrorMessage message="Could not load the promotion preview." onRetry={refetch} />
+          <ErrorMessage message="Sınıf geçme önizlemesi yüklenemedi." onRetry={refetch} />
         </div>
       )}
       <MutationErrorNotification
         isError={commit.isError}
         error={commit.error}
-        title="Could not save assignments"
-        fallback="Please try again."
+        title="Atamalar kaydedilemedi"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => commit.reset()} className="os-mb-6"
       />
       {commit.isSuccess && (
         <InlineNotification
           kind="success"
           lowContrast
-          title="Assignments saved"
-          subtitle={`${commit.data?.assigned ?? 0} student${commit.data?.assigned === 1 ? "" : "s"} assigned in the target year. Set it as current from Academic Years when you're ready to publish.`}
+          title="Atamalar kaydedildi"
+          subtitle={`Hedef yılda ${commit.data?.assigned ?? 0} öğrenciye sınıf atandı. Yayınlamaya hazır olduğunuzda Eğitim-öğretim yılları sayfasından bu yılı güncel yıl olarak ayarlayın.`}
           onClose={() => commit.reset()} className="os-mb-6 os-max-w-full"
         />
       )}
 
       {!targetYearId ? (
         <div className="os-section">
-          <EmptyState title="Pick a target year" description="Choose the academic year you're promoting students into." />
+          <EmptyState title="Hedef yıl seçin" description="Öğrencileri geçireceğiniz eğitim-öğretim yılını seçin." />
         </div>
       ) : previewLoading ? (
         <div className="os-section os-p-6">
@@ -202,7 +202,7 @@ export default function Promotion() {
         </div>
       ) : groups.length === 0 ? (
         <div className="os-section">
-          <EmptyState title="No active students" description="No actively-enrolled students found for the source year." />
+          <EmptyState title="Aktif öğrenci yok" description="Kaynak yılı için aktif olarak kayıtlı öğrenci bulunamadı." />
         </div>
       ) : (
         groups.map((group) => (
@@ -227,8 +227,7 @@ export default function Promotion() {
         <div className="os-flex os-items-center os-gap-4 os-py-6 os-px-0">
           {unassignedCount > 0 && (
             <span className="os-text-sm os-c-warning-text">
-              {unassignedCount} student{unassignedCount !== 1 ? "s" : ""} without a target class - they'll be
-              skipped until assigned.
+              {unassignedCount} öğrencinin hedef sınıfı yok - atanana kadar atlanacaklar.
             </span>
           )}
           <div className="os-flex-1" />
@@ -238,7 +237,7 @@ export default function Promotion() {
             onClick={handleCommit}
             disabled={!readyToCommit || commit.isPending}
           >
-            {commit.isPending ? "Saving…" : "Save assignments"}
+            {commit.isPending ? "Kaydediliyor…" : "Atamaları kaydet"}
           </Button>
         </div>
       )}

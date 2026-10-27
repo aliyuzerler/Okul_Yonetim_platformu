@@ -40,27 +40,27 @@ export default function Prefects() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">School prefects</h1>
+          <h1 className="os-page__title">Okul öğrenci temsilcileri</h1>
           <p className="os-page__subtitle">
             {isArchive
-              ? `Read only. Past board for ${yearById.get(viewingYearId)?.label ?? "this year"}.`
-              : `Prefects and house captains for ${currentYear?.label ?? "the current year"}.`}
+              ? `Salt okunur. ${yearById.get(viewingYearId)?.label ?? "bu yıl"} yılına ait geçmiş kurul.`
+              : `${currentYear?.label ?? "güncel eğitim-öğretim yılı"} için öğrenci temsilcileri ve kol kaptanları.`}
           </p>
         </div>
         <div className="os-flex os-items-end os-gap-3">
-          <Select id="prefect-year-selector" labelText="Year" value={viewingYearId} onChange={(e) => setSelectedYearId(e.target.value || null)} className="os-min-w-12">
-            {selectableYears.map((y) => <SelectItem key={y.id} value={y.id} text={y.id === currentYear?.id ? `${y.label} (current)` : y.label} />)}
+          <Select id="prefect-year-selector" labelText="Eğitim-öğretim yılı" value={viewingYearId} onChange={(e) => setSelectedYearId(e.target.value || null)} className="os-min-w-12">
+            {selectableYears.map((y) => <SelectItem key={y.id} value={y.id} text={y.id === currentYear?.id ? `${y.label} (güncel)` : y.label} />)}
           </Select>
-          <Button renderIcon={Add} kind="primary" size="md" onClick={() => setAssignOpen(true)} disabled={!currentYear || isArchive}>Appoint prefect</Button>
+          <Button renderIcon={Add} kind="primary" size="md" onClick={() => setAssignOpen(true)} disabled={!currentYear || isArchive}>Öğrenci temsilcisi ata</Button>
         </div>
       </div>
 
-      {isArchive && <InlineNotification kind="info" lowContrast hideCloseButton title="Viewing a past board" subtitle="This is a read-only archive. Switch to the current year to make changes." className="os-mb-6 os-max-w-full" />}
-      {!yearLoading && !currentYear && <InlineNotification kind="info" lowContrast hideCloseButton title="No current academic year" subtitle="Set an academic year as current before appointing prefects." className="os-mb-6 os-max-w-full" />}
-      {isError && <div className="os-mb-6"><ErrorMessage message="Could not load prefects." onRetry={refetch} /></div>}
-      <MutationErrorNotification isError={removePrefect.isError} error={removePrefect.error} title="Could not remove appointment" fallback="Please try again." onClose={() => removePrefect.reset()} />
+      {isArchive && <InlineNotification kind="info" lowContrast hideCloseButton title="Geçmiş bir kurul görüntüleniyor" subtitle="Bu salt okunur bir arşivdir. Değişiklik yapmak için güncel yıla geçin." className="os-mb-6 os-max-w-full" />}
+      {!yearLoading && !currentYear && <InlineNotification kind="info" lowContrast hideCloseButton title="Güncel eğitim-öğretim yılı yok" subtitle="Öğrenci temsilcisi atamadan önce bir eğitim-öğretim yılını güncel olarak ayarlayın." className="os-mb-6 os-max-w-full" />}
+      {isError && <div className="os-mb-6"><ErrorMessage message="Öğrenci temsilcileri yüklenemedi." onRetry={refetch} /></div>}
+      <MutationErrorNotification isError={removePrefect.isError} error={removePrefect.error} title="Atama kaldırılamadı" fallback="Lütfen yeniden deneyin." onClose={() => removePrefect.reset()} />
 
-      {!isError && PREFECT_RANKS.map(({ value, label }) => {
+      {!isError && PREFECT_RANKS.map(({ value, label, singular }) => {
         const rows = (prefects ?? []).filter((p) => p.rank === value);
         return (
         <SectionCard
@@ -72,7 +72,7 @@ export default function Prefects() {
             {loading ? (
               <ListRowSkeleton leadingWidth="2.25rem" titleWidth="45%" subtitleWidth="30%" trailingWidth={null} />
             ) : rows.length === 0 ? (
-              <EmptyState title={`No ${label.toLowerCase()} yet`} description="Appoint a student to this rank." />
+              <EmptyState title={`Henüz ${singular.toLowerCase()} yok`} description="Bu göreve bir öğrenci atayın." />
             ) : (
               rows.map((p) => (
                 <div key={p.id} className="os-list-row os-py-3 os-px-6">
@@ -95,12 +95,12 @@ export default function Prefects() {
 
       <ConfirmDeleteModal
         open={!!toRemove}
-        title="Remove prefect"
-        description={<>Remove <strong>{toRemove?.student_name}</strong> from this board?</>}
-        confirmLabel="Remove"
-        pendingLabel="Removing…"
-        subject="Prefect"
-        successVerb="removed"
+        title="Temsilciyi kaldır"
+        description={<><strong>{toRemove?.student_name}</strong>, bu kuruldan kaldırılsın mı?</>}
+        confirmLabel="Kaldır"
+        pendingLabel="Kaldırılıyor…"
+        subject="Öğrenci temsilcisi"
+        successVerb="kaldırıldı"
         mutation={removePrefect}
         onClose={() => setToRemove(null)}
         onConfirm={() => toRemove && currentYear && removePrefect.mutate({ id: toRemove.id, academicYearId: currentYear.id })}

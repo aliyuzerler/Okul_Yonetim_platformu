@@ -16,9 +16,17 @@ const STATUS_ICONS: Record<StaffAttendanceStatus, typeof CheckmarkFilled> = {
 };
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
 ];
+
+// Durum kodları backend'den gelir; görünen etiketler yerel haritadan Türkçedir (shared/ etiketleri İngilizce kalır).
+const STATUS_TR: Record<StaffAttendanceStatus, string> = {
+  present: "Mevcut",
+  absent: "Devamsız",
+  late: "Geç",
+  leave: "İzin",
+};
 
 export default function TeacherMyAttendance() {
   const now = new Date();
@@ -48,18 +56,18 @@ export default function TeacherMyAttendance() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">My attendance</h1>
-          <p className="os-page__subtitle">Your own attendance record - marked by an administrator</p>
+          <h1 className="os-page__title">Devam kaydım</h1>
+          <p className="os-page__subtitle">Kendi devam kaydınız - yönetici tarafından işaretlenir</p>
         </div>
       </div>
 
       <div className="os-section os-mb-6">
         <div className="os-section__header os-flex os-items-center os-gap-3">
-          <Button hasIconOnly iconDescription="Previous month" renderIcon={ChevronLeft} kind="ghost" size="sm" onClick={goPrevMonth} />
+          <Button hasIconOnly iconDescription="Önceki ay" renderIcon={ChevronLeft} kind="ghost" size="sm" onClick={goPrevMonth} />
           <h2 className="os-section__title os-min-w-10 os-text-center">
             {MONTH_NAMES[month - 1]} {year}
           </h2>
-          <Button hasIconOnly iconDescription="Next month" renderIcon={ChevronRight} kind="ghost" size="sm" onClick={goNextMonth} />
+          <Button hasIconOnly iconDescription="Sonraki ay" renderIcon={ChevronRight} kind="ghost" size="sm" onClick={goNextMonth} />
         </div>
 
         <div className="os-section__body os-flex os-gap-4 os-wrap">
@@ -70,7 +78,7 @@ export default function TeacherMyAttendance() {
                 key={status} className="os-flex-basis-8 os-py-3h os-px-4 os-rounded-sm" style={{ background: cfg.bg, border: `1px solid ${cfg.border}` }}
               >
                 <p className="os-mt-0 os-mx-0 os-mb-1 os-text-2xs os-fw-600 os-uppercase os-tracking" style={{ color: cfg.color }}>
-                  {cfg.label}
+                  {STATUS_TR[status]}
                 </p>
                 <p className="os-m-0 os-text-2xl os-fw-300" style={{ color: cfg.color }}>{counts[status] ?? 0}</p>
               </div>
@@ -83,24 +91,24 @@ export default function TeacherMyAttendance() {
         {isLoading ? (
           <LoadingSpinner />
         ) : isError ? (
-          <EmptyState title="Could not load attendance" description="Please try again later." />
+          <EmptyState title="Devam kaydı yüklenemedi" description="Lütfen daha sonra tekrar deneyin." />
         ) : sorted.length === 0 ? (
-          <EmptyState title="No attendance marked yet" description="No attendance has been recorded for you this month." />
+          <EmptyState title="Henüz devam kaydı yok" description="Bu ay için sizin adınıza işaretlenmiş devam kaydı yok." />
         ) : (
           <DataGrid
             rows={sorted}
             getRowId={(r) => r.id}
             columns={[
-              { key: "date", header: "Date", render: (r) => <span className="os-table__mono">{r.date}</span> },
+              { key: "date", header: "Tarih", render: (r) => <span className="os-table__mono">{r.date}</span> },
               {
                 key: "status",
-                header: "Status",
+                header: "Durum",
                 render: (r) => {
                   const cfg = STAFF_ATTENDANCE_STYLES[r.status];
-                  return <Tag renderIcon={STATUS_ICONS[r.status]} size="sm" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</Tag>;
+                  return <Tag renderIcon={STATUS_ICONS[r.status]} size="sm" style={{ background: cfg.bg, color: cfg.color }}>{STATUS_TR[r.status]}</Tag>;
                 },
               },
-              { key: "note", header: "Note", render: (r) => <span className="os-table__muted">{r.note ?? "-"}</span> },
+              { key: "note", header: "Açıklama", render: (r) => <span className="os-table__muted">{r.note ?? "-"}</span> },
             ]}
           />
         )}

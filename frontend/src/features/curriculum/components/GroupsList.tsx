@@ -9,12 +9,12 @@ import MutationErrorNotification from "@/shared/ui/MutationErrorNotification";
 // Describes a group's pick rule in plain words, an all-mandatory pool is just min = max = pool size.
 function ruleLabel(min: number, max: number, pool: number) {
   if (pool > 0 && min === pool && max === pool) {
-    return `all ${pool} mandatory`;
+    return `tümü (${pool}) zorunlu`;
   }
   if (min === max) {
-    return `pick ${min} of ${pool}`;
+    return `${pool} dersten ${min} seç`;
   }
-  return `pick ${min}–${max} of ${pool}`;
+  return `${pool} dersten ${min}–${max} seç`;
 }
 
 // A group asking for more subjects than it offers can never be satisfied, the backend doesn't reject this, so flag it here.
@@ -48,27 +48,27 @@ export default function GroupsList({
       <MutationErrorNotification
         isError={deleteGroup.isError}
         error={deleteGroup.error}
-        title="Could not delete group"
-        fallback="The group may have students enrolled through it."
+        title="Grup silinemedi"
+        fallback="Grup aracılığıyla kayıtlı öğrenciler olabilir."
         onClose={() => deleteGroup.reset()} className="os-mb-4"
       />
 
       <MutationErrorNotification
         isError={removeSubject.isError}
         error={removeSubject.error}
-        title="Could not remove subject"
-        fallback="Please try again."
+        title="Ders çıkarılamadı"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => removeSubject.reset()} className="os-mb-4"
       />
 
       {tree.groups.length === 0 ? (
         <div className="os-section">
           <EmptyState
-            title="No selection groups"
-            description="Add a group for each decision a student makes at this level - one for compulsory subjects, and one per elective pool."
+            title="Henüz seçim grubu yok"
+            description="Öğrencinin bu seviyede verdiği her karar için bir grup ekleyin - zorunlu dersler için bir grup, her seçmeli havuz için bir grup."
             action={
               <Button renderIcon={Add} kind="primary" onClick={onOpenCreateGroup}>
-                New group
+                Yeni grup
               </Button>
             }
           />
@@ -91,10 +91,10 @@ export default function GroupsList({
                   </Tag>
                   <div className="os-ml-auto os-flex os-gap-1">
                     <Button kind="ghost" size="sm" onClick={() => onEditGroup(g)}>
-                      Edit
+                      Düzenle
                     </Button>
                     <Button kind="danger--ghost" size="sm" onClick={() => onRequestDeleteGroup(g)}>
-                      Delete
+                      Sil
                     </Button>
                   </div>
                 </div>
@@ -102,8 +102,8 @@ export default function GroupsList({
                 {broken && (
                   <InlineNotification
                     kind="warning"
-                    title="Impossible rule"
-                    subtitle={`This group asks for ${g.min_select} subject(s) but only offers ${pool}. No student can satisfy it.`}
+                    title="Karşılanamayan kural"
+                    subtitle={`Bu grup ${g.min_select} ders istiyor ama yalnızca ${pool} ders sunuyor. Hiçbir öğrenci bu kuralı karşılayamaz.`}
                     lowContrast
                     hideCloseButton className="os-max-w-full os-m-0"
                   />
@@ -112,7 +112,7 @@ export default function GroupsList({
                 <div className="os-p-3">
                   {pool === 0 ? (
                     <p className="os-m-0 os-p-3 os-text-sm os-c-tertiary">
-                      No subjects in this group yet.
+                      Bu grupta henüz ders yok.
                     </p>
                   ) : (
                     <div
@@ -125,7 +125,7 @@ export default function GroupsList({
                   )}
 
                   <Button kind="ghost" size="sm" renderIcon={Add} onClick={() => onAddSubject(g)} style={{ marginTop: "0.5rem" }}>
-                    Add subject
+                    Ders ekle
                   </Button>
                 </div>
               </div>

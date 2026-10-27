@@ -41,7 +41,7 @@ export default function SubjectCard({
           {subject.medium_name && (
             <div>
               <Tag type="purple" size="sm" className="os-m-0">
-                {subject.medium_name} only
+                Yalnızca {subject.medium_name}
               </Tag>
             </div>
           )}

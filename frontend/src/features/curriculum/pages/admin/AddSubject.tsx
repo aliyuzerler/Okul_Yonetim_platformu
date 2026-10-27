@@ -10,7 +10,7 @@ import InfoTip from "@/shared/ui/InfoTip";
 type Touched = Partial<Record<"name" | "code", boolean>>;
 
 export default function AddSubject() {
-  usePageTitle("Add subject");
+  usePageTitle("Ders ekle");
   const navigate = useNavigate();
   const createSubject = useCreateSubject();
 
@@ -37,17 +37,17 @@ export default function AddSubject() {
   };
 
   const error = createSubject.isError
-    ? getErrorMessage(createSubject.error, "Failed to create subject")
+    ? getErrorMessage(createSubject.error, "Ders oluşturulamadı")
     : null;
 
   return (
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Add new subject</h1>
+          <h1 className="os-page__title">Yeni ders ekle</h1>
           <div className="os-page__subtitle os-page__subtitle--tip">
-            Add a subject to the catalogue.
-            <InfoTip>To offer it to students, add it to a selection group under Curriculum.</InfoTip>
+            Kataloğa bir ders ekleyin.
+            <InfoTip>Öğrencilere sunmak için dersi Müfredat sekmesindeki bir seçim grubuna ekleyin.</InfoTip>
           </div>
         </div>
         <Button
@@ -57,51 +57,51 @@ export default function AddSubject() {
           as={Link}
           to="/subjects"
         >
-          Back
+          Geri
         </Button>
       </div>
 
       <div className="os-form">
         <div className="os-form__section">
-          <div className="os-form__section-header">Subject information</div>
+          <div className="os-form__section-header">Ders bilgileri</div>
           <div className="os-form__section-body">
             <TextInput
               id="subject-name"
-              labelText="Subject name"
-              placeholder="e.g. Mathematics"
+              labelText="Ders adı"
+              placeholder="örn. Matematik"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={() => markTouched("name")}
               invalid={nameInvalid}
-              invalidText="Subject name is required."
+              invalidText="Ders adı zorunludur."
             />
             <TextInput
               id="subject-code"
-              labelText="Subject code"
-              placeholder="e.g. MATH-01"
-              helperText="Any code your school uses. Must be unique."
+              labelText="Ders kodu"
+              placeholder="örn. MATH-01"
+              helperText="Okulunuzun kullandığı herhangi bir kod. Benzersiz olmalıdır."
               value={code}
               onChange={(e) => setCode(e.target.value)}
               onBlur={() => markTouched("code")}
               invalid={codeInvalid}
-              invalidText="Subject code is required."
+              invalidText="Ders kodu zorunludur."
             />
             <TextInput
               id="subject-type"
-              labelText="Type (optional)"
-              placeholder="e.g. core"
-              helperText="A descriptive label only, e.g. core, language, aesthetic."
+              labelText="Tür (isteğe bağlı)"
+              placeholder="örn. core"
+              helperText="Yalnızca açıklayıcı bir etiket; örn. core, language, aesthetic."
               value={type}
               onChange={(e) => setType(e.target.value)}
             />
             <NumberInput
               id="subject-max-marks"
-              label="Max marks"
+              label="En yüksek puan"
               min={1}
               max={1000}
               value={maxMarks}
               onChange={(_e, { value }) => setMaxMarks(Number(value ?? 100))}
-              helperText="The maximum marks a student can get for this subject."
+              helperText="Öğrencinin bu dersten alabileceği en yüksek puan."
             />
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function AddSubject() {
         {error && (
           <InlineNotification
             kind="error"
-            title="Could not create subject"
+            title="Ders oluşturulamadı"
             subtitle={error}
             lowContrast
             onClose={() => createSubject.reset()} className="os-max-w-full"
@@ -123,10 +123,10 @@ export default function AddSubject() {
             disabled={!isValid || createSubject.isPending}
             onClick={handleSave}
           >
-            {createSubject.isPending ? "Saving…" : "Save subject"}
+            {createSubject.isPending ? "Kaydediliyor…" : "Dersi kaydet"}
           </Button>
           <Button kind="secondary" as={Link} to="/subjects">
-            Cancel
+            İptal
           </Button>
         </div>
       </div>

@@ -40,22 +40,22 @@ export default function ClassesStep({
   return (
     <StepShell
       icon={Building}
-      title="Classes"
-      subtitle="Set the academic year, section counts, and A/L streams. OpenSchool will create the class names for you."
+      title="Sınıflar"
+      subtitle="Eğitim-öğretim yılını, şube sayılarını ve A/L alanlarını ayarlayın. Sınıf adlarını OpenSchool sizin için oluşturacak."
     >
       <div className="os-class-year-field">
         <TextInput
           id="ss-year-label"
-          labelText="Academic year label"
-          helperText="This label is used for the classes created in this setup."
-          placeholder="e.g. 2026"
+          labelText="Eğitim-öğretim yılı etiketi"
+          helperText="Bu etiket, bu kurulumda oluşturulan sınıflar için kullanılır."
+          placeholder="örn. 2026"
           value={yearLabel}
           onChange={(e) => setYearLabel(e.target.value)}
         />
         <NumberInput
           id="ss-class-capacity"
-          label="Capacity for every class"
-          helperText="Applies to all regular and A/L classes. Room capacities are configured separately."
+          label="Tüm sınıflar için kapasite"
+          helperText="Tüm normal ve A/L sınıflarına uygulanır. Derslik kapasiteleri ayrıca yapılandırılır."
           min={1}
           max={200}
           value={classCapacity}
@@ -66,7 +66,7 @@ export default function ClassesStep({
       {orderedSelectedGrades.length === 0 ? (
         <div className="os-class-empty-state">
           <Information size={20} />
-          <p>No grades were selected in the previous step, so there is nothing to add classes to yet.</p>
+          <p>Önceki adımda sınıf seviyesi seçilmediği için henüz sınıf eklenecek bir seviye yok.</p>
         </div>
       ) : (
         <>
@@ -74,8 +74,8 @@ export default function ClassesStep({
             <section className={`os-class-section ${alGradeNumbers.length > 0 ? "os-mb-7" : ""}`} aria-labelledby="regular-classes-title">
               <div className="os-class-section__heading">
                 <div>
-                  <h3 id="regular-classes-title">Regular grades</h3>
-                  <p>Choose the number of sections for each grade and assign a medium where needed.</p>
+                  <h3 id="regular-classes-title">Normal sınıf seviyeleri</h3>
+                  <p>Her sınıf seviyesi için şube sayısını belirleyin ve gerektiğinde bir öğretim dili atayın.</p>
                 </div>
               </div>
               <div className="os-class-grade-list">
@@ -85,12 +85,12 @@ export default function ClassesStep({
                     <div key={gradeNumber} className="os-class-grade-row">
                       <div className="os-class-grade-row__topline">
                         <div>
-                          <h4>Grade {gradeNumber}</h4>
-                          <p>{count > 0 ? `${count} section${count === 1 ? "" : "s"} will be created` : "No sections will be created"}</p>
+                          <h4>{gradeNumber}. sınıf seviyesi</h4>
+                          <p>{count > 0 ? `${count} şube oluşturulacak` : "Şube oluşturulmayacak"}</p>
                         </div>
                         <NumberInput
                           id={`sections-${gradeNumber}`}
-                          label={`Sections for Grade ${gradeNumber}`}
+                          label={`${gradeNumber}. sınıf seviyesi için şube sayısı`}
                           size="sm"
                           min={0}
                           max={10}
@@ -106,12 +106,12 @@ export default function ClassesStep({
                             <Select
                               key={i}
                               id={`section-medium-${gradeNumber}-${i}`}
-                              labelText={`Section ${gradeNumber}-${String.fromCharCode(65 + i)} medium`}
+                              labelText={`${gradeNumber}-${String.fromCharCode(65 + i)} şubesinin öğretim dili`}
                               size="sm"
                               value={sectionMediums[`${gradeNumber}-${i}`] ?? selectedMediumNames[0] ?? ""}
                               onChange={(e) => setSectionMediums((prev) => ({ ...prev, [`${gradeNumber}-${i}`]: e.target.value }))}
                             >
-                              <SelectItem value="" text="No medium" />
+                              <SelectItem value="" text="Öğretim dili yok" />
                               {selectedMediumNames.map((medium) => <SelectItem key={medium} value={medium} text={medium} />)}
                             </Select>
                           ))}
@@ -130,11 +130,11 @@ export default function ClassesStep({
               <section key={gradeNumber} className="os-class-section" aria-labelledby={`al-streams-title-${gradeNumber}`}>
                 <div className="os-class-section__heading">
                   <div>
-                    <h3 id={`al-streams-title-${gradeNumber}`}>Grade {gradeNumber} A/L streams</h3>
-                    <p>Configure Grade {gradeNumber} independently. These settings do not change Grade {gradeNumber === 12 ? 13 : 12}.</p>
+                    <h3 id={`al-streams-title-${gradeNumber}`}>{gradeNumber}. sınıf (A/L) alanları</h3>
+                    <p>{gradeNumber}. sınıfı ayrı yapılandırın. Bu ayarlar {gradeNumber === 12 ? 13 : 12}. sınıfı etkilemez.</p>
                   </div>
                 </div>
-                <p className="os-class-section__hint">Enable the streams and set a code and section count for this grade.</p>
+                <p className="os-class-section__hint">Bu sınıf seviyesi için alanları etkinleştirin ve bir kod ile şube sayısı belirleyin.</p>
                 <div className="os-al-stream-list">
                   {AL_STREAM_DEFS.map((def) => {
                     const cfg = gradeStreams[def.key];
@@ -150,7 +150,7 @@ export default function ClassesStep({
                         </div>
                         <TextInput
                           id={`al-code-${gradeNumber}-${def.key}`}
-                          labelText="Stream code"
+                          labelText="Alan kodu"
                           size="sm"
                           maxLength={3}
                           disabled={!cfg.enabled}
@@ -159,7 +159,7 @@ export default function ClassesStep({
                         />
                         <NumberInput
                           id={`al-sections-${gradeNumber}-${def.key}`}
-                          label="Sections"
+                          label="Şube sayısı"
                           size="sm"
                           min={0}
                           max={10}
@@ -172,7 +172,7 @@ export default function ClassesStep({
                   })}
                 </div>
                 <p className="os-class-section__hint os-class-section__hint--example">
-                  Example: Physical Science with code “M” and 2 sections creates Grade {gradeNumber}-M1 and Grade {gradeNumber}-M2.
+                  Örnek: “Fen Bilimleri (Fizik)” alanı “M” kodu ve 2 şube ile {gradeNumber}-M1 ve {gradeNumber}-M2 sınıflarını oluşturur.
                 </p>
               </section>
             );

@@ -9,8 +9,8 @@ import FilterBar from "@/shared/ui/FilterBar";
 import DateField from "@/shared/ui/DateField";
 
 const KINDS: { value: StaffKind; label: string }[] = [
-  { value: "teacher", label: "Teachers" },
-  { value: "staff", label: "Non-academic staff" },
+  { value: "teacher", label: "Öğretmenler" },
+  { value: "staff", label: "İdari personel" },
 ];
 
 // Server-paginated so a school with 100+ teachers pages through them instead of one long scroll.
@@ -23,7 +23,7 @@ export default function StaffAttendance() {
   const kind = KINDS[kindIndex].value;
 
   const [year, month] = date.split("-").map(Number);
-  const activeView = showMonthly ? "Monthly summary" : "Daily attendance";
+  const activeView = showMonthly ? "Aylık özet" : "Günlük yoklama";
 
   const changeView = (monthly: boolean) => {
     setShowMonthly(monthly);
@@ -34,18 +34,18 @@ export default function StaffAttendance() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Staff attendance</h1>
-          <p className="os-page__subtitle">Mark daily staff attendance or view monthly summaries.</p>
+          <h1 className="os-page__title">Personel yoklaması</h1>
+          <p className="os-page__subtitle">Günlük personel yoklaması alın veya aylık özetleri görüntüleyin.</p>
         </div>
       </div>
 
       <div className="os-flex os-items-center os-gap-6 os-mb-6 os-wrap">
-        <DateField value={date} onChange={(ymd) => ymd && setDate(ymd)} id="staff-attendance-date" labelText={showMonthly ? "Month" : "Date"} />
+        <DateField value={date} onChange={(ymd) => ymd && setDate(ymd)} id="staff-attendance-date" labelText={showMonthly ? "Ay" : "Tarih"} />
         <Toggle
           id="staff-attendance-view-toggle"
-          labelText="Attendance view"
-          labelA="Daily attendance"
-          labelB="Monthly summary"
+          labelText="Yoklama görünümü"
+          labelA="Günlük yoklama"
+          labelB="Aylık özet"
           toggled={showMonthly}
           onToggle={changeView}
         />
@@ -53,7 +53,7 @@ export default function StaffAttendance() {
       </div>
 
       <Tabs selectedIndex={kindIndex} onChange={({ selectedIndex }) => setKindIndex(selectedIndex)}>
-        <TabList aria-label="Staff type">
+        <TabList aria-label="Personel türü">
           {KINDS.map((k) => (
             <Tab key={k.value}>{k.label}</Tab>
           ))}
@@ -61,7 +61,7 @@ export default function StaffAttendance() {
       </Tabs>
 
       <div className="os-mt-4">
-        <FilterBar search={{ value: search, onChange: setSearch, placeholder: "Search by name or employee number" }} />
+        <FilterBar search={{ value: search, onChange: setSearch, placeholder: "İsim veya sicil numarasıyla arayın" }} />
       </div>
 
       {showMonthly ? (

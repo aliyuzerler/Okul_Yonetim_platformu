@@ -24,8 +24,8 @@ export default function MarksOverview({ workload, termId, termSelector, onOpen }
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">My subjects &amp; classes</h1>
-          <p className="os-page__subtitle">Every subject and class you teach, with marks status for the selected term</p>
+          <h1 className="os-page__title">Derslerim ve sınıflarım</h1>
+          <p className="os-page__subtitle">Verdiğiniz tüm ders ve sınıflar ile seçilen döneme ait not durumu</p>
         </div>
       </div>
 
@@ -34,9 +34,9 @@ export default function MarksOverview({ workload, termId, termSelector, onOpen }
       </div>
 
       {!termId ? (
-        <EmptyState title="Choose a term" description="Select a term above to see marks status for your classes." />
+        <EmptyState title="Dönem seçin" description="Sınıflarınızın not durumunu görmek için yukarıdan bir dönem seçin." />
       ) : subjects.length === 0 ? (
-        <EmptyState title="No subjects assigned yet" description="Classes you teach a subject in will appear here once an admin assigns you." />
+        <EmptyState title="Henüz atanmış ders yok" description="Yönetici sizi görevlendirdiğinde ders verdiğiniz sınıflar burada görünecek." />
       ) : (
         subjects.map((subject) => (
           <div key={subject.subjectId} className="os-section os-mb-6">

@@ -22,56 +22,56 @@ export default function SchoolStep({ school, setSchool, schoolTouched, gradeRang
   const gradeToInvalid = school.grade_to === "" || Number(school.grade_to) < GRADE_MIN || Number(school.grade_to) > GRADE_MAX;
 
   return (
-    <StepShell icon={Enterprise} title="School details" subtitle="The basics - you can fill in the rest later from Settings.">
+    <StepShell icon={Enterprise} title="Okul bilgileri" subtitle="Temel bilgiler; gerisini daha sonra Ayarlar bölümünden doldurabilirsiniz.">
       <div className="os-school-details-form">
         <TextInput
           id="ss-name"
-          labelText="School name"
-          placeholder="e.g. Royal College"
+          labelText="Okul adı"
+          placeholder="örn. Royal College"
           value={school.name}
           onChange={(e) => setSchool((s) => ({ ...s, name: e.target.value }))}
           onBlur={() => setTouched((fields) => ({ ...fields, name: true }))}
           invalid={showError("name") && !school.name.trim()}
-          invalidText="School name is required."
+          invalidText="Okul adı gerekli."
           autoComplete="organization"
         />
         <div className="os-school-details-form__two-column">
           <TextInput
             id="ss-phone"
-          labelText="Phone"
-          placeholder="0778449056 or 0112123123"
-          helperText="Use a 10-digit Sri Lankan mobile or landline number."
+          labelText="Telefon"
+          placeholder="0778449056 veya 0112123123"
+          helperText="10 haneli bir Sri Lanka cep veya sabit telefon numarası kullanın."
           type="tel"
           inputMode="tel"
           value={school.phone}
           onChange={(e) => setSchool((s) => ({ ...s, phone: e.target.value }))}
           onBlur={() => setTouched((fields) => ({ ...fields, phone: true }))}
           invalid={showError("phone") && (!school.phone.trim() || !isValidSriLankanPhone(school.phone))}
-          invalidText={school.phone.trim() ? PHONE_INVALID_TEXT : "Phone number is required."}
+          invalidText={school.phone.trim() ? PHONE_INVALID_TEXT : "Telefon numarası gerekli."}
           autoComplete="tel"
         />
           <TextInput
             id="ss-email"
-          labelText="Email"
+          labelText="E-posta"
           type="email"
           placeholder="office@yourschool.lk"
-          helperText="Enter a valid school email address."
+          helperText="Geçerli bir okul e-posta adresi girin."
           value={school.email}
           onChange={(e) => setSchool((s) => ({ ...s, email: e.target.value }))}
           onBlur={() => setTouched((fields) => ({ ...fields, email: true }))}
           invalid={showError("email") && !EMAIL_RE.test(school.email.trim())}
-          invalidText="Enter a valid email address."
+          invalidText="Geçerli bir e-posta adresi girin."
           autoComplete="email"
           />
         </div>
         <TextInput
           id="ss-address"
-          labelText="Address"
+          labelText="Adres"
           value={school.address}
           onChange={(e) => setSchool((s) => ({ ...s, address: e.target.value }))}
           onBlur={() => setTouched((fields) => ({ ...fields, address: true }))}
           invalid={showError("address") && !school.address.trim()}
-          invalidText="Address is required."
+          invalidText="Adres gerekli."
           autoComplete="street-address"
         />
         <LogoUpload
@@ -81,25 +81,25 @@ export default function SchoolStep({ school, setSchool, schoolTouched, gradeRang
         />
         <Select
           id="ss-school-type"
-          labelText="School type"
-          helperText="Single-sex schools check student gender on enrolment."
+          labelText="Okul türü"
+          helperText="Tek cinsiyetli okullar kayıt sırasında öğrenci cinsiyetini denetler."
           value={school.school_type}
           onChange={(e) =>
             setSchool((s) => ({ ...s, school_type: e.target.value as "boys" | "girls" | "mixed" }))
           }
         >
-          <SelectItem value="mixed" text="Mixed" />
-          <SelectItem value="boys" text="Boys" />
-          <SelectItem value="girls" text="Girls" />
+          <SelectItem value="mixed" text="Karma" />
+          <SelectItem value="boys" text="Erkek" />
+          <SelectItem value="girls" text="Kız" />
         </Select>
         <div className="os-school-details-form__two-column">
           <NumberInput
             id="ss-grade-from"
-            label="Lowest grade"
+            label="En düşük sınıf seviyesi"
             min={GRADE_MIN}
             max={GRADE_MAX}
             invalid={showError("grade_from") && (gradeFromInvalid || gradeRangeInvalid)}
-            invalidText={gradeFromInvalid ? `Enter a grade from ${GRADE_MIN} to ${GRADE_MAX}.` : "Must be ≤ highest grade."}
+            invalidText={gradeFromInvalid ? `${GRADE_MIN} ile ${GRADE_MAX} arasında bir sınıf seviyesi girin.` : "En yüksek sınıf seviyesinden büyük olamaz."}
             value={school.grade_from}
             onChange={(_e, { value }) =>
               setSchool((s) => ({ ...s, grade_from: value === "" ? "" : Number(value) }))
@@ -108,11 +108,11 @@ export default function SchoolStep({ school, setSchool, schoolTouched, gradeRang
           />
           <NumberInput
             id="ss-grade-to"
-            label="Highest grade"
+            label="En yüksek sınıf seviyesi"
             min={GRADE_MIN}
             max={GRADE_MAX}
             invalid={showError("grade_to") && (gradeToInvalid || gradeRangeInvalid)}
-            invalidText={gradeToInvalid ? `Enter a grade from ${GRADE_MIN} to ${GRADE_MAX}.` : "Must be ≥ lowest grade."}
+            invalidText={gradeToInvalid ? `${GRADE_MIN} ile ${GRADE_MAX} arasında bir sınıf seviyesi girin.` : "En düşük sınıf seviyesinden küçük olamaz."}
             value={school.grade_to}
             onChange={(_e, { value }) =>
               setSchool((s) => ({ ...s, grade_to: value === "" ? "" : Number(value) }))

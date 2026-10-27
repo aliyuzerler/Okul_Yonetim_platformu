@@ -29,7 +29,7 @@ function PendingClassAction({ classId, className, gradeName }: { classId: string
       onClick={handleClick}
       disabled={createSession.isPending} className="os-py-2 os-px-4 os-bg-accent os-c-layer os-border-none os-pointer os-text-sm os-fw-500 os-nowrap os-flex os-items-center os-gap-1h"
     >
-      <EventSchedule size={14} /> {createSession.isPending ? "Starting…" : classLabel(gradeName, className)}
+      <EventSchedule size={14} /> {createSession.isPending ? "Başlatılıyor…" : classLabel(gradeName, className)}
     </button>
   );
 }
@@ -62,7 +62,7 @@ export default function TeacherAttendance() {
   if (isError) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load your classes" onRetry={refetch} />
+        <ErrorMessage message="Sınıflarınız yüklenemedi" onRetry={refetch} />
       </div>
     );
   }
@@ -71,8 +71,8 @@ export default function TeacherAttendance() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Attendance</h1>
-          <p className="os-page__subtitle">Every session you've recorded, across your classes</p>
+          <h1 className="os-page__title">Yoklama</h1>
+          <p className="os-page__subtitle">Sınıflarınızda kaydettiğiniz tüm oturumlar</p>
         </div>
       </div>
 
@@ -81,9 +81,9 @@ export default function TeacherAttendance() {
           <Time size={18} className="os-fill-warning os-shrink-0" />
           <div className="os-flex-1">
             <p className="os-mt-0 os-mx-0 os-mb-h os-fw-600 os-text-md os-c-warning-text">
-              {pendingToday.length} class{pendingToday.length > 1 ? "es" : ""} not marked today
+              {pendingToday.length} sınıfın yoklaması bugün alınmadı
             </p>
-            <p className="os-m-0 os-text-xs os-c-warning-text">Start today's session for a class.</p>
+            <p className="os-m-0 os-text-xs os-c-warning-text">Bir sınıf için bugünün oturumunu başlatın.</p>
           </div>
           {pendingToday.map((c) => (
             <PendingClassAction key={c.class_id} classId={c.class_id} className={c.class_name} gradeName={c.grade_name} />
@@ -93,10 +93,10 @@ export default function TeacherAttendance() {
 
       <div className="os-grid os-grid-cols-3 os-gap-4 os-mb-6">
         {[
-          { label: "Total sessions", value: allSessions.length, borderColor: "var(--os-accent)", valueColor: "var(--os-text-primary)" },
-          { label: "Marked today", value: todayClassIds.size, borderColor: "var(--os-success)", valueColor: "var(--os-success)" },
+          { label: "Toplam oturum", value: allSessions.length, borderColor: "var(--os-accent)", valueColor: "var(--os-text-primary)" },
+          { label: "Bugün alınan", value: todayClassIds.size, borderColor: "var(--os-success)", valueColor: "var(--os-success)" },
           {
-            label: "Pending today",
+            label: "Bugün bekleyen",
             value: pendingToday.length,
             borderColor: pendingToday.length > 0 ? "var(--os-danger)" : "var(--os-text-tertiary)",
             valueColor: pendingToday.length > 0 ? "var(--os-danger)" : "var(--os-text-tertiary)",
@@ -115,7 +115,7 @@ export default function TeacherAttendance() {
             <Search size={16} className="os-search__icon" />
             <input
               className="os-search__input"
-              placeholder="Search by class or date…"
+              placeholder="Sınıf veya tarihle arayın…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -123,19 +123,19 @@ export default function TeacherAttendance() {
         </div>
 
         {visible.length === 0 ? (
-          <EmptyState title="No sessions found" description="Sessions you record will appear here." />
+          <EmptyState title="Oturum bulunamadı" description="Kaydettiğiniz oturumlar burada görünecek." />
         ) : (
           <DataGrid
             rows={visible}
             getRowId={(r) => r.session.id}
             columns={[
-              { key: "date", header: "Date", render: (r) => <span className="os-table__mono os-text-xs">{r.session.date}</span> },
-              { key: "class", header: "Class", render: (r) => <span className="os-fw-600">{r.className}</span> },
-              { key: "present", header: "Present", render: (r) => <SessionCountCell count={r.session.present_count} status="present" /> },
-              { key: "absent", header: "Absent", render: (r) => <SessionCountCell count={r.session.absent_count} status="absent" /> },
-            { key: "late", header: "Late", render: (r) => <SessionCountCell count={r.session.late_count} status="late" /> },
-              { key: "status", header: "Status", render: () => <Tag type="blue" size="sm">Marked</Tag> },
-              { key: "action", header: "Action", align: "end", render: (r) => <Link to={`/attendance/sessions/${r.session.id}/mark`} className="os-c-tertiary os-no-underline os-text-sm">View</Link> },
+              { key: "date", header: "Tarih", render: (r) => <span className="os-table__mono os-text-xs">{r.session.date}</span> },
+              { key: "class", header: "Sınıf", render: (r) => <span className="os-fw-600">{r.className}</span> },
+              { key: "present", header: "Mevcut", render: (r) => <SessionCountCell count={r.session.present_count} status="present" /> },
+              { key: "absent", header: "Devamsız", render: (r) => <SessionCountCell count={r.session.absent_count} status="absent" /> },
+            { key: "late", header: "Geç", render: (r) => <SessionCountCell count={r.session.late_count} status="late" /> },
+              { key: "status", header: "Durum", render: () => <Tag type="blue" size="sm">Alındı</Tag> },
+              { key: "action", header: "İşlem", align: "end", render: (r) => <Link to={`/attendance/sessions/${r.session.id}/mark`} className="os-c-tertiary os-no-underline os-text-sm">Görüntüle</Link> },
             ]}
           />
         )}

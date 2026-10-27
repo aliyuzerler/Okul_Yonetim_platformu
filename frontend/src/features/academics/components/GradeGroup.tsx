@@ -45,21 +45,21 @@ export default function GradeGroup(p: Props) {
   const isALGrade = /^(?:grade\s*)?(?:12|13)\b/i.test(grade.name.trim());
 
   const columns: GridColumn<ClassWithDetails>[] = [
-    { key: "name", header: "Class", render: (c) => <span className="os-flex os-items-center os-gap-2"><GradeAvatar gradeName={grade.name} className={c.name} size="sm" /><Link to={`/classes/${c.id}`} className="os-table__link">{c.name}</Link></span> },
-    { key: "teacher", header: "Form teacher", render: (c) => <span className="os-table__muted">{p.teacherName(c.form_teacher_id) ?? "No form teacher"}</span> },
-    ...(isALGrade ? [{ key: "stream", header: "Stream", render: (c: ClassWithDetails) => p.streamName(c.stream_id) && <div className="os-flex os-items-center os-gap-1h os-wrap"><StreamTag name={p.streamName(c.stream_id)!} />{p.streamGroupName(c.stream_group_id) && <span className="os-text-xs os-c-tertiary">· {p.streamGroupName(c.stream_group_id)}</span>}</div> }] : []),
-    { key: "medium", header: "Medium", render: (c) => c.medium_name && <MediumTag name={c.medium_name} /> },
-    { key: "room", header: "Home classroom", render: (c) => <span className="os-table__muted">{c.home_classroom_name ?? "-"}</span> },
+    { key: "name", header: "Sınıf", render: (c) => <span className="os-flex os-items-center os-gap-2"><GradeAvatar gradeName={grade.name} className={c.name} size="sm" /><Link to={`/classes/${c.id}`} className="os-table__link">{c.name}</Link></span> },
+    { key: "teacher", header: "Sınıf öğretmeni", render: (c) => <span className="os-table__muted">{p.teacherName(c.form_teacher_id) ?? "Atanmadı"}</span> },
+    ...(isALGrade ? [{ key: "stream", header: "Alan", render: (c: ClassWithDetails) => p.streamName(c.stream_id) && <div className="os-flex os-items-center os-gap-1h os-wrap"><StreamTag name={p.streamName(c.stream_id)!} />{p.streamGroupName(c.stream_group_id) && <span className="os-text-xs os-c-tertiary">· {p.streamGroupName(c.stream_group_id)}</span>}</div> }] : []),
+    { key: "medium", header: "Öğretim dili", render: (c) => c.medium_name && <MediumTag name={c.medium_name} /> },
+    { key: "room", header: "Ana derslik", render: (c) => <span className="os-table__muted">{c.home_classroom_name ?? "-"}</span> },
     {
       key: "actions",
-      header: "Actions",
+      header: "İşlemler",
       align: "end",
       render: (c) => (
         <div className="os-flex os-items-center os-justify-end os-gap-1">
-          <IconButton label={`Edit ${c.name}`} kind="ghost" size="sm" onClick={() => p.onEditClass(c)}>
+          <IconButton label={`${c.name} sınıfını düzenle`} kind="ghost" size="sm" onClick={() => p.onEditClass(c)}>
             <Edit />
           </IconButton>
-          <IconButton label={`Delete ${c.name}`} kind="ghost" size="sm" onClick={() => p.onDeleteClass(c)}>
+          <IconButton label={`${c.name} sınıfını sil`} kind="ghost" size="sm" onClick={() => p.onDeleteClass(c)}>
             <TrashCan />
           </IconButton>
         </div>
@@ -68,13 +68,13 @@ export default function GradeGroup(p: Props) {
   ];
 
   return (
-    <article className="os-border os-rounded-md os-bg-layer os-overflow-hidden" aria-label={`${grade.name} - ${classes.length} classes`}>
+    <article className="os-border os-rounded-md os-bg-layer os-overflow-hidden" aria-label={`${grade.name} - ${classes.length} sınıf`}>
       <header className="os-flex os-items-center os-gap-4 os-wrap os-py-4 os-px-5 os-bg-layer-hover os-border-b">
         <GradeAvatar gradeName={grade.name} />
         <div className="os-flex-1 os-min-w-0">
           <div className="os-flex os-items-center os-gap-2 os-wrap">
             <h3 className="os-m-0 os-fw-600 os-text-md os-c-primary">{grade.name}</h3>
-            <Tag type="gray" size="sm">{classes.length} {classes.length === 1 ? "class" : "classes"}</Tag>
+            <Tag type="gray" size="sm">{classes.length} sınıf</Tag>
           </div>
           {warning && (
             <p className="os-m-0 os-mt-1 os-inline-flex os-items-center os-gap-1 os-text-xs os-c-warning-text">
@@ -84,26 +84,26 @@ export default function GradeGroup(p: Props) {
           )}
         </div>
         <div className="os-flex os-items-center os-gap-1">
-          <Button hasIconOnly kind="ghost" size="sm" iconDescription="Move up" renderIcon={ArrowUp} disabled={index === 0 || busy} onClick={p.onMoveUp} />
-          <Button hasIconOnly kind="ghost" size="sm" iconDescription="Move down" renderIcon={ArrowDown} disabled={isLast || busy} onClick={p.onMoveDown} />
-          <Button kind="ghost" size="sm" disabled={busy} onClick={p.onEditGrade}>Edit</Button>
-          <Button kind="danger--ghost" size="sm" disabled={busy} onClick={p.onDeleteGrade}>Delete</Button>
+          <Button hasIconOnly kind="ghost" size="sm" iconDescription="Yukarı taşı" renderIcon={ArrowUp} disabled={index === 0 || busy} onClick={p.onMoveUp} />
+          <Button hasIconOnly kind="ghost" size="sm" iconDescription="Aşağı taşı" renderIcon={ArrowDown} disabled={isLast || busy} onClick={p.onMoveDown} />
+          <Button kind="ghost" size="sm" disabled={busy} onClick={p.onEditGrade}>Düzenle</Button>
+          <Button kind="danger--ghost" size="sm" disabled={busy} onClick={p.onDeleteGrade}>Sil</Button>
         </div>
       </header>
 
       <div className="os-p-5">
         <div className="os-flex os-items-center os-justify-between os-gap-3 os-wrap os-mb-3">
           <div>
-            <p className="os-m-0 os-fw-600 os-text-sm os-c-primary">Classes in this grade</p>
-            <p className="os-m-0 os-mt-1 os-text-xs os-c-tertiary">Manage form teachers, streams, rooms and enrolment.</p>
+            <p className="os-m-0 os-fw-600 os-text-sm os-c-primary">Bu seviyedeki sınıflar</p>
+            <p className="os-m-0 os-mt-1 os-text-xs os-c-tertiary">Sınıf öğretmenlerini, alanları, derslikleri ve kayıtları yönetin.</p>
           </div>
           <Button kind="tertiary" size="sm" renderIcon={Add} onClick={() => p.onAddClass(grade.id)}>
-            Add class
+            Sınıf ekle
           </Button>
         </div>
 
         {classes.length === 0 ? (
-          <p className="os-text-sm os-c-tertiary os-mt-0 os-mx-0 os-mb-0">No classes yet for this grade.</p>
+          <p className="os-text-sm os-c-tertiary os-mt-0 os-mx-0 os-mb-0">Bu seviyede henüz sınıf yok.</p>
         ) : (
           <DataGrid rows={classes} columns={columns} getRowId={(c) => c.id} pagination={false} />
         )}

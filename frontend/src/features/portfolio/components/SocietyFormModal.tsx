@@ -54,33 +54,33 @@ export default function SocietyFormModal({ society, academicYearId, onClose }: P
     <FormModal
       open
       size="md"
-      title={isEditing ? "Edit society" : "New society"}
+      title={isEditing ? "Topluluğu düzenle" : "Yeni topluluk"}
       onClose={onClose}
       onSubmit={handleSave}
       isPending={mutation.isPending}
       submitDisabled={!canSave}
       isError={mutation.isError}
       error={mutation.error}
-      errorFallback="Failed to save society"
+      errorFallback="Topluluk kaydedilemedi"
     >
       <div className="os-grid os-gap-4">
         <TextInput
           id="society-name"
-          labelText="Society name"
-          placeholder="e.g. Science Society"
+          labelText="Topluluk adı"
+          placeholder="örn. Fen Topluluğu"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <EntityCombobox
           id="society-tic"
-          labelText="Teacher-in-Charge"
+          labelText="Sorumlu öğretmen"
           items={teachers}
           selectedId={teacherChoice}
           onSelect={setTeacherChoice}
           onSearch={setTeacherSearch}
           getId={(t) => t.id}
           itemToString={(t) => `${displayName(t)} - ${t.employee_number}`}
-          placeholder="Search teachers by name or employee number…"
+          placeholder="Ada veya sicil numarasına göre öğretmen ara…"
         />
       </div>
     </FormModal>

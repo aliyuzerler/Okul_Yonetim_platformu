@@ -21,8 +21,8 @@ export default function MediumsStep({
   return (
     <StepShell
       icon={Language}
-      title="Mediums"
-      subtitle="Optional - languages of instruction. Set these first so the next step can tag each section with one."
+      title="Öğretim dilleri"
+      subtitle="İsteğe bağlı; öğretim dilleri. Sonraki adımın her şubeye bir dil atayabilmesi için bunları önce belirleyin."
     >
       <div className="os-flex os-gap-6 os-mb-4">
         {SUGGESTED_MEDIUMS.map((m) => (
@@ -39,7 +39,7 @@ export default function MediumsStep({
         <RepeatableRow key={i} onRemove={() => setCustomMediums((ms) => ms.filter((_, idx) => idx !== i))}>
           <TextInput
             id={`custom-medium-${i}`}
-            labelText="Medium"
+            labelText="Öğretim dili"
             size="md"
             value={m}
             onChange={(e) => setCustomMediums((ms) => ms.map((row, idx) => (idx === i ? e.target.value : row)))}
@@ -47,7 +47,7 @@ export default function MediumsStep({
         </RepeatableRow>
       ))}
       <Button kind="ghost" size="sm" renderIcon={Add} onClick={() => setCustomMediums((ms) => [...ms, ""])}>
-        Add another medium
+        Başka öğretim dili ekle
       </Button>
     </StepShell>
   );

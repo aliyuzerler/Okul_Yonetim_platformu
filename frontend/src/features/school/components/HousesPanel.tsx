@@ -60,32 +60,32 @@ export default function HousesPanel() {
     <div>
       <div className="os-page__header os-flex os-items-start os-justify-between">
         <div>
-          <h2 className="os-section__title os-m-0">Houses</h2>
+          <h2 className="os-section__title os-m-0">Kollar</h2>
           <p className="os-page__subtitle os-mt-1">
-            New students and staff are assigned automatically to whichever house currently has the fewest members, with random tie-breaks.
+            Yeni öğrenciler ve personel, o an en az üyesi olan kola otomatik olarak atanır; eşitlik hâlinde rastgele seçim yapılır.
           </p>
         </div>
-        <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>Add house</Button>
+        <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>Kol ekle</Button>
       </div>
 
-      {isError && <ErrorMessage message="Could not load houses." onRetry={refetch} />}
-      <MutationErrorNotification isError={deleteHouse.isError} error={deleteHouse.error} title="Could not delete house" fallback="The house may be assigned to a student or teacher." onClose={() => deleteHouse.reset()} />
+      {isError && <ErrorMessage message="Kollar yüklenemedi." onRetry={refetch} />}
+      <MutationErrorNotification isError={deleteHouse.isError} error={deleteHouse.error} title="Kol silinemedi" fallback="Kol bir öğrenciye veya öğretmene atanmış olabilir." onClose={() => deleteHouse.reset()} />
       {(reassign.isSuccess || reassignStaff.isSuccess) && (
         <InlineNotification
           kind="success"
-          title="Houses assigned"
-          subtitle={[reassign.data && `${reassign.data.assigned} student(s)`, reassignStaff.data && `${reassignStaff.data.assigned} staff member(s)`].filter(Boolean).join(" and ") + " assigned a house."}
+          title="Kollar atandı"
+          subtitle={[reassign.data && `${reassign.data.assigned} öğrenci`, reassignStaff.data && `${reassignStaff.data.assigned} personel`].filter(Boolean).join(" ve ") + " bir kola atandı."}
           lowContrast
           onClose={resetReassign}
           className="os-max-w-full os-mb-4"
         />
       )}
-      <MutationErrorNotification isError={reassign.isError || reassignStaff.isError} error={reassign.error ?? reassignStaff.error} title="Could not re-assign" fallback="Please try again." onClose={resetReassign} />
+      <MutationErrorNotification isError={reassign.isError || reassignStaff.isError} error={reassign.error ?? reassignStaff.error} title="Yeniden atama yapılamadı" fallback="Lütfen tekrar deneyin." onClose={resetReassign} />
 
       <div className="os-section">
         <div className="os-section__header">
-          <h2 className="os-section__title">Houses</h2>
-          {houses && <span className="os-text-xs os-c-tertiary">{houses.length} total</span>}
+          <h2 className="os-section__title">Kollar</h2>
+          {houses && <span className="os-text-xs os-c-tertiary">Toplam {houses.length}</span>}
         </div>
 
         {isLoading &&
@@ -98,9 +98,9 @@ export default function HousesPanel() {
 
         {!isLoading && !isError && ordered.length === 0 && (
           <EmptyState
-            title="No houses yet"
-            description="Add the houses this school uses. Students and staff are then assigned automatically, balanced across whichever houses exist."
-            action={<Button renderIcon={Add} kind="primary" onClick={openCreate}>Add house</Button>}
+            title="Henüz kol yok"
+            description="Okulunuzun kullandığı kolları ekleyin. Öğrenciler ve personel ardından mevcut kollara dengeli biçimde otomatik atanır."
+            action={<Button renderIcon={Add} kind="primary" onClick={openCreate}>Kol ekle</Button>}
           />
         )}
 
@@ -110,8 +110,8 @@ export default function HousesPanel() {
             <span className="os-fw-600 os-text-md os-c-primary">{h.name}</span>
             {h.code && <Tag type="cool-gray" size="sm">{h.code}</Tag>}
             <div className="os-flex-1" />
-            <Button kind="ghost" size="sm" onClick={() => openEdit(h)}>Edit</Button>
-            <Button kind="danger--ghost" size="sm" onClick={() => setToDelete(h)}>Delete</Button>
+            <Button kind="ghost" size="sm" onClick={() => openEdit(h)}>Düzenle</Button>
+            <Button kind="danger--ghost" size="sm" onClick={() => setToDelete(h)}>Sil</Button>
           </div>
         ))}
       </div>
@@ -119,12 +119,12 @@ export default function HousesPanel() {
       {ordered.length > 0 && (
         <div className="os-flex os-items-center os-gap-3 os-wrap">
           <Button kind="tertiary" size="md" disabled={reassign.isPending} onClick={() => reassign.mutate()}>
-            {reassign.isPending ? "Assigning…" : "Re-assign students without a house"}
+            {reassign.isPending ? "Atanıyor…" : "Kolsuz öğrencileri yeniden ata"}
           </Button>
           <Button kind="tertiary" size="md" disabled={reassignStaff.isPending} onClick={() => reassignStaff.mutate()}>
-            {reassignStaff.isPending ? "Assigning…" : "Re-assign staff without a house"}
+            {reassignStaff.isPending ? "Atanıyor…" : "Kolsuz personeli yeniden ata"}
           </Button>
-          <span className="os-text-xs os-c-tertiary">Useful after setting up houses. People added earlier get one too.</span>
+          <span className="os-text-xs os-c-tertiary">Kolları kurduktan sonra kullanışlıdır. Daha önce eklenen kişilere de bir kol atanır.</span>
         </div>
       )}
 
@@ -145,9 +145,9 @@ export default function HousesPanel() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete house"
-        description={<>Delete <strong>{toDelete?.name}</strong>? This is blocked while a student or teacher is assigned to it.</>}
-        subject="House"
+        title="Kolu sil"
+        description={<><strong>{toDelete?.name}</strong> silinsin mi? Bir öğrenci veya öğretmen bu kola atanmışken silme işlemi engellenir.</>}
+        subject="Kol"
         mutation={deleteHouse}
         onClose={() => setToDelete(null)}
         onConfirm={() => toDelete && deleteHouse.mutate(toDelete.id)}

@@ -86,7 +86,7 @@ export function useCreateClassForm(preselectedGradeId: string, onSuccess?: () =>
     capacityValid,
     isValid,
     isSaving: createClass.isPending,
-    error: createClass.isError ? getErrorMessage(createClass.error, "Could not create the class.") : null,
+    error: createClass.isError ? getErrorMessage(createClass.error, "Sınıf oluşturulamadı.") : null,
     clearError: () => createClass.reset(),
     save,
   };

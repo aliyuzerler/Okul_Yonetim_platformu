@@ -50,55 +50,55 @@ export default function CreateSubjectModal({ open, subjects, onClose }: Props) {
   return (
     <FormModal
       open={open}
-      title="Add subject"
+      title="Ders ekle"
       onClose={close}
       onSubmit={save}
       isPending={createSubject.isPending}
       submitDisabled={!isValid}
-      submitLabel="Save subject"
-      pendingLabel="Saving subject…"
+      submitLabel="Dersi kaydet"
+      pendingLabel="Ders kaydediliyor…"
       isError={createSubject.isError}
       error={createSubject.error}
-      errorTitle="Could not save subject"
-      errorFallback="Check the subject name and code, then try again."
+      errorTitle="Ders kaydedilemedi"
+      errorFallback="Ders adını ve kodunu kontrol edin, sonra yeniden deneyin."
     >
       <div className="os-grid os-gap-4">
         <TextInput
           id="create-subject-name"
-          labelText="Subject name"
-          placeholder="e.g. Mathematics"
+          labelText="Ders adı"
+          placeholder="örn. Matematik"
           value={name}
           onChange={(event) => setName(event.target.value)}
           onBlur={() => setTouched((value) => ({ ...value, name: true }))}
           invalid={nameInvalid || duplicateName}
-          invalidText={duplicateName ? "A subject with this name already exists." : "Subject name is required."}
+          invalidText={duplicateName ? "Bu adla bir ders zaten var." : "Ders adı zorunludur."}
         />
         <TextInput
           id="create-subject-code"
-          labelText="Subject code"
-          placeholder="e.g. MATH-01"
-          helperText="Must be unique across the subject catalogue."
+          labelText="Ders kodu"
+          placeholder="örn. MATH-01"
+          helperText="Ders kataloğu genelinde benzersiz olmalıdır."
           value={code}
           onChange={(event) => setCode(event.target.value)}
           onBlur={() => setTouched((value) => ({ ...value, code: true }))}
           invalid={codeInvalid || duplicateCode}
-          invalidText={duplicateCode ? "This subject code is already in use." : "Subject code is required."}
+          invalidText={duplicateCode ? "Bu ders kodu zaten kullanılıyor." : "Ders kodu zorunludur."}
         />
         <TextInput
           id="create-subject-type"
-          labelText="Type (optional)"
-          placeholder="e.g. core, language, aesthetic"
+          labelText="Tür (isteğe bağlı)"
+          placeholder="örn. core, language, aesthetic"
           value={type}
           onChange={(event) => setType(event.target.value)}
         />
         <NumberInput
           id="create-subject-max-marks"
-          label="Max marks"
+          label="En yüksek puan"
           min={1}
           max={999.99}
           value={maxMarks}
           onChange={(_event, { value }) => setMaxMarks(Number(value ?? 100))}
-          helperText="The maximum marks a student can receive for this subject."
+          helperText="Öğrencinin bu dersten alabileceği en yüksek puan."
         />
       </div>
     </FormModal>

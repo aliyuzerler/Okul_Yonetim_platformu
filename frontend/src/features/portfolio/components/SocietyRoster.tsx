@@ -22,12 +22,12 @@ import RemoveIconButton from "@/shared/ui/RemoveIconButton";
 import type { SocietyMember, SocietyRole } from "@/features/portfolio/api/society";
 import { displayName } from "@/shared/lib/name";
 
-const ROLES: { value: SocietyRole; label: string }[] = [
-  { value: "leader", label: "Leaders" },
-  { value: "deputy_leader", label: "Deputy leaders" },
-  { value: "secretary", label: "Secretaries" },
-  { value: "treasurer", label: "Treasurers" },
-  { value: "member", label: "Members" },
+const ROLES: { value: SocietyRole; label: string; singular: string }[] = [
+  { value: "leader", label: "Liderler", singular: "Lider" },
+  { value: "deputy_leader", label: "Lider yardımcıları", singular: "Lider yardımcısı" },
+  { value: "secretary", label: "Sekreterler", singular: "Sekreter" },
+  { value: "treasurer", label: "Saymanlar", singular: "Sayman" },
+  { value: "member", label: "Üyeler", singular: "Üye" },
 ];
 
 interface Props {
@@ -73,7 +73,7 @@ export default function SocietyRoster({ societyId, readOnly }: Props) {
   const availableStudents = (studentPage?.items ?? []).filter((s) => !memberStudentIds.has(s.id));
 
   if (isError) {
-    return <ErrorMessage message="Could not load the roster." onRetry={refetch} />;
+    return <ErrorMessage message="Üye listesi yüklenemedi." onRetry={refetch} />;
   }
 
   return (
@@ -81,7 +81,7 @@ export default function SocietyRoster({ societyId, readOnly }: Props) {
       <div className="os-flex os-justify-end os-mb-4">
         {!readOnly && (
           <Button renderIcon={Add} kind="primary" size="sm" onClick={openAssign}>
-            Add member
+            Üye ekle
           </Button>
         )}
       </div>
@@ -89,15 +89,15 @@ export default function SocietyRoster({ societyId, readOnly }: Props) {
       <MutationErrorNotification
         isError={removeMember.isError}
         error={removeMember.error}
-        title="Could not remove member"
-        fallback="Please try again."
+        title="Üye çıkarılamadı"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => removeMember.reset()}
       />
 
       {isLoading ? (
         <SkeletonText width="40%" />
       ) : (members ?? []).length === 0 ? (
-        <EmptyState title="No members yet" description="Add a student to this society's roster." />
+        <EmptyState title="Henüz üye yok" description="Bu topluluğun kadrosuna bir öğrenci ekleyin." />
       ) : (
         ROLES.map(({ value, label }) =>
           byRole(value).length === 0 ? null : (
@@ -128,60 +128,60 @@ export default function SocietyRoster({ societyId, readOnly }: Props) {
         )
       )}
 
-      <ComposedModal open={assignOpen} size="sm" onClose={() => setAssignOpen(false)} aria-label="Add society member">
-        <ModalHeader title="Add society member" />
+      <ComposedModal open={assignOpen} size="sm" onClose={() => setAssignOpen(false)} aria-label="Topluluğa üye ekle">
+        <ModalHeader title="Topluluğa üye ekle" />
         <ModalBody>
           <MutationErrorNotification
             isError={assignMember.isError}
             error={assignMember.error}
-            title="Could not add member" fallback="Please try again."
+            title="Üye eklenemedi" fallback="Lütfen yeniden deneyin."
           />
           <div className="os-grid os-gap-4">
             <EntityCombobox
               id="society-member-student"
-              labelText="Student"
+              labelText="Öğrenci"
               items={availableStudents}
               selectedId={studentChoice}
               onSelect={setStudentChoice}
               onSearch={setStudentSearch}
               getId={(s) => s.id}
               itemToString={(s) => `${displayName(s)} - ${s.index_number}`}
-              placeholder="Search students by name or index number…"
+              placeholder="Ada veya okul numarasına göre öğrenci ara…"
             />
             <Select
               id="society-member-role"
-              labelText="Role"
+              labelText="Rol"
               value={roleChoice}
               onChange={(e) => setRoleChoice(e.target.value as SocietyRole)}
             >
               {ROLES.map((r) => (
-                <SelectItem key={r.value} value={r.value} text={r.label.replace(/s$/, "")} />
+                <SelectItem key={r.value} value={r.value} text={r.singular} />
               ))}
             </Select>
           </div>
         </ModalBody>
         <ModalFooter>
           <Button kind="secondary" onClick={() => setAssignOpen(false)}>
-            Cancel
+            İptal
           </Button>
           <Button kind="primary" onClick={handleAssign} disabled={!studentChoice || assignMember.isPending}>
-            {assignMember.isPending ? "Saving…" : "Add"}
+            {assignMember.isPending ? "Kaydediliyor…" : "Ekle"}
           </Button>
         </ModalFooter>
       </ComposedModal>
 
       <ConfirmDeleteModal
         open={!!memberToRemove}
-        title="Remove member"
+        title="Üyeyi kaldır"
         description={
           <>
-            Remove <strong>{memberToRemove?.student_name}</strong> from this society?
+            <strong>{memberToRemove?.student_name}</strong>, bu topluluktan kaldırılsın mı?
           </>
         }
-        confirmLabel="Remove"
-        pendingLabel="Removing…"
-        subject="Member"
-        successVerb="removed"
+        confirmLabel="Kaldır"
+        pendingLabel="Kaldırılıyor…"
+        subject="Üye"
+        successVerb="kaldırıldı"
         mutation={removeMember}
         onClose={() => setMemberToRemove(null)}
         onConfirm={confirmRemove}

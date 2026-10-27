@@ -27,29 +27,29 @@ export default function GradeFormModal({
   return (
     <FormModal
       open
-      title={mode === "create" ? "Add grade" : "Edit grade"}
+      title={mode === "create" ? "Sınıf seviyesi ekle" : "Sınıf seviyesini düzenle"}
       onClose={onClose}
       onSubmit={onSubmit}
       isPending={isPending}
       submitDisabled={!name.trim()}
       isError={isError}
       error={error}
-      errorFallback="Failed to save grade"
+      errorFallback="Sınıf seviyesi kaydedilemedi"
     >
       <TextInput
         id="grade-name"
-        labelText="Name"
-        placeholder="e.g. Grade 6"
+        labelText="Ad"
+        placeholder="örn. Grade 6"
         helperText={
           mode === "create"
-            ? "Added at the end; use the arrows to move it."
-            : "Position is changed with the arrows, not here."
+            ? "Listenin sonuna eklenir; sıralamak için okları kullanın."
+            : "Konum oklarla değiştirilir, buradan değil."
         }
         value={name}
         onChange={(e) => onNameChange(e.target.value)}
         onBlur={onNameBlur}
         invalid={nameTouched && !name.trim()}
-        invalidText="Grade name is required."
+        invalidText="Sınıf seviyesi adı gereklidir."
       />
     </FormModal>
   );

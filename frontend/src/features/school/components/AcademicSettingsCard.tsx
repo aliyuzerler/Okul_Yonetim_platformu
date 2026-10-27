@@ -10,18 +10,18 @@ interface Props {
 
 export default function AcademicSettingsCard({ gradeFrom, gradeTo, editable, onChange }: Props) {
   const { fromOut, toOut, invalid } = gradeRangeErrors(gradeFrom, gradeTo);
-  const rangeText = `Must be between ${GRADE_MIN} and ${GRADE_MAX}.`;
+  const rangeText = `${GRADE_MIN} ile ${GRADE_MAX} arasında olmalı.`;
   return (
     <div className="os-section">
       <div className="os-section__header">
-        <h2 className="os-section__title">Academic settings</h2>
+        <h2 className="os-section__title">Akademik ayarlar</h2>
       </div>
       <div className="os-section__body">
         <div className="os-grid os-grid-cols-2 os-gap-5 os-mb-5">
           <NumberInput
             id="grade-from"
-            label="Lowest grade"
-            helperText="The first grade this school runs (1–13)."
+            label="En düşük sınıf seviyesi"
+            helperText="Bu okulun ilk sınıf seviyesi (1–13)."
             min={GRADE_MIN}
             max={GRADE_MAX}
             disabled={!editable}
@@ -32,35 +32,35 @@ export default function AcademicSettingsCard({ gradeFrom, gradeTo, editable, onC
           />
           <NumberInput
             id="grade-to"
-            label="Highest grade"
-            helperText="The last grade this school runs (1–13)."
+            label="En yüksek sınıf seviyesi"
+            helperText="Bu okulun son sınıf seviyesi (1–13)."
             min={GRADE_MIN}
             max={GRADE_MAX}
             disabled={!editable}
             invalid={invalid}
-            invalidText={toOut ? rangeText : "Highest grade must be greater than or equal to lowest grade."}
+            invalidText={toOut ? rangeText : "En yüksek sınıf seviyesi en düşük sınıf seviyesinden büyük veya ona eşit olmalı."}
             value={gradeTo}
             onChange={(_e, { value }) => onChange("grade_to", value === "" ? "" : Number(value))}
           />
         </div>
         {/* Disabled until the School model has fields to persist these. */}
         <div className="os-grid os-grid-cols-2 os-gap-5">
-          <Select id="timezone" labelText="Time zone" defaultValue="asia_colombo" disabled helperText="Not yet configurable">
+          <Select id="timezone" labelText="Saat dilimi" defaultValue="asia_colombo" disabled helperText="Henüz yapılandırılamıyor">
             <SelectItem value="asia_colombo" text="Asia/Colombo (UTC+5:30)" />
             <SelectItem value="utc" text="UTC" />
           </Select>
-          <Select id="language" labelText="Default language" defaultValue="english" disabled helperText="Not yet configurable">
-            <SelectItem value="english" text="English" />
+          <Select id="language" labelText="Varsayılan dil" defaultValue="english" disabled helperText="Henüz yapılandırılamıyor">
+            <SelectItem value="english" text="İngilizce" />
             <SelectItem value="sinhala" text="Sinhala" />
             <SelectItem value="tamil" text="Tamil" />
           </Select>
-          <Select id="calendar" labelText="Academic calendar" defaultValue="jan_dec" disabled helperText="Not yet configurable">
-            <SelectItem value="jan_dec" text="January - December" />
-            <SelectItem value="sep_aug" text="September - August" />
+          <Select id="calendar" labelText="Akademik takvim" defaultValue="jan_dec" disabled helperText="Henüz yapılandırılamıyor">
+            <SelectItem value="jan_dec" text="Ocak - Aralık" />
+            <SelectItem value="sep_aug" text="Eylül - Ağustos" />
           </Select>
-          <Select id="grading" labelText="Grading system" defaultValue="percentage" disabled helperText="Not yet configurable">
-            <SelectItem value="percentage" text="Percentage (0-100)" />
-            <SelectItem value="grade" text="Grade (A-F)" />
+          <Select id="grading" labelText="Notlandırma sistemi" defaultValue="percentage" disabled helperText="Henüz yapılandırılamıyor">
+            <SelectItem value="percentage" text="Yüzde (0-100)" />
+            <SelectItem value="grade" text="Harf notu (A-F)" />
           </Select>
         </div>
       </div>

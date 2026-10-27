@@ -92,7 +92,7 @@ export default function CurriculumPanel() {
     duplicateLevel.reset();
     setDupLabelTouched(false);
     setDupForm({
-      label: `${l.label} (copy)`,
+      label: `${l.label} (kopya)`,
       grade_id: l.grade_id ?? "",
       sort_order: l.sort_order + 1,
     });
@@ -125,9 +125,9 @@ export default function CurriculumPanel() {
       <div className="os-flex os-items-center os-justify-between os-gap-4 os-wrap os-my-4 os-mx-0"
       >
         <p className="os-m-0 os-text-sm os-c-secondary">
-          A level is any container you name - a grade, a stream, an exam
-          stage. Each level holds selection groups that decide what students
-          pick from the Subjects tab.
+          Seviye, adını verdiğiniz her türlü kapsayıcıdır - bir sınıf seviyesi, bir alan veya
+          bir sınav aşaması. Her seviye, öğrencilerin Dersler sekmesinden neyi seçebileceğini
+          belirleyen seçim gruplarını barındırır.
         </p>
         <div className="os-flex os-gap-2">
           <Button
@@ -139,10 +139,10 @@ export default function CurriculumPanel() {
               setPresetConfirmOpen(true);
             }}
           >
-            Load curriculum preset
+            Müfredat ön ayarını yükle
           </Button>
           <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>
-            New level
+            Yeni seviye
           </Button>
         </div>
       </div>
@@ -150,11 +150,11 @@ export default function CurriculumPanel() {
       {runPreset.isSuccess && (
         <InlineNotification
           kind="success"
-          title="Curriculum synced"
-          subtitle={`${runPreset.data.subjects_created} subjects, ${runPreset.data.levels_created} levels, ${runPreset.data.groups_created} selection groups, and ${runPreset.data.links_created} subject links added for the grades currently configured in this school.${
+          title="Müfredat eşitlendi"
+          subtitle={`Bu okulda şu anda yapılandırılmış sınıf seviyeleri için ${runPreset.data.subjects_created} ders, ${runPreset.data.levels_created} seviye, ${runPreset.data.groups_created} seçim grubu ve ${runPreset.data.links_created} ders bağlantısı eklendi.${
             runPreset.data.grades_covered?.length
-              ? ` Checked Grade(s) ${runPreset.data.grades_covered.join(", ")}.`
-              : " No configured grades matched the preset."
+              ? ` Kontrol edilen sınıf seviyeleri: ${runPreset.data.grades_covered.join(", ")}.`
+              : " Ön ayarla eşleşen yapılandırılmış sınıf seviyesi yok."
           }`}
           lowContrast
           onClose={() => runPreset.reset()} className="os-mb-6 os-max-w-full"
@@ -163,8 +163,8 @@ export default function CurriculumPanel() {
       <MutationErrorNotification
         isError={runPreset.isError}
         error={runPreset.error}
-        title="Could not load preset"
-        fallback="Please try again."
+        title="Ön ayar yüklenemedi"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => runPreset.reset()} className="os-mb-6"
       />
 
@@ -219,14 +219,13 @@ export default function CurriculumPanel() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete level"
+        title="Seviyeyi sil"
         description={
           <>
-            Delete <strong>{toDelete?.label}</strong> and all its selection
-            groups? This cannot be undone.
+            <strong>{toDelete?.label}</strong> ve tüm seçim grupları silinsin mi? Bu işlem geri alınamaz.
           </>
         }
-        subject="Level"
+        subject="Seviye"
         mutation={deleteLevel}
         onClose={() => setToDelete(null)}
         onConfirm={handleDelete}

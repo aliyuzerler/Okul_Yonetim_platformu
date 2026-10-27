@@ -47,55 +47,55 @@ export default function AddSubjectModal({
   return (
     <FormModal
       open={!!subjectModalGroup}
-      title={`Add subject to ${subjectModalGroup?.label ?? ""}`}
+      title={`${subjectModalGroup?.label ?? ""} grubuna ders ekle`}
       onClose={onClose}
       onSubmit={onAdd}
       isPending={addSubject.isPending}
       submitDisabled={!subjectForm.subject_id}
-      submitLabel="Add to group"
-      pendingLabel="Adding…"
+      submitLabel="Gruba ekle"
+      pendingLabel="Ekleniyor…"
       isError={addSubject.isError}
       error={addSubject.error}
-      errorFallback="Failed to add subject"
+      errorFallback="Ders eklenemedi"
     >
       {subjectsLoading ? (
         <SkeletonText width="70%" />
       ) : subjectsError ? (
-        <ErrorMessage message="Could not load the subject catalogue." onRetry={onRetrySubjects} />
+        <ErrorMessage message="Ders kataloğu yüklenemedi." onRetry={onRetrySubjects} />
       ) : subjects && subjects.length === 0 ? (
         <p className="os-text-md">
-          No subjects in the catalogue yet. <Link to="/subjects/new">Add a subject</Link> first.
+          Katalogda henüz ders yok. Önce <Link to="/subjects/new">ders ekleyin</Link>.
         </p>
       ) : available.length === 0 ? (
-        <p className="os-text-md">Every subject in the catalogue is already in this group.</p>
+        <p className="os-text-md">Katalogdaki tüm dersler bu grupta zaten var.</p>
       ) : (
         <div className="os-grid os-gap-4">
           <EntityCombobox
             id="gs-subject"
-            labelText="Subject"
+            labelText="Ders"
             items={available}
             selectedId={subjectForm.subject_id}
             onSelect={(id) => setSubjectForm((f) => ({ ...f, subject_id: id }))}
             getId={(s) => s.id}
             itemToString={(s) => `${s.name} (${s.code})`}
-            placeholder="Search subjects by name or code…"
+            placeholder="Ada veya koda göre ders ara…"
           />
           <Select
             id="gs-medium"
-            labelText="Medium restriction (optional)"
-            helperText="Leave as any medium unless this subject is only offered in one."
+            labelText="Öğretim dili kısıtı (isteğe bağlı)"
+            helperText="Bu ders yalnızca tek bir dilde sunulmuyorsa herhangi bir öğretim dili olarak bırakın."
             value={subjectForm.medium_id}
             onChange={(e) => setSubjectForm((f) => ({ ...f, medium_id: e.target.value }))}
           >
-            <SelectItem value="" text="Any medium" />
+            <SelectItem value="" text="Herhangi bir öğretim dili" />
             {mediums?.map((m) => (
               <SelectItem key={m.id} value={m.id} text={m.name} />
             ))}
           </Select>
           <TextArea
             id="gs-note"
-            labelText="Prerequisite note (optional)"
-            helperText="Guidance shown to admins and students. Not enforced."
+            labelText="Önkoşul notu (isteğe bağlı)"
+            helperText="Yöneticilere ve öğrencilere gösterilen yönerge. Zorunlu değildir."
             rows={2}
             value={subjectForm.prerequisite_note}
             onChange={(e) => setSubjectForm((f) => ({ ...f, prerequisite_note: e.target.value }))}

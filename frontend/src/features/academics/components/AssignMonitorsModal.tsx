@@ -32,34 +32,34 @@ export default function AssignMonitorsModal({
   return (
     <FormModal
       open={open}
-      title="Assign class monitors"
+      title="Sınıf temsilcilerini ata"
       onClose={onClose}
       onSubmit={onSave}
       isPending={assignMonitors.isPending}
       isError={assignMonitors.isError}
       error={assignMonitors.error}
-      errorFallback="Failed to assign monitors"
+      errorFallback="Sınıf temsilcileri atanamadı"
     >
       <div className="os-grid os-gap-4">
         <EntityCombobox
           id="girl-monitor-choice"
-          labelText="Girl monitor"
+          labelText="Kız sınıf temsilcisi"
           items={girlMonitorCandidates}
           selectedId={girlMonitorChoice}
           onSelect={onGirlMonitorChoiceChange}
           getId={(s) => s.id}
           itemToString={(s) => `${displayName(s)} - ${s.index_number}`}
-          placeholder="Search students by name or index number…"
+          placeholder="İsim veya okul numarasıyla öğrenci arayın…"
         />
         <EntityCombobox
           id="boy-monitor-choice"
-          labelText="Boy monitor"
+          labelText="Erkek sınıf temsilcisi"
           items={boyMonitorCandidates}
           selectedId={boyMonitorChoice}
           onSelect={onBoyMonitorChoiceChange}
           getId={(s) => s.id}
           itemToString={(s) => `${displayName(s)} - ${s.index_number}`}
-          placeholder="Search students by name or index number…"
+          placeholder="İsim veya okul numarasıyla öğrenci arayın…"
         />
       </div>
     </FormModal>

@@ -38,18 +38,18 @@ export default function EditClassModal({
   return (
     <FormModal
       open={open}
-      title="Edit class"
+      title="Sınıfı düzenle"
       onClose={onClose}
       onSubmit={onSave}
       isPending={updateClass.isPending}
       submitDisabled={!nameEdit.trim()}
       isError={updateClass.isError}
       error={updateClass.error}
-      errorFallback="Failed to update class"
+      errorFallback="Sınıf güncellenemedi"
     >
       <TextInput
         id="class-name-edit"
-        labelText="Class name"
+        labelText="Sınıf adı"
         value={nameEdit}
         maxLength={20}
         onChange={(e) => onNameEditChange(e.target.value)}
@@ -57,12 +57,12 @@ export default function EditClassModal({
 
       <Select
         id="class-medium-edit"
-        labelText={<>Medium (optional) <InfoTip>Classes tied to one medium keep their students together at promotion instead of being reshuffled.</InfoTip></>}
-        helperText="Only for single-language classes."
+        labelText={<>Öğretim dili (isteğe bağlı) <InfoTip>Tek bir öğretim diline bağlı sınıflar, sınıf geçmede karıştırılmak yerine öğrencileriyle birlikte taşınır.</InfoTip></>}
+        helperText="Yalnızca tek dilli sınıflar için."
         value={mediumEdit}
         onChange={(e) => onMediumEditChange(e.target.value)}
       >
-        <SelectItem value="" text="No medium" />
+        <SelectItem value="" text="Öğretim dili yok" />
         {mediums?.map((m) => (
           <SelectItem key={m.id} value={m.id} text={m.name} />
         ))}
@@ -70,12 +70,12 @@ export default function EditClassModal({
 
       <Select
         id="class-home-classroom-edit"
-        labelText="Home classroom (optional)"
-        helperText="Students stay in this room all day; teachers rotate in."
+        labelText="Ana derslik (isteğe bağlı)"
+        helperText="Öğrenciler gün boyu bu derslikte kalır; öğretmenler sırayla girer."
         value={homeClassroomEdit}
         onChange={(e) => onHomeClassroomEditChange(e.target.value)}
       >
-        <SelectItem value="" text="No home classroom" />
+        <SelectItem value="" text="Ana derslik yok" />
         {regularClassrooms?.map((c) => (
           <SelectItem key={c.id} value={c.id} text={c.name} />
         ))}

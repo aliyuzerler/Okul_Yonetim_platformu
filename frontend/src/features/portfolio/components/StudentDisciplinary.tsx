@@ -48,50 +48,50 @@ export default function StudentDisciplinary({ studentId }: { studentId: string }
   };
 
   return (
-    <SectionCard title="Disciplinary records" className="os-mt-4">
+    <SectionCard title="Disiplin kayıtları" className="os-mt-4">
         <MutationErrorNotification
           isError={createRecord.isError}
           error={createRecord.error}
-          title="Could not add record" fallback="Please try again." className="os-mb-4"
+          title="Kayıt eklenemedi" fallback="Lütfen yeniden deneyin." className="os-mb-4"
         />
 
         <div className="os-grid os-grid-form-10-10-1-1-auto os-gap-3 os-items-grid-end os-mb-6">
           <DateField value={date} onChange={(ymd) => {
             if (ymd) setDate(ymd);
-          }} id="disciplinary-date" labelText="Date" />
-          <Select id="disciplinary-severity" labelText="Severity" value={severity} onChange={(e) => setSeverity(e.target.value as DisciplinarySeverity)}>
-            <SelectItem value="" text="Select…" />
+          }} id="disciplinary-date" labelText="Tarih" />
+          <Select id="disciplinary-severity" labelText="Ağırlık" value={severity} onChange={(e) => setSeverity(e.target.value as DisciplinarySeverity)}>
+            <SelectItem value="" text="Seçin…" />
             {DISCIPLINARY_SEVERITIES.map((s) => (
               <SelectItem key={s.value} value={s.value} text={s.label} />
             ))}
           </Select>
-          <TextArea id="disciplinary-description" labelText="Description" rows={1} value={description} onChange={(e) => setDescription(e.target.value)} />
-          <TextArea id="disciplinary-action" labelText="Action taken (optional)" rows={1} value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} />
-          <Button renderIcon={Add} kind="primary" size="md" onClick={handleAdd} disabled={!description.trim() || !severity || createRecord.isPending}>Add</Button>
+          <TextArea id="disciplinary-description" labelText="Açıklama" rows={1} value={description} onChange={(e) => setDescription(e.target.value)} />
+          <TextArea id="disciplinary-action" labelText="Alınan önlem (isteğe bağlı)" rows={1} value={actionTaken} onChange={(e) => setActionTaken(e.target.value)} />
+          <Button renderIcon={Add} kind="primary" size="md" onClick={handleAdd} disabled={!description.trim() || !severity || createRecord.isPending}>Ekle</Button>
         </div>
 
         {isLoading && <ListRowSkeleton leadingWidth={null} titleWidth="35%" subtitleWidth="70%" trailingWidth="2rem" />}
-        {isError && <ErrorMessage message="Could not load disciplinary records." onRetry={refetch} />}
-        {!isLoading && !isError && (records?.length ?? 0) === 0 && <EmptyState title="No disciplinary records" description="Nothing on file for this student." />}
+        {isError && <ErrorMessage message="Disiplin kayıtları yüklenemedi." onRetry={refetch} />}
+        {!isLoading && !isError && (records?.length ?? 0) === 0 && <EmptyState title="Henüz disiplin kaydı yok" description="Bu öğrenci için kayıtlı bir olay yok." />}
 
         {!isLoading && !isError && records?.map((r) => (
           <div key={r.id} className="os-list-row os-justify-between os-items-start">
             <div>
               <div className="os-flex os-items-center os-gap-2 os-mb-1">
-                <Tag size="sm" type={SEVERITY_TAG[r.severity]}>{r.severity}</Tag>
+                <Tag size="sm" type={SEVERITY_TAG[r.severity]}>{DISCIPLINARY_SEVERITIES.find((s) => s.value === r.severity)?.label ?? r.severity}</Tag>
                 <span className="os-text-xs os-c-tertiary">{formatISODate(r.incident_date)}</span>
               </div>
               <p className="os-m-0 os-text-md">{r.description}</p>
-              {r.action_taken && <p className="os-mt-1 os-mx-0 os-mb-0 os-text-sm os-c-secondary">Action: {r.action_taken}</p>}
+              {r.action_taken && <p className="os-mt-1 os-mx-0 os-mb-0 os-text-sm os-c-secondary">Önlem: {r.action_taken}</p>}
             </div>
-            <RemoveIconButton label="Delete" onClick={() => setPendingDeleteId(r.id)} />
+            <RemoveIconButton label="Sil" onClick={() => setPendingDeleteId(r.id)} />
           </div>
         ))}
       <ConfirmDeleteModal
         open={pendingDeleteId !== null}
-        title="Delete disciplinary record"
-        description="This will permanently remove this record. This action cannot be undone."
-        subject="Record"
+        title="Disiplin kaydını sil"
+        description="Bu kayıt kalıcı olarak kaldırılır. Bu işlem geri alınamaz."
+        subject="Kayıt"
         mutation={deleteRecord}
         onClose={() => setPendingDeleteId(null)}
         onConfirm={() => {

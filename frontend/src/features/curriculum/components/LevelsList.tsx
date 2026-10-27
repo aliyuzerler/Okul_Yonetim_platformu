@@ -40,8 +40,8 @@ export default function LevelsList({
   return (
     <div className="os-section">
       <SectionHeader
-        title="Levels"
-        meta={levels && <span className="os-section__meta">{levels.length} total</span>}
+        title="Seviyeler"
+        meta={levels && <span className="os-section__meta">Toplam {levels.length}</span>}
       />
 
       {isLoading && (
@@ -51,23 +51,23 @@ export default function LevelsList({
           ))}
         </div>
       )}
-      {isError && <ErrorMessage message="Could not load levels." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Seviyeler yüklenemedi." onRetry={refetch} />}
 
       <MutationErrorNotification
         isError={deleteLevel.isError}
         error={deleteLevel.error}
-        title="Could not delete level"
-        fallback="The level may have students enrolled through its groups."
+        title="Seviye silinemedi"
+        fallback="Seviyedeki gruplar aracılığıyla kayıtlı öğrenciler olabilir."
         onClose={() => deleteLevel.reset()} className="os-mt-0 os-mx-6 os-mb-4"
       />
 
       {!isLoading && !isError && levels?.length === 0 && (
         <EmptyState
-          title="No levels yet"
-          description="Create a level for each place a distinct set of subject rules applies - for example one per grade, or one per stream."
+          title="Henüz seviye yok"
+          description="Farklı ders kurallarının geçerli olduğu her yer için bir seviye oluşturun - örneğin her sınıf seviyesi veya her alan için bir seviye."
           action={
             <Button renderIcon={Add} kind="primary" onClick={onOpenCreate}>
-              New level
+              Yeni seviye
             </Button>
           }
         />
@@ -82,7 +82,7 @@ export default function LevelsList({
                 <p className="os-mt-0 os-mx-0 os-mb-h os-fw-600 os-text-md os-c-primary">
                   {l.label}
                 </p>
-                <p className="os-m-0 os-text-xs os-c-secondary">Order {l.sort_order}</p>
+                <p className="os-m-0 os-text-xs os-c-secondary">Sıra {l.sort_order}</p>
               </div>
               {gradeName(l.grade_id) ? (
                 <Tag type="teal" size="sm">
@@ -90,20 +90,20 @@ export default function LevelsList({
                 </Tag>
               ) : (
                 <Tag type="gray" size="sm">
-                  No grade
+                  Sınıf seviyesi yok
                 </Tag>
               )}
               <Button kind="ghost" size="sm" renderIcon={ChevronRight} as={Link} to={`/curriculum/${l.id}`}>
-                Configure
+                Yapılandır
               </Button>
               <Button kind="ghost" size="sm" renderIcon={Edit} onClick={() => onEdit(l)}>
-                Edit
+                Düzenle
               </Button>
               <Button kind="ghost" size="sm" renderIcon={Copy} onClick={() => onDuplicate(l)}>
-                Duplicate
+                Kopyala
               </Button>
               <Button kind="danger--ghost" size="sm" onClick={() => onRequestDelete(l)}>
-                Delete
+                Sil
               </Button>
             </div>
           ))}

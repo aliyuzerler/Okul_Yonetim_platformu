@@ -22,83 +22,83 @@ export default function AddClass() {
   const { data: teacherPage } = useTeachers({ limit: 25, search: teacherSearch });
   const teachers = teacherPage?.items;
   const f = useCreateClassForm(searchParams.get("grade_id") ?? "");
-  usePageTitle("Add class");
+  usePageTitle("Sınıf ekle");
   const { form, set, touched } = f;
   const regularClassrooms = f.classrooms?.filter((c) => c.room_type === "regular");
 
   const roomHelp = !form.home_classroom_id && f.suggestedHomeClassroom
-    ? "Suggested from the class name."
+    ? "Sınıf adından önerildi."
     : !form.home_classroom_id && form.name.trim()
-      ? `A new room "${form.name.trim()}" will be created.`
-      : "Students stay here all day; teachers move.";
+      ? `"${form.name.trim()}" adında yeni bir derslik oluşturulacak.`
+      : "Öğrenciler gün boyu bu derslikte kalır; öğretmenler sınıflar arasında dolaşır.";
 
   return (
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Add new class</h1>
-          <p className="os-page__subtitle">Create a class for an academic year</p>
+          <h1 className="os-page__title">Yeni sınıf ekle</h1>
+          <p className="os-page__subtitle">Bir eğitim-öğretim yılı için sınıf oluşturun</p>
         </div>
-        <Button renderIcon={ArrowLeft} kind="ghost" size="md" as={Link} to="/classes">Back</Button>
+        <Button renderIcon={ArrowLeft} kind="ghost" size="md" as={Link} to="/classes">Geri</Button>
       </div>
 
       <div className="os-form">
         <div className="os-form__section">
-          <div className="os-form__section-header">Class details</div>
+          <div className="os-form__section-header">Sınıf bilgileri</div>
           <div className="os-form__section-body">
-            <Select id="grade" labelText="Grade" value={form.grade_id} onChange={(e) => set("grade_id", e.target.value)} onBlur={() => f.markTouched("grade")} invalid={!!touched.grade && !form.grade_id} invalidText="A grade is required.">
-              <SelectItem value="" text={gradesLoading ? "Loading grades…" : "Select grade…"} />
+            <Select id="grade" labelText="Sınıf seviyesi" value={form.grade_id} onChange={(e) => set("grade_id", e.target.value)} onBlur={() => f.markTouched("grade")} invalid={!!touched.grade && !form.grade_id} invalidText="Sınıf seviyesi seçilmelidir.">
+              <SelectItem value="" text={gradesLoading ? "Sınıf seviyeleri yükleniyor…" : "Sınıf seviyesi seçin…"} />
               {grades?.map((g) => <SelectItem key={g.id} value={g.id} text={g.name} />)}
             </Select>
-            <TextInput id="class-name" labelText="Class name" placeholder="e.g. 10-A" maxLength={20} value={form.name} onChange={(e) => set("name", e.target.value)} onBlur={() => f.markTouched("name")} invalid={!!touched.name && !form.name.trim()} invalidText="A class name is required." />
-            <Select id="stream" labelText="Stream (optional)" value={form.stream_id} onChange={(e) => set("stream_id", e.target.value)}>
-              <SelectItem value="" text="No stream" />
+            <TextInput id="class-name" labelText="Sınıf adı" placeholder="örn. 10-A" maxLength={20} value={form.name} onChange={(e) => set("name", e.target.value)} onBlur={() => f.markTouched("name")} invalid={!!touched.name && !form.name.trim()} invalidText="Sınıf adı gereklidir." />
+            <Select id="stream" labelText="Alan (isteğe bağlı)" value={form.stream_id} onChange={(e) => set("stream_id", e.target.value)}>
+              <SelectItem value="" text="Alan yok" />
               {streams?.map((s) => <SelectItem key={s.id} value={s.id} text={s.name} />)}
             </Select>
-            <Select id="stream-group" labelText="Sub-stream (optional)" helperText={form.stream_id ? undefined : "Choose a stream first to pick a sub-stream."} disabled={!form.stream_id} value={form.stream_group_id} onChange={(e) => set("stream_group_id", e.target.value)}>
-              <SelectItem value="" text="No sub-stream" />
+            <Select id="stream-group" labelText="Alt alan (isteğe bağlı)" helperText={form.stream_id ? undefined : "Alt alan seçmek için önce bir alan seçin."} disabled={!form.stream_id} value={form.stream_group_id} onChange={(e) => set("stream_group_id", e.target.value)}>
+              <SelectItem value="" text="Alt alan yok" />
               {f.streamGroups?.map((g) => <SelectItem key={g.id} value={g.id} text={g.name} />)}
             </Select>
-            <Select id="medium" labelText={<>Medium (optional) <InfoTip>Classes tied to one medium keep their students together at promotion instead of being reshuffled.</InfoTip></>} helperText="Only for single-language classes." value={form.medium_id} onChange={(e) => set("medium_id", e.target.value)}>
-              <SelectItem value="" text="No medium" />
+            <Select id="medium" labelText={<>Öğretim dili (isteğe bağlı) <InfoTip>Tek bir öğretim diline bağlı sınıflar, sınıf geçmede karıştırılmak yerine öğrencileriyle birlikte taşınır.</InfoTip></>} helperText="Yalnızca tek dilli sınıflar için." value={form.medium_id} onChange={(e) => set("medium_id", e.target.value)}>
+              <SelectItem value="" text="Öğretim dili yok" />
               {mediums?.map((m) => <SelectItem key={m.id} value={m.id} text={m.name} />)}
             </Select>
-            <Select id="home-classroom" labelText="Home classroom (optional)" helperText={roomHelp} value={f.effectiveHomeClassroomId} onChange={(e) => set("home_classroom_id", e.target.value)}>
-              <SelectItem value="" text="Auto-create to match the class name" />
+            <Select id="home-classroom" labelText="Ana derslik (isteğe bağlı)" helperText={roomHelp} value={f.effectiveHomeClassroomId} onChange={(e) => set("home_classroom_id", e.target.value)}>
+              <SelectItem value="" text="Sınıf adına uygun şekilde otomatik oluştur" />
               {regularClassrooms?.map((c) => <SelectItem key={c.id} value={c.id} text={c.name} />)}
             </Select>
             <EntityCombobox
               id="class-teacher"
-              labelText="Form teacher (optional)"
+              labelText="Sınıf öğretmeni (isteğe bağlı)"
               items={teachers ?? []}
               selectedId={form.form_teacher_id}
               onSelect={(id) => set("form_teacher_id", id)}
               onSearch={setTeacherSearch}
               getId={(t) => t.id}
               itemToString={(t) => `${displayName(t)} - ${t.employee_number}`}
-              placeholder="Search teachers by name or employee number…"
+              placeholder="İsim veya sicil numarasıyla öğretmen arayın…"
             />
           </div>
         </div>
 
         <div className="os-form__section">
-          <div className="os-form__section-header">Academic year</div>
+          <div className="os-form__section-header">Eğitim-öğretim yılı</div>
           <div className="os-form__section-body">
-            <Select id="academic-year" labelText="Academic year" value={f.academicYearId} onChange={(e) => set("academic_year_id", e.target.value)} onBlur={() => f.markTouched("year")} invalid={!!touched.year && !f.academicYearId} invalidText="An academic year is required.">
-              <SelectItem value="" text="Select academic year…" />
-              {f.years?.map((y) => <SelectItem key={y.id} value={y.id} text={y.is_current ? `${y.label} (Current)` : y.label} />)}
+            <Select id="academic-year" labelText="Eğitim-öğretim yılı" value={f.academicYearId} onChange={(e) => set("academic_year_id", e.target.value)} onBlur={() => f.markTouched("year")} invalid={!!touched.year && !f.academicYearId} invalidText="Eğitim-öğretim yılı seçilmelidir.">
+              <SelectItem value="" text="Eğitim-öğretim yılı seçin…" />
+              {f.years?.map((y) => <SelectItem key={y.id} value={y.id} text={y.is_current ? `${y.label} (Güncel)` : y.label} />)}
             </Select>
             <div />
           </div>
         </div>
 
-        {f.error && <InlineNotification kind="error" title="Could not create class" subtitle={f.error} lowContrast onClose={f.clearError} className="os-max-w-full" />}
+        {f.error && <InlineNotification kind="error" title="Sınıf oluşturulamadı" subtitle={f.error} lowContrast onClose={f.clearError} className="os-max-w-full" />}
 
         <div className="os-form__actions">
           <Button renderIcon={Save} kind="primary" disabled={!f.isValid || f.isSaving} onClick={f.save}>
-            {f.isSaving ? "Creating…" : "Create class"}
+            {f.isSaving ? "Oluşturuluyor…" : "Sınıf oluştur"}
           </Button>
-          <Button kind="secondary" as={Link} to="/classes">Cancel</Button>
+          <Button kind="secondary" as={Link} to="/classes">İptal</Button>
         </div>
       </div>
     </div>

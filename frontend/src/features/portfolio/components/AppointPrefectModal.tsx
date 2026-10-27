@@ -25,20 +25,20 @@ export default function AppointPrefectModal({ academicYearId, assignedStudentIds
   return (
     <FormModal
       open
-      title="Appoint prefect"
+      title="Öğrenci temsilcisi ata"
       onClose={onClose}
       onSubmit={() => studentId && assign.mutate({ academic_year_id: academicYearId, student_id: studentId, rank }, { onSuccess: onClose })}
       isPending={assign.isPending}
-      submitLabel="Appoint"
+      submitLabel="Ata"
       submitDisabled={!studentId}
       isError={assign.isError}
       error={assign.error}
-      errorFallback="Failed to appoint prefect"
+      errorFallback="Öğrenci temsilcisi atanamadı"
     >
       <div className="os-grid os-gap-4">
-        <EntityCombobox id="prefect-student" labelText="Student" items={available} selectedId={studentId} onSelect={setStudentId} onSearch={setSearch} getId={(s) => s.id} itemToString={(s) => `${displayName(s)} - ${s.index_number}`} placeholder="Search students by name or index number…" />
-        <Select id="prefect-rank" labelText="Rank" value={rank} onChange={(e) => setRank(e.target.value as PrefectRank)}>
-          {PREFECT_RANKS.map((r) => <SelectItem key={r.value} value={r.value} text={r.label.replace(/s$/, "")} />)}
+        <EntityCombobox id="prefect-student" labelText="Öğrenci" items={available} selectedId={studentId} onSelect={setStudentId} onSearch={setSearch} getId={(s) => s.id} itemToString={(s) => `${displayName(s)} - ${s.index_number}`} placeholder="Ada veya okul numarasına göre öğrenci ara…" />
+        <Select id="prefect-rank" labelText="Görev / rütbe" value={rank} onChange={(e) => setRank(e.target.value as PrefectRank)}>
+          {PREFECT_RANKS.map((r) => <SelectItem key={r.value} value={r.value} text={r.singular} />)}
         </Select>
       </div>
     </FormModal>

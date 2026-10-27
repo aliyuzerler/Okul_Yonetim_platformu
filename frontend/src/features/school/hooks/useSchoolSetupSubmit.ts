@@ -299,7 +299,7 @@ export function useSchoolSetupSubmit(input: Input) {
 
       setSubmitted(true);
     } catch (e) {
-      setSubmitError(getErrorMessage(e, "Failed to save your school setup. Please try again."));
+      setSubmitError(getErrorMessage(e, "Okul kurulumunuz kaydedilemedi. Lütfen tekrar deneyin."));
     } finally {
       setSubmitting(false);
     }

@@ -31,43 +31,43 @@ export default function CreateLevelModal({
   return (
     <FormModal
       open={open}
-      title="New level"
+      title="Yeni seviye"
       onClose={onClose}
       onSubmit={onCreate}
       isPending={createLevel.isPending}
       submitDisabled={!form.label.trim()}
-      submitLabel="Create"
-      pendingLabel="Creating…"
+      submitLabel="Oluştur"
+      pendingLabel="Oluşturuluyor…"
       isError={createLevel.isError}
       error={createLevel.error}
-      errorFallback="Failed to create level"
+      errorFallback="Seviye oluşturulamadı"
     >
       <div className="os-grid os-gap-4">
         <TextInput
           id="level-label"
-          labelText="Label"
-          placeholder="e.g. Grade 10, or Physical Science"
+          labelText="Etiket"
+          placeholder="örn. 10. sınıf veya Physical Science"
           value={form.label}
           onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
           onBlur={() => setLabelTouched(true)}
           invalid={labelTouched && !form.label.trim()}
-          invalidText="A label is required."
+          invalidText="Etiket zorunludur."
         />
         <Select
           id="level-grade"
-          labelText="Grade (optional)"
-          helperText="Link this level to a grade, or leave unset for tracks that span grades."
+          labelText="Sınıf seviyesi (isteğe bağlı)"
+          helperText="Bu seviyeyi bir sınıf seviyesine bağlayın veya birden fazla sınıf seviyesine yayılan izlekler için boş bırakın."
           value={form.grade_id}
           onChange={(e) => setForm((f) => ({ ...f, grade_id: e.target.value }))}
         >
-          <SelectItem value="" text="No grade" />
+          <SelectItem value="" text="Sınıf seviyesi yok" />
           {grades?.map((g) => (
             <SelectItem key={g.id} value={g.id} text={g.name} />
           ))}
         </Select>
         <NumberInput
           id="level-sort"
-          label="Sort order"
+          label="Sıralama"
           min={0}
           value={form.sort_order}
           onChange={(_e, { value }) => setForm((f) => ({ ...f, sort_order: Number(value) || 0 }))}

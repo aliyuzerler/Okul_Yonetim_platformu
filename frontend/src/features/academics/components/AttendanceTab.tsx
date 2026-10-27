@@ -40,7 +40,7 @@ export default function AttendanceTab({
 
   return (
     <SectionCard
-      title="Attendance sessions"
+      title="Yoklama oturumları"
       className="os-mt-4"
       flush
       meta={(
@@ -48,7 +48,7 @@ export default function AttendanceTab({
           <div className="os-session-date-filter os-shrink-0">
             <DateField value={sessionDateFilter} onChange={(ymd) => {
                 setSessionDateFilter(ymd);
-              }} id="session-date-filter" labelText="Filter by date" hideLabel placeholder="Filter by date" size="sm" />
+              }} id="session-date-filter" labelText="Tarihe göre filtrele" hideLabel placeholder="Tarihe göre filtrele" size="sm" />
           </div>
           {sessionDateFilter && (
             <Button
@@ -56,11 +56,11 @@ export default function AttendanceTab({
               size="sm"
               onClick={() => setSessionDateFilter("")}
             >
-              Clear
+              Temizle
             </Button>
           )}
           <Button renderIcon={Add} kind="ghost" size="sm" onClick={onOpenNewSession}>
-            New session
+            Yeni oturum
           </Button>
         </div>
       )}
@@ -69,15 +69,15 @@ export default function AttendanceTab({
       <MutationErrorNotification
         isError={createSession.isError}
         error={createSession.error}
-        title="Could not create session"
-        fallback="A session may already exist for this class on this date."
+        title="Oturum oluşturulamadı"
+        fallback="Bu tarih için bu sınıfta zaten bir oturum olabilir."
         onClose={() => createSession.reset()} className="os-mt-0 os-mx-6 os-mb-4"
       />
       <MutationErrorNotification
         isError={deleteSession.isError}
         error={deleteSession.error}
-        title="Could not delete session"
-        fallback="Please try again."
+        title="Oturum silinemedi"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => deleteSession.reset()} className="os-mt-0 os-mx-6 os-mb-4"
       />
 
@@ -90,15 +90,15 @@ export default function AttendanceTab({
           noHover
           pageSizes={[10, 20, 30]}
           columns={[
-            { key: "date", header: "Date", render: (s) => <span className="os-table__mono">{s.date}</span> },
+            { key: "date", header: "Tarih", render: (s) => <span className="os-table__mono">{s.date}</span> },
             {
               key: "actions",
-              header: "Actions",
+              header: "İşlemler",
               align: "end",
               render: (s) => (
                 <div className="os-grid__actions os-nowrap-flex">
-                  <Button kind="ghost" size="sm" as={Link} to={`/attendance/sessions/${s.id}/mark`} className="os-c-accent os-nowrap">Mark / view</Button>
-                  <Button kind="danger--ghost" size="sm" className="os-nowrap" onClick={() => onRequestDeleteSession(s)}>Delete</Button>
+                  <Button kind="ghost" size="sm" as={Link} to={`/attendance/sessions/${s.id}/mark`} className="os-c-accent os-nowrap">Yoklama al / görüntüle</Button>
+                  <Button kind="danger--ghost" size="sm" className="os-nowrap" onClick={() => onRequestDeleteSession(s)}>Sil</Button>
                 </div>
               ),
             },
@@ -106,16 +106,16 @@ export default function AttendanceTab({
         />
       ) : (
         <EmptyState
-          title={sessionDateFilter ? "No sessions on this date" : "No sessions yet"}
+          title={sessionDateFilter ? "Bu tarihte oturum yok" : "Henüz oturum yok"}
           description={
             sessionDateFilter
-              ? "Try a different date, or clear the filter."
-              : "Create a session to start taking attendance for this class."
+              ? "Farklı bir tarih deneyin veya filtrelemeyi temizleyin."
+              : "Bu sınıf için yoklama almaya başlamak üzere bir oturum oluşturun."
           }
           action={
             sessionDateFilter ? undefined : (
               <Button renderIcon={Add} kind="primary" onClick={onOpenNewSession}>
-                New session
+                Yeni oturum
               </Button>
             )
           }

@@ -3,11 +3,11 @@ interface Props {
 }
 
 const CARDS = [
-  { key: "present", label: "Present", color: "var(--os-status-present-border)" },
-  { key: "absent", label: "Absent", color: "var(--os-status-absent-border)" },
-  { key: "late", label: "Late", color: "var(--os-status-late-text)" },
-  { key: "excused", label: "Excused", color: "var(--os-status-excused-text)" },
-  { key: "unmarked", label: "Unmarked", color: "var(--os-text-secondary)" },
+  { key: "present", label: "Mevcut", color: "var(--os-status-present-border)" },
+  { key: "absent", label: "Devamsız", color: "var(--os-status-absent-border)" },
+  { key: "late", label: "Geç", color: "var(--os-status-late-text)" },
+  { key: "excused", label: "İzinli", color: "var(--os-status-excused-text)" },
+  { key: "unmarked", label: "İşaretlenmedi", color: "var(--os-text-secondary)" },
 ] as const;
 
 export default function AttendanceSummaryCards({ summary }: Props) {

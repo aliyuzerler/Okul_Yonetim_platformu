@@ -4,16 +4,16 @@ export type ActivityCategory = "club" | "sport" | "society" | "competition";
 export type DisciplinarySeverity = "minor" | "major" | "severe";
 
 export const ACTIVITY_CATEGORIES: { value: ActivityCategory; label: string }[] = [
-  { value: "club", label: "Club" },
-  { value: "sport", label: "Sport" },
-  { value: "society", label: "Society" },
-  { value: "competition", label: "Competition" },
+  { value: "club", label: "Kulüp" },
+  { value: "sport", label: "Spor" },
+  { value: "society", label: "Topluluk" },
+  { value: "competition", label: "Yarışma" },
 ];
 
 export const DISCIPLINARY_SEVERITIES: { value: DisciplinarySeverity; label: string }[] = [
-  { value: "minor", label: "Minor" },
-  { value: "major", label: "Major" },
-  { value: "severe", label: "Severe" },
+  { value: "minor", label: "Hafif" },
+  { value: "major", label: "Orta" },
+  { value: "severe", label: "Ağır" },
 ];
 
 // Matches db.ListProgressReportsByStudentRow

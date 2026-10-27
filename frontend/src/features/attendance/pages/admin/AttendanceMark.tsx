@@ -21,7 +21,15 @@ import ConfirmActionModal from "@/shared/ui/ConfirmActionModal";
 import { useToast } from "@/shared/ui/toast/useToast";
 import { usePageTitle } from "@/shared/hooks/usePageTitle";
 
-const HEADERS = ["#", "Student", "Index No.", "Attendance", "Note"];
+const HEADERS = ["#", "Öğrenci", "Okul no.", "Yoklama", "Açıklama"];
+
+// Durum kodları backend'den gelir; görünen etiketler yerel haritadan Türkçedir.
+const STATUS_TR: Record<"present" | "absent" | "late" | "excused", string> = {
+  present: "Mevcut",
+  absent: "Devamsız",
+  late: "Geç",
+  excused: "İzinli",
+};
 
 export default function AttendanceMark() {
   const { id = "" } = useParams();
@@ -32,7 +40,7 @@ export default function AttendanceMark() {
   const { data: session, isLoading: sessionLoading, isError: sessionError } = useSession(id);
   const { data: records, isLoading: recordsLoading } = useSessionRecords(id);
   const { data: cls } = useClass(session?.class_id ?? "");
-  usePageTitle(cls ? `Mark attendance ${cls.name}` : null);
+  usePageTitle(cls ? `Yoklama al: ${cls.name}` : null);
   const { data: students, isLoading: studentsLoading } = useStudentsByClass(session?.class_id ?? "");
   const { data: grades } = useGrades();
   const markAttendance = useMarkAttendance(id);
@@ -65,7 +73,7 @@ export default function AttendanceMark() {
   const save = () => {
     markAttendance.mutate(
       { ...marking.toRequest(), reason: isOverride ? reason.trim() || undefined : undefined },
-      { onSuccess: () => { marking.clearDraft(); marking.markSaved(); showToast({ kind: "success", title: "Attendance saved" }); navigate(backPath); } },
+      { onSuccess: () => { marking.clearDraft(); marking.markSaved(); showToast({ kind: "success", title: "Yoklama kaydedildi" }); navigate(backPath); } },
     );
   };
 
@@ -73,7 +81,7 @@ export default function AttendanceMark() {
   if (sessionError || !session) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load attendance session" />
+        <ErrorMessage message="Yoklama oturumu yüklenemedi" />
       </div>
     );
   }
@@ -83,7 +91,7 @@ export default function AttendanceMark() {
       <div className="os-py-5 os-px-8 os-flex os-items-center os-gap-6 os-wrap os-border-b">
         <div className="os-flex-1">
           <div className="os-flex os-items-center os-gap-2 os-mb-1">
-            <span className="os-text-lg os-fw-600 os-c-primary">Class {cls?.name ?? "…"}</span>
+            <span className="os-text-lg os-fw-600 os-c-primary">{cls?.name ?? "…"} sınıfı</span>
             {gradeName && <Tag type="blue" size="sm">{gradeName}</Tag>}
           </div>
           <div className="os-flex os-gap-6 os-wrap">
@@ -91,15 +99,15 @@ export default function AttendanceMark() {
             <span className="os-text-sm os-c-secondary">{session.date}</span>
           </div>
         </div>
-        <Button renderIcon={ArrowLeft} kind="ghost" size="sm" onClick={() => unsavedGuard.guard(() => navigate(backPath))}>Back</Button>
+        <Button renderIcon={ArrowLeft} kind="ghost" size="sm" onClick={() => unsavedGuard.guard(() => navigate(backPath))}>Geri</Button>
       </div>
 
       <div className="os-py-6 os-px-8">
         {readOnly && (
-          <InlineNotification kind="warning" title="This session is locked" subtitle="More than 24 hours have passed since it was taken. Ask an administrator to edit it." lowContrast hideCloseButton className="os-max-w-full os-mb-6" />
+          <InlineNotification kind="warning" title="Bu oturum kilitli" subtitle="Oturumun alınmasının üzerinden 24 saatten fazla zaman geçti. Düzenlemek için bir yöneticiyle iletişime geçin." lowContrast hideCloseButton className="os-max-w-full os-mb-6" />
         )}
         {isOverride && (
-          <InlineNotification kind="info" title="Editing a locked session" subtitle="This session is more than 24 hours old. As an administrator you can still edit it. Note a reason below; the change is recorded in the audit log." lowContrast hideCloseButton className="os-max-w-full os-mb-6" />
+          <InlineNotification kind="info" title="Kilitli oturum düzenleniyor" subtitle="Bu oturumun üzerinden 24 saatten fazla zaman geçti. Yönetici olarak düzenlemeye devam edebilirsiniz. Aşağıya bir gerekçe yazın; değişiklik denetim kaydına işlenir." lowContrast hideCloseButton className="os-max-w-full os-mb-6" />
         )}
 
         <AttendanceSummaryCards summary={marking.summary} />
@@ -108,15 +116,15 @@ export default function AttendanceMark() {
           <div className="os-flex os-items-center os-gap-3 os-py-3h os-px-6 os-border-b os-wrap">
             <div className="os-search os-max-w-px-280">
               <Search size={16} className="os-search__icon" />
-              <input className="os-search__input" placeholder="Search student by name or index…" value={search} onChange={(e) => { setSearch(e.target.value); setStudentPage(1); }} />
+              <input className="os-search__input" placeholder="İsim veya okul numarasıyla öğrenci arayın…" value={search} onChange={(e) => { setSearch(e.target.value); setStudentPage(1); }} />
             </div>
             <div className="os-flex-1" />
             {!readOnly && (
               <>
                 <button className="os-quick-mark os-quick-mark--absent" onClick={() => setBulkStatus("absent")}>
-                  Mark all {marking.summary.unmarked} not marked as absent
+                  İşaretlenmemiş {marking.summary.unmarked} öğrenciyi devamsız işaretle
                 </button>
-                <button className="os-quick-mark os-quick-mark--clear" onClick={marking.clearAll}>Clear</button>
+                <button className="os-quick-mark os-quick-mark--clear" onClick={marking.clearAll}>Temizle</button>
               </>
             )}
           </div>
@@ -129,10 +137,10 @@ export default function AttendanceMark() {
                 <thead>
                   <tr>
                     <th className="os-w-2h">#</th>
-                    <th>Student</th>
-                    <th>Index no.</th>
-                    <th>Attendance</th>
-                    <th>Note</th>
+                    <th>Öğrenci</th>
+                    <th>Okul no.</th>
+                    <th>Yoklama</th>
+                    <th>Açıklama</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,7 +174,7 @@ export default function AttendanceMark() {
               {filtered.length === 0 && (
                 <div className="os-placeholder">
                   <UserMultiple size={32} />
-                  <p>{students?.length === 0 ? "No students are enrolled in this class." : `No students match "${search}"`}</p>
+                  <p>{students?.length === 0 ? "Bu sınıfta kayıtlı öğrenci yok." : `"${search}" ile eşleşen öğrenci yok`}</p>
                 </div>
               )}
             </>
@@ -176,20 +184,20 @@ export default function AttendanceMark() {
         {!readOnly && (
           <div className="os-flex os-col os-gap-3 os-py-4 os-attendance-sticky-actions">
             {isOverride && (
-              <TextInput id="attendance-override-reason" labelText="Reason for editing this locked session" placeholder="e.g. Corrected after guardian phone call" value={reason} onChange={(e) => setReason(e.target.value)} className="os-max-w-28" />
+              <TextInput id="attendance-override-reason" labelText="Kilitli oturumu düzenleme gerekçesi" placeholder="örn. Veli telefon görüşmesi sonrası düzeltildi" value={reason} onChange={(e) => setReason(e.target.value)} className="os-max-w-28" />
             )}
             <div className="os-flex os-items-center os-gap-4 os-wrap">
               {marking.summary.unmarked > 0 && (
                 <div className="os-flex os-items-center os-gap-1h os-text-sm os-c-status-late">
                   <Warning size={16} className="os-fill-warning" />
-                  {marking.summary.unmarked} student{marking.summary.unmarked !== 1 ? "s" : ""} not yet marked
+                  {marking.summary.unmarked} öğrenci henüz işaretlenmedi
                 </div>
               )}
-              {markAttendance.isError && <span className="os-text-sm os-c-danger">{getErrorMessage(markAttendance.error, "Failed to save attendance")}</span>}
+              {markAttendance.isError && <span className="os-text-sm os-c-danger">{getErrorMessage(markAttendance.error, "Yoklama kaydedilemedi")}</span>}
               <div className="os-flex-1" />
-              <Button kind="secondary" size="md" onClick={() => unsavedGuard.guard(() => navigate(backPath))}>Cancel</Button>
+              <Button kind="secondary" size="md" onClick={() => unsavedGuard.guard(() => navigate(backPath))}>İptal</Button>
               <Button renderIcon={Save} kind="primary" size="md" onClick={save} disabled={markAttendance.isPending}>
-                {markAttendance.isPending ? "Saving…" : "Save attendance"}
+                {markAttendance.isPending ? "Kaydediliyor…" : "Yoklamayı kaydet"}
               </Button>
             </div>
           </div>
@@ -198,9 +206,9 @@ export default function AttendanceMark() {
 
       <ConfirmActionModal
         open={!!bulkStatus}
-        title={`Mark unmarked students as ${bulkStatus ?? ""}`}
-        description={`This will mark all ${marking.summary.unmarked} currently unmarked students as ${bulkStatus ?? ""}. Existing attendance marks will not change.`}
-        confirmLabel={`Mark as ${bulkStatus ?? ""}`}
+        title={`İşaretlenmemiş öğrencileri ${STATUS_TR[bulkStatus ?? "absent"] ?? ""} olarak işaretle`}
+        description={`İşaretlenmemiş ${marking.summary.unmarked} öğrencinin tümü ${STATUS_TR[bulkStatus ?? "absent"] ?? ""} olarak işaretlenecek. Mevcut yoklama işaretleri değişmez.`}
+        confirmLabel={`${STATUS_TR[bulkStatus ?? "absent"] ?? ""} olarak işaretle`}
         danger={bulkStatus === "absent"}
         onClose={() => setBulkStatus(null)}
         onConfirm={() => { if (bulkStatus) marking.markAll(bulkStatus); setBulkStatus(null); }}

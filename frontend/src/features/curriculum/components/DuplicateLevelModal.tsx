@@ -32,48 +32,48 @@ export default function DuplicateLevelModal({
   return (
     <FormModal
       open={!!toDuplicate}
-      title={`Duplicate ${toDuplicate?.label ?? ""}`}
+      title={`${toDuplicate?.label ?? ""} kopyala`}
       size="md"
       onClose={onClose}
       onSubmit={onDuplicate}
       isPending={duplicateLevel.isPending}
       submitDisabled={!dupForm.label.trim()}
-      submitLabel="Duplicate"
-      pendingLabel="Duplicating…"
+      submitLabel="Kopyala"
+      pendingLabel="Kopyalanıyor…"
       isError={duplicateLevel.isError}
       error={duplicateLevel.error}
-      errorFallback="Failed to duplicate level"
+      errorFallback="Seviye kopyalanamadı"
     >
       <p className="os-text-md os-c-secondary os-mb-4">
-        Every selection group and its subjects are copied to the new level. Editing one afterwards does not affect
-        the other.
+        Her seçim grubu ve dersleri yeni seviyeye kopyalanır. Sonrasında birini düzenlemek diğerini
+        etkilemez.
       </p>
       <div className="os-grid os-gap-5">
         <TextInput
           id="dup-label"
-          labelText="New label"
-          helperText="Must differ from every existing level."
+          labelText="Yeni etiket"
+          helperText="Mevcut tüm seviyelerden farklı olmalıdır."
           value={dupForm.label}
           onChange={(e) => setDupForm((f) => ({ ...f, label: e.target.value }))}
           onBlur={() => setDupLabelTouched(true)}
           invalid={dupLabelTouched && !dupForm.label.trim()}
-          invalidText="A label is required."
+          invalidText="Etiket zorunludur."
         />
         <div className="os-grid os-grid-cols-2-1 os-gap-4">
           <Select
             id="dup-grade"
-            labelText="Grade (optional)"
+            labelText="Sınıf seviyesi (isteğe bağlı)"
             value={dupForm.grade_id}
             onChange={(e) => setDupForm((f) => ({ ...f, grade_id: e.target.value }))}
           >
-            <SelectItem value="" text="No grade" />
+            <SelectItem value="" text="Sınıf seviyesi yok" />
             {grades?.map((g) => (
               <SelectItem key={g.id} value={g.id} text={g.name} />
             ))}
           </Select>
           <NumberInput
             id="dup-sort"
-            label="Sort order"
+            label="Sıralama"
             min={0}
             value={dupForm.sort_order}
             onChange={(_e, { value }) => setDupForm((f) => ({ ...f, sort_order: Number(value) || 0 }))}

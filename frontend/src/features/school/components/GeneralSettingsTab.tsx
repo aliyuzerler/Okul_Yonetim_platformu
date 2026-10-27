@@ -51,7 +51,7 @@ export default function GeneralSettingsTab() {
 
   const flashSaved = () => {
     setEditing(false);
-    showToast({ kind: "success", title: "Saved" });
+    showToast({ kind: "success", title: "Kaydedildi" });
   };
 
   const save = () => {
@@ -68,26 +68,26 @@ export default function GeneralSettingsTab() {
   return (
     <>
       <div className="os-flex os-gap-2 os-items-center os-justify-end os-my-4">
-        {pending && <span className="os-text-sm os-c-secondary">Saving…</span>}
+        {pending && <span className="os-text-sm os-c-secondary">Kaydediliyor…</span>}
         {noSchoolYet ? (
-          <Button renderIcon={Save} kind="primary" size="md" onClick={save} disabled={pending || rangeInvalid || !form.name.trim()}>Create school</Button>
+          <Button renderIcon={Save} kind="primary" size="md" onClick={save} disabled={pending || rangeInvalid || !form.name.trim()}>Okul oluştur</Button>
         ) : editing ? (
           <>
-            <Button kind="secondary" size="md" onClick={() => { if (school) setForm(schoolToForm(school)); setEditing(false); }} disabled={pending}>Cancel</Button>
-            <Button renderIcon={Save} kind="primary" size="md" onClick={save} disabled={pending || rangeInvalid}>Save changes</Button>
+            <Button kind="secondary" size="md" onClick={() => { if (school) setForm(schoolToForm(school)); setEditing(false); }} disabled={pending}>İptal</Button>
+            <Button renderIcon={Save} kind="primary" size="md" onClick={save} disabled={pending || rangeInvalid}>Değişiklikleri kaydet</Button>
           </>
         ) : (
-          <Button renderIcon={Edit} kind="secondary" size="md" onClick={() => setEditing(true)}>Edit</Button>
+          <Button renderIcon={Edit} kind="secondary" size="md" onClick={() => setEditing(true)}>Düzenle</Button>
         )}
       </div>
 
       {isLoading && <LoadingSpinner />}
-      {isError && !noSchoolYet && <ErrorMessage message="Could not load school information." onRetry={refetch} />}
+      {isError && !noSchoolYet && <ErrorMessage message="Okul bilgileri yüklenemedi." onRetry={refetch} />}
       {noSchoolYet && (
-        <InlineNotification kind="info" lowContrast hideCloseButton title="No school set up yet" subtitle="Fill in your school's details below and save to finish setup." className="os-mb-4 os-max-w-full" />
+        <InlineNotification kind="info" lowContrast hideCloseButton title="Henüz okul kurulmadı" subtitle="Aşağıya okul bilgilerinizi girin ve kurulumu tamamlamak için kaydedin." className="os-mb-4 os-max-w-full" />
       )}
-      <MutationErrorNotification isError={createSchool.isError} error={createSchool.error} title="Could not create school" />
-      <MutationErrorNotification isError={updateSchool.isError} error={updateSchool.error} title="Could not save changes" />
+      <MutationErrorNotification isError={createSchool.isError} error={createSchool.error} title="Okul oluşturulamadı" />
+      <MutationErrorNotification isError={updateSchool.isError} error={updateSchool.error} title="Değişiklikler kaydedilemedi" />
 
       {!isLoading && (!isError || noSchoolYet) && (
         <SchoolInfoCard values={form} editing={editable} onChange={(field, value) => setForm((f) => ({ ...f, [field]: value }))} />

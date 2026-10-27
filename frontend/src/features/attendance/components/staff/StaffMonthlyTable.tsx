@@ -14,7 +14,7 @@ interface Props {
   search: string;
 }
 
-const HEADERS = ["Name", "Present", "Late", "Absent", "Leave"];
+const HEADERS = ["Ad Soyad", "Mevcut", "Geç", "Devamsız", "İzin"];
 
 export default function StaffMonthlyTable({ year, month, kind, search }: Props) {
   const [page, setPage] = useState(1);
@@ -27,9 +27,9 @@ export default function StaffMonthlyTable({ year, month, kind, search }: Props) 
         isLoading={isLoading}
         isError={isError}
         onRetry={refetch}
-        errorMessage="Could not load the monthly summary."
+        errorMessage="Aylık özet yüklenemedi."
         isEmpty={!data?.items.length}
-        empty={{ title: search ? "No one matches your search" : "No active staff", description: search ? "Try another name or employee number." : "Nothing to summarise for this month." }}
+        empty={{ title: search ? "Aramanızla eşleşen kimse yok" : "Aktif personel yok", description: search ? "Başka bir isim veya sicil numarası deneyin." : "Bu ay için özetlenecek veri yok." }}
         skeleton={<TableSkeleton headers={HEADERS} />}
       >
         <DataGrid
@@ -47,11 +47,11 @@ export default function StaffMonthlyTable({ year, month, kind, search }: Props) 
             },
           }}
           columns={[
-            { key: "name", header: "Name", render: (r) => <span className="os-flex os-items-center os-gap-2"><Avatar name={r.full_name} size="sm" /><span className="os-fw-500">{r.full_name}</span></span> },
-            { key: "present", header: "Present", align: "end", render: (r) => r.present_count },
-            { key: "late", header: "Late", align: "end", render: (r) => r.late_count },
-            { key: "absent", header: "Absent", align: "end", render: (r) => r.absent_count },
-            { key: "leave", header: "Leave", align: "end", render: (r) => r.leave_count },
+            { key: "name", header: "Ad Soyad", render: (r) => <span className="os-flex os-items-center os-gap-2"><Avatar name={r.full_name} size="sm" /><span className="os-fw-500">{r.full_name}</span></span> },
+            { key: "present", header: "Mevcut", align: "end", render: (r) => r.present_count },
+            { key: "late", header: "Geç", align: "end", render: (r) => r.late_count },
+            { key: "absent", header: "Devamsız", align: "end", render: (r) => r.absent_count },
+            { key: "leave", header: "İzin", align: "end", render: (r) => r.leave_count },
           ]}
         />
       </ListState>

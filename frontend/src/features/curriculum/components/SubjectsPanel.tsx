@@ -62,18 +62,18 @@ export default function SubjectsPanel() {
   };
 
   const columns: GridColumn<Subject>[] = [
-    { key: "code", header: "Code", render: (s) => <span className="os-table__mono">{s.code}</span> },
-    { key: "name", header: "Subject", render: (s) => s.name },
-    { key: "type", header: "Type", render: (s) => (s.type ? <Tag type={subjectTypeTag(s.type)} size="sm">{s.type}</Tag> : <span className="os-table__muted">-</span>) },
-    { key: "max", header: "Max marks", render: (s) => s.max_marks },
+    { key: "code", header: "Kod", render: (s) => <span className="os-table__mono">{s.code}</span> },
+    { key: "name", header: "Ders", render: (s) => s.name },
+    { key: "type", header: "Tür", render: (s) => (s.type ? <Tag type={subjectTypeTag(s.type)} size="sm">{s.type}</Tag> : <span className="os-table__muted">-</span>) },
+    { key: "max", header: "En yüksek puan", render: (s) => s.max_marks },
     {
       key: "actions",
-      header: "Actions",
+      header: "İşlemler",
       align: "end",
       render: (s) => (
         <div className="os-grid__actions">
-          <IconButton label="Edit" kind="ghost" size="sm" onClick={() => openEdit(s)}><Edit /></IconButton>
-          <IconButton label="Delete" kind="ghost" size="sm" onClick={() => setToDelete(s)}><TrashCan /></IconButton>
+          <IconButton label="Düzenle" kind="ghost" size="sm" onClick={() => openEdit(s)}><Edit /></IconButton>
+          <IconButton label="Sil" kind="ghost" size="sm" onClick={() => setToDelete(s)}><TrashCan /></IconButton>
         </div>
       ),
     },
@@ -82,31 +82,31 @@ export default function SubjectsPanel() {
   return (
     <div>
       <div className="os-flex os-items-center os-justify-between os-gap-4 os-wrap os-my-4">
-        <p className="os-m-0 os-text-sm os-c-secondary">The school's subject catalogue. Offer a subject to students by adding it to a selection group under the curriculum tab.</p>
-        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setCreateOpen(true)}>Add subject</Button>
+        <p className="os-m-0 os-text-sm os-c-secondary">Okulun ders kataloğu. Bir dersi öğrencilere sunmak için müfredat sekmesindeki bir seçim grubuna ekleyin.</p>
+        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setCreateOpen(true)}>Ders ekle</Button>
       </div>
 
       <div className="os-section">
-        <FilterBar search={{ value: filters.query, onChange: (v) => set("query", v), placeholder: "Search by name, code or type…" }} />
-        <MutationErrorNotification isError={deleteSubject.isError} error={deleteSubject.error} title="Could not delete subject" fallback="The subject may be in use by a class or curriculum group." onClose={() => deleteSubject.reset()} className="os-section__notice" />
+        <FilterBar search={{ value: filters.query, onChange: (v) => set("query", v), placeholder: "Ad, kod veya türe göre ara…" }} />
+        <MutationErrorNotification isError={deleteSubject.isError} error={deleteSubject.error} title="Ders silinemedi" fallback="Ders, bir sınıf veya müfredat grubu tarafından kullanılıyor olabilir." onClose={() => deleteSubject.reset()} className="os-section__notice" />
         {isError ? (
           <div className="os-p-5">
-            <ErrorMessage message="Failed to load subjects" onRetry={refetch} />
+            <ErrorMessage message="Dersler yüklenemedi." onRetry={refetch} />
           </div>
         ) : <ListState
           isLoading={isLoading}
           isError={false}
           isEmpty={filtered.length === 0}
-          errorMessage="Failed to load subjects"
+          errorMessage="Dersler yüklenemedi."
           onRetry={refetch}
           skeleton={<TableSkeleton headers={columns.map((c) => c.header)} />}
           empty={{
-            title: searching ? "No subjects found" : "No subjects yet",
-            description: searching ? `No subject matches "${debouncedSearch}".` : "Add the subjects your school teaches before configuring curriculum groups.",
-            action: searching ? undefined : <Button renderIcon={Add} kind="primary" onClick={() => setCreateOpen(true)}>Add subject</Button>,
+            title: searching ? "Ders bulunamadı" : "Henüz ders yok",
+            description: searching ? `"${debouncedSearch}" ile eşleşen ders yok.` : "Müfredat gruplarını yapılandırmadan önce okulunuzda okutulan dersleri ekleyin.",
+            action: searching ? undefined : <Button renderIcon={Add} kind="primary" onClick={() => setCreateOpen(true)}>Ders ekle</Button>,
           }}
         >
-          <DataGrid rows={filtered} columns={columns} getRowId={(s) => s.id} countLabel={(shown, total) => `Showing ${shown} of ${total} subjects`} />
+          <DataGrid rows={filtered} columns={columns} getRowId={(s) => s.id} countLabel={(shown, total) => `Toplam ${total} dersten ${shown} tanesi gösteriliyor`} />
         </ListState>}
       </div>
 
@@ -118,9 +118,9 @@ export default function SubjectsPanel() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete subject"
-        description={<>Delete <strong>{toDelete?.name}</strong> ({toDelete?.code})? This cannot be undone, and is blocked if the subject is used by a class or curriculum group.</>}
-        subject="Subject"
+        title="Dersi sil"
+        description={<><strong>{toDelete?.name}</strong> ({toDelete?.code}) silinsin mi? Bu işlem geri alınamaz; ders bir sınıf veya müfredat grubu tarafından kullanılıyorsa silme engellenir.</>}
+        subject="Ders"
         mutation={deleteSubject}
         onClose={() => setToDelete(null)}
         onConfirm={() => toDelete && deleteSubject.mutate(toDelete.id)}

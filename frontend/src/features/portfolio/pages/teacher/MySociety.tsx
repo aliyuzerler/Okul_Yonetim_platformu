@@ -15,19 +15,19 @@ export default function MySociety() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">My society</h1>
-          <p className="os-page__subtitle">Manage your society's roster and member roles.</p>
+          <h1 className="os-page__title">Topluluğum</h1>
+          <p className="os-page__subtitle">Topluluğunuzun üye listesini ve üye rollerini yönetin.</p>
         </div>
       </div>
 
       {isLoading && <SkeletonText width="40%" />}
 
-      {isError && !notTic && <ErrorMessage message="Could not load your society." onRetry={refetch} />}
+      {isError && !notTic && <ErrorMessage message="Topluluğunuz yüklenemedi." onRetry={refetch} />}
 
       {notTic && (
         <EmptyState
-          title="Not a teacher in charge"
-          description="You aren't the Teacher-in-Charge of any society this academic year."
+          title="Sorumlu öğretmen değilsiniz"
+          description="Bu eğitim-öğretim yılında hiçbir topluluğun sorumlu öğretmeni değilsiniz."
         />
       )}
 

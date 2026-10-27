@@ -12,20 +12,20 @@ export default function SettingsPage() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Settings</h1>
-          <p className="os-page__subtitle">School configuration and system preferences</p>
+          <h1 className="os-page__title">Ayarlar</h1>
+          <p className="os-page__subtitle">Okul yapılandırması ve sistem tercihleri</p>
         </div>
       </div>
 
       <Tabs>
-        <TabList aria-label="Settings sections">
-          <Tab>General</Tab>
-          <Tab>Houses</Tab>
-          <Tab>Account activation</Tab>
-          <Tab>Email</Tab>
-          <Tab>Audit log</Tab>
-          <Tab>Orphaned accounts</Tab>
-          <Tab>Automation</Tab>
+        <TabList aria-label="Ayarlar bölümleri">
+          <Tab>Genel</Tab>
+          <Tab>Kollar</Tab>
+          <Tab>Hesap etkinleştirme</Tab>
+          <Tab>E-posta</Tab>
+          <Tab>Denetim kaydı</Tab>
+          <Tab>Sahipsiz hesaplar</Tab>
+          <Tab>Otomasyon</Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="os-p-0"><GeneralSettingsTab /></TabPanel>

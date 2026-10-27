@@ -22,39 +22,39 @@ export default function StudentRecordsRollup({ studentId }: { studentId: string 
 
   return (
     <>
-      <SectionCard title="Attendance history" className="os-mt-4" flush>
+      <SectionCard title="Devam geçmişi" className="os-mt-4" flush>
         {attendance.isLoading ? (
           <div className="os-p-6"><SkeletonText width="60%" /></div>
         ) : attendance.data?.length ? (
           <AttendanceHistoryTable rows={attendance.data} />
         ) : (
-          <EmptyState title="No attendance recorded" description="No attendance records exist for this student yet." />
+          <EmptyState title="Henüz devam kaydı yok" description="Bu öğrenciye ait devam kaydı bulunmuyor." />
         )}
       </SectionCard>
 
-      <SectionCard title="Examination results">
-        <Select id="rollup-term" labelText="Term" value={termId} onChange={(e) => setTermId(e.target.value)} className="os-max-w-16 os-mb-4">
-          <SelectItem value="" text="Select term…" />
+      <SectionCard title="Sınav sonuçları">
+        <Select id="rollup-term" labelText="Dönem" value={termId} onChange={(e) => setTermId(e.target.value)} className="os-max-w-16 os-mb-4">
+          <SelectItem value="" text="Dönem seçin…" />
           {terms?.map((t) => <SelectItem key={t.id} value={t.id} text={t.name} />)}
         </Select>
         {!termId ? (
-          <p className="os-text-sm os-c-tertiary">Select a term to see marks.</p>
+          <p className="os-text-sm os-c-tertiary">Notları görmek için bir dönem seçin.</p>
         ) : marks.isLoading ? (
           <SkeletonText width="60%" />
         ) : marks.data?.length ? (
           <TermMarksTable rows={marks.data} />
         ) : (
-          <EmptyState title="No marks for this term" description="No marks have been entered for this term yet." />
+          <EmptyState title="Bu dönem için not yok" description="Bu dönemin notları henüz girilmedi." />
         )}
       </SectionCard>
 
-      <SectionCard title="Prefect appointments" flush>
+      <SectionCard title="Öğrenci temsilcisi atamaları" flush>
         {appointments.isLoading ? (
           <div className="os-p-6"><SkeletonText width="60%" /></div>
         ) : appointments.data?.length ? (
           <PrefectsTable rows={appointments.data} />
         ) : (
-          <EmptyState title="No prefect appointments" description="This student has not held a prefect rank." />
+          <EmptyState title="Henüz atama yok" description="Bu öğrenci hiçbir öğrenci temsilcisi görevi üstlenmemiş." />
         )}
       </SectionCard>
     </>

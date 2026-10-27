@@ -38,18 +38,18 @@ export default function MarksEntryTable({ students, subjectName, maxMarks, draft
     <>
       <div className="os-marks-context-bar">
         <span><strong>{subjectName}</strong></span>
-        <span>Max marks: <strong>{maxMarks}</strong></span>
-        <span className="os-c-tertiary">Enter/↓ next row · ↑ previous row · A marks absent</span>
+        <span>En yüksek not: <strong>{maxMarks}</strong></span>
+        <span className="os-c-tertiary">Enter/↓ sonraki satır · ↑ önceki satır · A devamsız işaretler</span>
       </div>
       <table className="os-table os-table--sticky-head">
         <thead>
           <tr>
             <th className="os-w-3">#</th>
-            <th>Student name</th>
-            <th>Index number</th>
-            <th className="os-w-8">Marks</th>
-            <th className="os-w-5">Absent</th>
-            <th className="os-w-7">Status</th>
+            <th>Öğrenci adı</th>
+            <th>Okul numarası</th>
+            <th className="os-w-8">Not</th>
+            <th className="os-w-5">Devamsız</th>
+            <th className="os-w-7">Durum</th>
           </tr>
         </thead>
         <tbody>
@@ -75,11 +75,11 @@ export default function MarksEntryTable({ students, subjectName, maxMarks, draft
                   />
                 </td>
                 <td>
-                  <Checkbox id={`absent-${student.id}`} labelText="AB" checked={row.isAbsent} onChange={(_e, { checked }) => draft.setAbsent(student.id, checked)} />
+                  <Checkbox id={`absent-${student.id}`} labelText="Dev" checked={row.isAbsent} onChange={(_e, { checked }) => draft.setAbsent(student.id, checked)} />
                 </td>
                 <td>
-                  {row.isAbsent && <Tag type="red" size="sm">AB</Tag>}
-                  {draft.isUnsaved(student.id) && <Tag type="high-contrast" size="sm">Unsaved</Tag>}
+                  {row.isAbsent && <Tag type="red" size="sm">Dev</Tag>}
+                  {draft.isUnsaved(student.id) && <Tag type="high-contrast" size="sm">Kaydedilmedi</Tag>}
                 </td>
               </tr>
             );

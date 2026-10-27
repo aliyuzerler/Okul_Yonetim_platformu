@@ -28,10 +28,10 @@ export default function SubjectsTab({ classId, academicYearId }: { classId: stri
     <div className="os-mt-4">
       <SectionCard
         flush
-        title="Subjects & teachers"
+        title="Dersler ve öğretmenler"
         meta={
           <Button renderIcon={UserFollow} size="sm" onClick={() => { assignSubjectTeacher.reset(); setModalOpen(true); }}>
-            Assign subject teacher
+            Branş öğretmeni ata
           </Button>
         }
       >
@@ -39,8 +39,8 @@ export default function SubjectsTab({ classId, academicYearId }: { classId: stri
           {!assignments || assignments.length === 0 ? (
             <div className="os-p-8">
               <EmptyState
-                title="No subjects assigned yet"
-                description="Assign teachers to subjects to enable mark entry and timetable configuration."
+                title="Henüz ders atanmadı"
+                description="Not girişi ve ders programı yapılandırmasını etkinleştirmek için derslere öğretmen atayın."
               />
             </div>
           ) : (
@@ -49,10 +49,10 @@ export default function SubjectsTab({ classId, academicYearId }: { classId: stri
               getRowId={(a) => a.subject_id}
               pagination={false}
               columns={[
-                { key: "subject", header: "Subject", render: (a) => <span className="os-fw-500">{a.subject_name}</span> },
-                { key: "code", header: "Subject code", render: (a) => <span className="os-table__mono">{a.subject_code}</span> },
-                { key: "teacher", header: "Assigned teacher", render: (a) => a.teacher_name },
-                { key: "timetable", header: "Timetable", render: (a) => (scheduledSubjectIds.has(a.subject_id) ? <Tag type="green" size="sm">Scheduled</Tag> : <Tag type="gray" size="sm">Not scheduled</Tag>) },
+                { key: "subject", header: "Ders", render: (a) => <span className="os-fw-500">{a.subject_name}</span> },
+                { key: "code", header: "Ders kodu", render: (a) => <span className="os-table__mono">{a.subject_code}</span> },
+                { key: "teacher", header: "Atanan öğretmen", render: (a) => a.teacher_name },
+                { key: "timetable", header: "Ders programı", render: (a) => (scheduledSubjectIds.has(a.subject_id) ? <Tag type="green" size="sm">Programda</Tag> : <Tag type="gray" size="sm">Programda değil</Tag>) },
               ]}
             />
           )}

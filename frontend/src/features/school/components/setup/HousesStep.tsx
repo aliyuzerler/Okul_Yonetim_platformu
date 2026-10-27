@@ -32,13 +32,13 @@ interface Props {
 export default function HousesStep({ houses, setHouses, validationAttempted }: Props) {
   const [touched, setTouched] = useState<Record<number, boolean>>({});
   return (
-    <StepShell icon={Home} title="Houses" subtitle="Optional - students and staff are auto-assigned to whichever house has the fewest members.">
+    <StepShell icon={Home} title="Kollar" subtitle="İsteğe bağlı; öğrenciler ve personel en az üyeli kola otomatik olarak atanır.">
       {houses.map((h, i) => (
         <RepeatableRow key={i} onRemove={() => setHouses((hs) => hs.filter((_, idx) => idx !== i))}>
           <TextInput
             id={`house-name-${i}`}
-            labelText="Name"
-            placeholder="e.g. Vijaya"
+            labelText="Ad"
+            placeholder="örn. Vijaya"
             size="md"
             value={h.name}
             onChange={(e) =>
@@ -56,13 +56,13 @@ export default function HousesStep({ houses, setHouses, validationAttempted }: P
           />
           <TextInput
             id={`house-code-${i}`}
-            labelText="Code"
-            placeholder="e.g. VJ"
-            helperText={h.name.trim() ? "Generated from the name; you can edit it." : "Enter a name to generate a code."}
+            labelText="Kod"
+            placeholder="örn. VJ"
+            helperText={h.name.trim() ? "İsmden otomatik üretilir; düzenleyebilirsiniz." : "Kod üretmek için bir isim girin."}
             size="md"
             value={h.code}
             invalid={(validationAttempted || !!touched[i]) && !!h.name.trim() && !h.code.trim()}
-            invalidText="A code is required for this house."
+            invalidText="Bu kol için bir kod gerekli."
             onChange={(e) =>
               setHouses((hs) => hs.map((row, idx) => (idx === i ? { ...row, code: e.target.value } : row)))
             }
@@ -70,7 +70,7 @@ export default function HousesStep({ houses, setHouses, validationAttempted }: P
           />
           <div>
             <label htmlFor={`house-color-${i}`} className="os-text-xs os-block os-mb-1">
-              Colour
+              Renk
             </label>
             <input
               id={`house-color-${i}`}
@@ -91,7 +91,7 @@ export default function HousesStep({ houses, setHouses, validationAttempted }: P
           setHouses((hs) => [...hs, { name: "", code: "", color: HOUSE_COLOR_PALETTE[hs.length % HOUSE_COLOR_PALETTE.length] }])
         }
       >
-        Add another house
+        Başka kol ekle
       </Button>
     </StepShell>
   );

@@ -33,18 +33,18 @@ export default function DetailsTab({
 }: Props) {
   return (
     <>
-      <SectionCard title="Class information" className="os-mt-4">
+      <SectionCard title="Sınıf bilgileri" className="os-mt-4">
         <div className="os-kv-grid">
           {[
-            ["Class name", cls.name],
-            ["Grade", gradeName ?? "-"],
-            ["Stream", streamName ?? "None"],
-            ["Sub-stream", streamGroupName ?? "None"],
-            ["Medium", mediumName ?? "Not designated"],
-            ["Home classroom", homeClassroomName ?? "Not assigned"],
-            ["Academic year", academicYearLabel ?? "-"],
-            ["Girl monitor", girlMonitor ? displayName(girlMonitor) : "Unassigned"],
-            ["Boy monitor", boyMonitor ? displayName(boyMonitor) : "Unassigned"],
+            ["Sınıf adı", cls.name],
+            ["Sınıf seviyesi", gradeName ?? "-"],
+            ["Alan", streamName ?? "Yok"],
+            ["Alt alan", streamGroupName ?? "Yok"],
+            ["Öğretim dili", mediumName ?? "Belirlenmedi"],
+            ["Ana derslik", homeClassroomName ?? "Atanmadı"],
+            ["Eğitim-öğretim yılı", academicYearLabel ?? "-"],
+            ["Kız sınıf temsilcisi", girlMonitor ? displayName(girlMonitor) : "Atanmadı"],
+            ["Erkek sınıf temsilcisi", boyMonitor ? displayName(boyMonitor) : "Atanmadı"],
           ].map(([label, value]) => (
             <div key={label} className="os-kv-item">
               <p className="os-kv-item__label">{label}</p>
@@ -54,7 +54,7 @@ export default function DetailsTab({
         </div>
       </SectionCard>
 
-      <SectionCard title="Class teacher">
+      <SectionCard title="Sınıf öğretmeni">
         <div>
           {formTeacher ? (
             <Link
@@ -66,12 +66,12 @@ export default function DetailsTab({
                 >
                   {displayName(formTeacher)}
                 </p>
-                <p className="os-m-0 os-text-xs os-c-accent">View profile →</p>
+                <p className="os-m-0 os-text-xs os-c-accent">Profili gör →</p>
               </div>
             </Link>
           ) : (
             <span className="os-text-md os-c-tertiary">
-              No class teacher assigned.
+              Atanmış sınıf öğretmeni yok.
             </span>
           )}
         </div>

@@ -18,8 +18,8 @@ export default function RoomsStep({ facilityRooms, setFacilityRooms }: Props) {
   return (
     <StepShell
       icon={Building}
-      title="Rooms & facilities"
-      subtitle="Optional - add as many named libraries, labs, music rooms, or auditoriums as your school needs."
+      title="Derslikler ve tesisler"
+      subtitle="İsteğe bağlı; okulunuzun ihtiyacı kadar adlandırılmış kütüphane, laboratuvar, müzik odası veya konferans salonu ekleyin."
     >
       <div className="os-facility-groups">
         {FACILITY_GROUPS.map((group) => {
@@ -39,7 +39,7 @@ export default function RoomsStep({ facilityRooms, setFacilityRooms }: Props) {
                 <RepeatableRow key={room.id} onRemove={() => setFacilityRooms((current) => current.filter((item) => item.id !== room.id))}>
                   <TextInput
                     id={`facility-${room.id}`}
-                    labelText="Facility name"
+                    labelText="Tesis adı"
                     placeholder={group.placeholder}
                     size="md"
                     value={room.name}
@@ -47,8 +47,8 @@ export default function RoomsStep({ facilityRooms, setFacilityRooms }: Props) {
                   />
                   <NumberInput
                     id={`facility-capacity-${room.id}`}
-                    label="Capacity"
-                    helperText="Optional"
+                    label="Kapasite"
+                    helperText="İsteğe bağlı"
                     min={1}
                     max={2000}
                     size="md"

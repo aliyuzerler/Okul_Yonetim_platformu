@@ -26,23 +26,23 @@ export default function Streams() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Streams & section heads</h1>
-          <p className="os-page__subtitle">A/L streams, their sub-groups and the teacher in charge.</p>
+          <h1 className="os-page__title">Alanlar ve şube rehber öğretmenleri</h1>
+          <p className="os-page__subtitle">12. sınıf (A/L) alanları, alt grupları ve sorumlu öğretmenleri.</p>
         </div>
-        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setCreateOpen(true)}>New stream</Button>
+        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setCreateOpen(true)}>Yeni alan</Button>
       </div>
 
       <AgentFindingsBanner />
 
-      <SectionCard title="Streams" meta={!isLoading && <span className="os-section__meta">{streams?.length ?? 0} configured</span>} flush>
+      <SectionCard title="Alanlar" meta={!isLoading && <span className="os-section__meta">{streams?.length ?? 0} tanımlı</span>} flush>
         {isLoading && <div className="os-py-4 os-px-6"><ListRowSkeleton trailingWidth={null} /></div>}
-        {isError && streams && streams.length > 0 && <div className="os-flex os-items-center os-gap-2 os-px-6 os-py-3"><InlineNotification kind="error" lowContrast hideCloseButton title="Could not refresh streams" subtitle="Showing the last available stream cards." className="os-flex-1 os-m-0" /><Button kind="ghost" size="sm" onClick={() => void refetch()}>Retry</Button></div>}
-        {isError && !streams?.length && <ErrorMessage message="Could not load streams." onRetry={refetch} />}
+        {isError && streams && streams.length > 0 && <div className="os-flex os-items-center os-gap-2 os-px-6 os-py-3"><InlineNotification kind="error" lowContrast hideCloseButton title="Alanlar yenilenemedi" subtitle="Son geçerli alan kartları gösteriliyor." className="os-flex-1 os-m-0" /><Button kind="ghost" size="sm" onClick={() => void refetch()}>Yeniden dene</Button></div>}
+        {isError && !streams?.length && <ErrorMessage message="Alanlar yüklenemedi." onRetry={refetch} />}
         {!isLoading && !isError && !streams?.length && (
           <EmptyState
-            title="No streams yet"
-            description="Add A/L streams like Science, Commerce, Arts or Technology."
-            action={<Button renderIcon={Add} kind="primary" onClick={() => setCreateOpen(true)}>New stream</Button>}
+            title="Henüz alan yok"
+            description="12. sınıf (A/L) için Science, Commerce, Arts veya Technology gibi alanlar ekleyin."
+            action={<Button renderIcon={Add} kind="primary" onClick={() => setCreateOpen(true)}>Yeni alan</Button>}
           />
         )}
         {!isLoading && streams && streams.length > 0 && (
@@ -64,18 +64,18 @@ export default function Streams() {
 
       <FormModal
         open={createOpen}
-        title="New stream"
+        title="Yeni alan"
         onClose={() => setCreateOpen(false)}
         onSubmit={create}
         isPending={createStream.isPending}
-        pendingLabel="Creating…"
-        submitLabel="Create"
+        pendingLabel="Oluşturuluyor…"
+        submitLabel="Oluştur"
         submitDisabled={!newName.trim()}
         isError={createStream.isError}
         error={createStream.error}
-        errorFallback="Failed to create stream"
+        errorFallback="Alan oluşturulamadı"
       >
-        <TextInput id="new-stream-name" labelText="Stream name" placeholder="e.g. Science, Commerce, Arts, Technology" value={newName} onChange={(e) => setNewName(e.target.value)} />
+        <TextInput id="new-stream-name" labelText="Alan adı" placeholder="örn. Science, Commerce, Arts, Technology" value={newName} onChange={(e) => setNewName(e.target.value)} />
       </FormModal>
     </div>
   );

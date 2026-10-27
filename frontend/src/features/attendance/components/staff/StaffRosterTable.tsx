@@ -29,7 +29,7 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
   const mark = useMarkStaffAttendance();
   const markUnmarked = useMarkUnmarkedAbsent();
   const [confirmBulkAbsent, setConfirmBulkAbsent] = useState(false);
-  const noun = (n: number) => (kind === "teacher" ? (n === 1 ? "teacher" : "teachers") : n === 1 ? "staff member" : "staff members");
+  const noun = kind === "teacher" ? "öğretmen" : "personel";
 
   const onMark = (staffId: string, status: StaffAttendanceStatus) => {
     setMarkingId(staffId);
@@ -37,7 +37,7 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
       { ...(kind === "teacher" ? { teacher_id: staffId } : { non_academic_staff_id: staffId }), date: new Date(date).toISOString(), status },
       {
         onSettled: () => setMarkingId(null),
-        onError: () => showToast({ kind: "error", title: "Could not save attendance", subtitle: "Please try again." }),
+        onError: () => showToast({ kind: "error", title: "Yoklama kaydedilemedi", subtitle: "Lütfen tekrar deneyin." }),
       },
     );
   };
@@ -46,8 +46,8 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
     markUnmarked.mutate(
       { date, kind },
       {
-        onSuccess: ({ marked }) => showToast({ kind: "success", title: `Marked ${marked} ${noun(marked)} absent` }),
-        onError: () => showToast({ kind: "error", title: "Could not mark attendance", subtitle: "Please try again." }),
+        onSuccess: ({ marked }) => showToast({ kind: "success", title: `${marked} ${noun} devamsız işaretlendi` }),
+        onError: () => showToast({ kind: "error", title: "Yoklama kaydedilemedi", subtitle: "Lütfen tekrar deneyin." }),
       },
     );
 
@@ -59,16 +59,16 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
         <div className="os-flex os-gap-2 os-wrap" aria-live="polite">
           {totals && (
             <>
-              <Tag type="green" size="sm">Present {totals.present}</Tag>
-              <Tag type="warm-gray" size="sm">Late {totals.late}</Tag>
-              <Tag type="red" size="sm">Absent {totals.absent}</Tag>
-              <Tag type="blue" size="sm">Leave {totals.leave}</Tag>
-              <Tag type="gray" size="sm">Not marked {totals.unmarked}</Tag>
+              <Tag type="green" size="sm">Mevcut {totals.present}</Tag>
+              <Tag type="warm-gray" size="sm">Geç {totals.late}</Tag>
+              <Tag type="red" size="sm">Devamsız {totals.absent}</Tag>
+              <Tag type="blue" size="sm">İzin {totals.leave}</Tag>
+              <Tag type="gray" size="sm">İşaretlenmedi {totals.unmarked}</Tag>
             </>
           )}
         </div>
       <Button kind="danger--tertiary" size="sm" renderIcon={CloseFilled} onClick={() => setConfirmBulkAbsent(true)} disabled={!totals?.unmarked || markUnmarked.isPending}>
-          {markUnmarked.isPending ? "Marking…" : "Mark all unmarked as absent"}
+          {markUnmarked.isPending ? "İşaretleniyor…" : "İşaretlenmeyenleri devamsız işaretle"}
         </Button>
       </div>
 
@@ -76,30 +76,30 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
         isLoading={isLoading}
         isError={isError}
         onRetry={refetch}
-        errorMessage="Could not load staff attendance."
+        errorMessage="Personel yoklaması yüklenemedi."
         isEmpty={!data?.items.length}
-        empty={{ title: search ? "No one matches your search" : "No active staff", description: search ? "Try another name or employee number." : "Add people on the Teachers or Staff page first." }}
-        skeleton={<TableSkeleton headers={["Name", "Employee no.", "Attendance"]} />}
+        empty={{ title: search ? "Aramanızla eşleşen kimse yok" : "Aktif personel yok", description: search ? "Başka bir isim veya sicil numarası deneyin." : "Önce Öğretmenler veya Personel sayfasından kişileri ekleyin." }}
+        skeleton={<TableSkeleton headers={["Ad Soyad", "Sicil no.", "Yoklama"]} />}
       >
         <table className="os-table os-table--stack os-table--no-hover">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Employee no.</th>
-              <th>Attendance</th>
+              <th>Ad Soyad</th>
+              <th>Sicil no.</th>
+              <th>Yoklama</th>
             </tr>
           </thead>
           <tbody>
             {data?.items.map((row) => (
               <tr key={row.staff_id}>
-                <td data-label="Name">
+                <td data-label="Ad Soyad">
                   <div className="os-flex os-items-center os-gap-2">
                     <Avatar name={row.full_name} size="sm" />
                     <span className="os-fw-500">{row.full_name}</span>
                   </div>
                 </td>
-                <td data-label="Employee no." className="os-table__mono">{row.employee_number}</td>
-                <td data-label="Attendance">
+                <td data-label="Sicil no." className="os-table__mono">{row.employee_number}</td>
+                <td data-label="Yoklama">
                   <div className={`os-flex os-gap-1h os-wrap ${markingId === row.staff_id ? "os-opacity-50" : ""}`}>
                     {STAFF_STATUSES.map((s) => (
                       <StaffStatusButton key={s} value={s} selected={row.status === s} personName={row.full_name} onClick={() => onMark(row.staff_id, s)} />
@@ -126,9 +126,9 @@ export default function StaffRosterTable({ date, kind, search }: Props) {
       )}
       <ConfirmActionModal
         open={confirmBulkAbsent}
-        title="Mark unmarked staff as absent"
-        description={`This will mark every active ${noun(2)} with no attendance record for this date as absent, including people outside the current search. Existing attendance marks will not change.`}
-        confirmLabel="Mark as absent"
+        title="İşaretlenmeyen personeli devamsız işaretle"
+        description={`Bu tarihte devam kaydı olmayan tüm aktif ${noun}, geçerli aramanın dışındakiler dâhil, devamsız olarak işaretlenecek. Mevcut yoklama işaretleri değişmez.`}
+        confirmLabel="Devamsız olarak işaretle"
         danger
         pending={markUnmarked.isPending}
         onClose={() => setConfirmBulkAbsent(false)}

@@ -62,9 +62,9 @@ export default function TeacherMarks() {
   if (teacherLoading || workloadLoading || yearLoading) return <LoadingSpinner />;
 
   const termSelector = (
-    <Select id="marks-term" labelText="Term" size="sm" value={effectiveTermId} onChange={(e) => { setTermId(e.target.value); setTermTouched(true); }} className="os-min-w-12">
-      <SelectItem value="" text="Choose a term…" />
-      {terms?.map((t) => <SelectItem key={t.id} value={t.id} text={t.is_current ? `${t.name} (current)` : t.name} />)}
+    <Select id="marks-term" labelText="Dönem" size="sm" value={effectiveTermId} onChange={(e) => { setTermId(e.target.value); setTermTouched(true); }} className="os-min-w-12">
+      <SelectItem value="" text="Dönem seçin…" />
+      {terms?.map((t) => <SelectItem key={t.id} value={t.id} text={t.is_current ? `${t.name} (güncel)` : t.name} />)}
     </Select>
   );
 
@@ -86,30 +86,30 @@ export default function TeacherMarks() {
       <div className="os-page__header">
         <div className="os-page__header-left">
           <Button kind="ghost" size="sm" renderIcon={ArrowLeft} onClick={() => unsavedGuard.guard(() => { setMode("overview"); setClassId(""); setSubjectId(""); })} className="os-mb-2 os-pl-0">
-            Back to overview
+            Genel görünüme dön
           </Button>
-          <h1 className="os-page__title">Record marks</h1>
-          <p className="os-page__subtitle">Record term marks for classes and subjects you teach</p>
+          <h1 className="os-page__title">Not girişi</h1>
+          <p className="os-page__subtitle">Verdiğiniz sınıf ve dersler için dönem notlarını kaydedin</p>
         </div>
       </div>
 
       <div className="os-section os-mb-6">
         <div className="os-section__header os-wrap os-row-gap-3">
           <div className="os-flex os-gap-3 os-wrap os-w-full">
-            <Select id="record-class" labelText="Class" size="sm" value={classId} onChange={(e) => { setClassId(e.target.value); setSubjectId(""); }} className="os-min-w-12">
-              <SelectItem value="" text="Choose a class…" />
+            <Select id="record-class" labelText="Sınıf" size="sm" value={classId} onChange={(e) => { setClassId(e.target.value); setSubjectId(""); }} className="os-min-w-12">
+              <SelectItem value="" text="Sınıf seçin…" />
               {uniqueClasses.map((c) => <SelectItem key={c.id} value={c.id} text={`${c.grade_name} - ${c.name}`} />)}
             </Select>
-            <Select id="record-subject" labelText="Subject" size="sm" value={subjectId} disabled={!classId} onChange={(e) => setSubjectId(e.target.value)} className="os-min-w-12">
-              <SelectItem value="" text="Choose a subject…" />
+            <Select id="record-subject" labelText="Ders" size="sm" value={subjectId} disabled={!classId} onChange={(e) => setSubjectId(e.target.value)} className="os-min-w-12">
+              <SelectItem value="" text="Ders seçin…" />
               {classSubjects.map((s) => <SelectItem key={s.id} value={s.id} text={s.name} />)}
             </Select>
             {termSelector}
             {ready && (
               <div className="os-flex os-items-center os-gap-4 os-ml-auto os-self-end">
-                <span className="os-text-sm os-c-secondary">Max Marks: <strong>{maxMarks}</strong></span>
+                <span className="os-text-sm os-c-secondary">En yüksek not: <strong>{maxMarks}</strong></span>
                 <Button renderIcon={Save} size="sm" onClick={handleSave} disabled={saveMarks.isPending || !students?.length || !draft.hasUnsaved}>
-                  {saveMarks.isPending ? "Saving…" : "Save marks"}
+                  {saveMarks.isPending ? "Kaydediliyor…" : "Notları kaydet"}
                 </Button>
               </div>
             )}
@@ -117,19 +117,19 @@ export default function TeacherMarks() {
         </div>
 
         {!ready ? (
-          <EmptyState title="Pick class, subject, and term" description="Select options above to load student mark roster." />
+          <EmptyState title="Sınıf, ders ve dönem seçin" description="Öğrenci not listesini yüklemek için yukarıdaki seçenekleri belirleyin." />
         ) : studentsLoading || marksLoading ? (
           <LoadingSpinner />
         ) : students?.length ? (
           <div className="os-section__body os-p-0">
             <div className="os-p-4">
-              <MutationErrorNotification isError={saveMarks.isError} error={saveMarks.error} title="Could not save marks" fallback="Please try again." onClose={() => saveMarks.reset()} />
-              {saveMarks.isSuccess && <InlineNotification kind="success" title="Marks saved successfully" lowContrast className="os-max-w-full" />}
+              <MutationErrorNotification isError={saveMarks.isError} error={saveMarks.error} title="Notlar kaydedilemedi" fallback="Lütfen tekrar deneyin." onClose={() => saveMarks.reset()} />
+              {saveMarks.isSuccess && <InlineNotification kind="success" title="Notlar kaydedildi" lowContrast className="os-max-w-full" />}
             </div>
             <MarksEntryTable students={students} subjectName={subjects?.find((s) => s.id === subjectId)?.name ?? ""} maxMarks={maxMarks} draft={draft} />
           </div>
         ) : (
-          <EmptyState title="No students enrolled" description="There are no students enrolled in the selected class." />
+          <EmptyState title="Kayıtlı öğrenci yok" description="Seçilen sınıfta kayıtlı öğrenci yok." />
         )}
       </div>
 

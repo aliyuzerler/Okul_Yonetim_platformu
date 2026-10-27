@@ -14,8 +14,8 @@ import PasswordRequirements from "@/shared/ui/PasswordRequirements";
 import { useErrorSummary } from "@/shared/hooks/useErrorSummary";
 
 const STEPS = [
-  { label: "Admin account", description: "Create the first admin" },
-  { label: "School setup", description: "Register your school" },
+  { label: "Yönetici hesabı", description: "İlk yöneticiyi oluşturun" },
+  { label: "Okul kurulumu", description: "Okulunuzu kaydedin" },
 ];
 
 const EMPTY = { givenName: "", familyName: "", email: "", username: "", phone: "", password: "", confirmPassword: "" };
@@ -35,13 +35,13 @@ export default function FirstRunSetup() {
 
   const pw = validateNewPassword(form.password, form.confirmPassword);
   const errors: Partial<Record<Field, string>> = {
-    givenName: form.givenName.trim() ? undefined : "First name is required.",
-    familyName: form.familyName.trim() ? undefined : "Last name is required.",
-    email: EMAIL_RE.test(form.email.trim()) ? undefined : "Enter a valid email address.",
-    username: form.username.trim() ? undefined : "Username is required.",
+    givenName: form.givenName.trim() ? undefined : "Ad gerekli.",
+    familyName: form.familyName.trim() ? undefined : "Soyad gerekli.",
+    email: EMAIL_RE.test(form.email.trim()) ? undefined : "Geçerli bir e-posta adresi girin.",
+    username: form.username.trim() ? undefined : "Kullanıcı adı gerekli.",
     phone: isValidSriLankanPhone(form.phone) ? undefined : PHONE_INVALID_TEXT,
-    password: form.password ? pw.passwordError : "Password is required.",
-    confirmPassword: form.confirmPassword ? pw.confirmError : "Confirm your password.",
+    password: form.password ? pw.passwordError : "Şifre gerekli.",
+    confirmPassword: form.confirmPassword ? pw.confirmError : "Şifrenizi doğrulayın.",
   };
   // pw.passwordError/confirmError are both undefined while the fields are
   // still empty (validateNewPassword only flags a *wrong* value, not a
@@ -81,11 +81,11 @@ export default function FirstRunSetup() {
       <div className="os-setup-wrapper">
         <div className="os-setup-card os-setup-card--success">
           <div className="os-setup-success-icon"><CheckmarkFilled size={28} /></div>
-          <h1 className="os-setup-card__title">Admin account created</h1>
+          <h1 className="os-setup-card__title">Yönetici hesabı oluşturuldu</h1>
           <p className="os-setup-card__subtitle">
-            Sign in with the credentials you just set, then head to <strong>Settings</strong> to register your school's details.
+            Az önce belirlediğiniz bilgilerle oturum açın, ardından okul bilgilerinizi kaydetmek için <strong>Ayarlar</strong> bölümüne gidin.
           </p>
-          <Button href="/signin" className="os-full-width-btn">Go to sign in</Button>
+          <Button href="/signin" className="os-full-width-btn">Oturum açmaya git</Button>
         </div>
       </div>
     );
@@ -103,12 +103,12 @@ export default function FirstRunSetup() {
           <CustomStepper currentIndex={0} steps={STEPS} />
 
           <div className="os-setup-card__heading">
-            <p className="os-setup-eyebrow">Welcome to OpenSchool</p>
-            <h1 id="setup-title">Create your admin account</h1>
-            <p>Set up the account you’ll use to configure and run your school. <strong>This can only be done once.</strong></p>
+            <p className="os-setup-eyebrow">OpenSchool&apos;a hoş geldiniz</p>
+            <h1 id="setup-title">Yönetici hesabınızı oluşturun</h1>
+            <p>Okulunuzu yapılandırmak ve yönetmek için kullanacağınız hesabı kurun. <strong>Bu işlem yalnızca bir kez yapılabilir.</strong></p>
           </div>
 
-          <MutationErrorNotification isError={registerAdmin.isError} error={registerAdmin.error} title="Could not register admin" fallback="Something went wrong. Please try again." className="os-setup-card__error" />
+          <MutationErrorNotification isError={registerAdmin.isError} error={registerAdmin.error} title="Yönetici kaydedilemedi" fallback="Bir şeyler ters gitti. Lütfen tekrar deneyin." className="os-setup-card__error" />
 
           <ErrorSummary errors={summaryErrors} />
 
@@ -116,39 +116,39 @@ export default function FirstRunSetup() {
             <div className="os-setup-form__section">
               <div className="os-setup-form__section-heading">
                 <span className="os-setup-form__section-icon"><UserMultiple size={20} /></span>
-                <div><h2>Personal details</h2><p>Tell us who will manage this OpenSchool instance.</p></div>
+                <div><h2>Kişisel bilgiler</h2><p>Bu OpenSchool kurulumunu kimin yöneteceğini belirtin.</p></div>
               </div>
               <div className="os-setup-name-grid">
-                <TextInput {...input("givenName", "First name", { autoComplete: "given-name" })} />
-                <TextInput {...input("familyName", "Last name", { autoComplete: "family-name" })} />
-                <TextInput {...input("email", "Email", { type: "email", autoComplete: "email", helperText: "Used for account recovery." })} />
-                <TextInput {...input("username", "Username", { autoComplete: "username", helperText: "Your sign-in name." })} />
-                <TextInput {...input("phone", "Phone number (optional)", { type: "tel", autoComplete: "tel", helperText: "Sri Lankan number, for example 0771234567." })} />
+                <TextInput {...input("givenName", "Ad", { autoComplete: "given-name" })} />
+                <TextInput {...input("familyName", "Soyad", { autoComplete: "family-name" })} />
+                <TextInput {...input("email", "E-posta", { type: "email", autoComplete: "email", helperText: "Hesap kurtarma için kullanılır." })} />
+                <TextInput {...input("username", "Kullanıcı adı", { autoComplete: "username", helperText: "Oturum açma adınız." })} />
+                <TextInput {...input("phone", "Telefon numarası (isteğe bağlı)", { type: "tel", autoComplete: "tel", helperText: "Sri Lanka numarası, örn. 0771234567." })} />
               </div>
             </div>
 
             <div className="os-setup-form__section">
               <div className="os-setup-form__section-heading">
                 <span className="os-setup-form__section-icon"><Information size={20} /></span>
-                <div><h2>Secure your account</h2><p>Choose a strong password that only you know.</p></div>
+                <div><h2>Hesabınızı güvenceye alın</h2><p>Yalnızca sizin bildiğiniz güçlü bir şifre seçin.</p></div>
               </div>
               <div className="os-setup-security-grid">
-                <PasswordInput {...input("password", "Password", { autoComplete: "new-password" })} />
-                <PasswordInput {...input("confirmPassword", "Confirm password", { autoComplete: "new-password" })} />
+                <PasswordInput {...input("password", "Şifre", { autoComplete: "new-password" })} />
+                <PasswordInput {...input("confirmPassword", "Şifreyi doğrula", { autoComplete: "new-password" })} />
               </div>
               <PasswordRequirements password={form.password} confirm={form.confirmPassword} />
             </div>
 
             <div className="os-setup-form__footer">
               <Button type="submit" disabled={registerAdmin.isPending} className="os-full-width-btn">
-                {registerAdmin.isPending ? <InlineLoading description="Creating admin account…" /> : "Create admin account"}
+                {registerAdmin.isPending ? <InlineLoading description="Yönetici hesabı oluşturuluyor…" /> : "Yönetici hesabı oluştur"}
               </Button>
               <div className="os-setup-signin-link">
-                Already set up an admin account?{" "}
+                Zaten bir yönetici hesabı oluşturdunuz mu?{" "}
                 <SignInButton>
                   {({ signIn, isLoading }) => (
                     <button type="button" onClick={() => signIn()} disabled={isLoading} className="os-setup-signin-link__btn">
-                      {isLoading ? "Signing in…" : "Sign in instead"}
+                      {isLoading ? "Oturum açılıyor…" : "Bunun yerine oturum açın"}
                     </button>
                   )}
                 </SignInButton>

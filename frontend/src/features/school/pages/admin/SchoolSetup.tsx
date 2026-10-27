@@ -12,7 +12,7 @@ import DoneStep from "@/features/school/components/setup/DoneStep";
 import CustomStepper from "@/features/school/components/setup/CustomStepper";
 import { useSchoolSetupSubmit } from "@/features/school/hooks/useSchoolSetupSubmit";
 import { useSchoolSetupState } from "@/features/school/hooks/useSchoolSetupState";
-import { STEPS } from "@/features/school/setupConstants";
+import { STEPS, STEP_LABELS } from "@/features/school/setupConstants";
 import ErrorSummary from "@/shared/ui/ErrorSummary";
 import { useErrorSummary } from "@/shared/hooks/useErrorSummary";
 
@@ -50,20 +50,20 @@ export default function SchoolSetup() {
       case 1:
         if (!skip) setHousesValidationAttempted(true);
         if (!skip && s.houses.some((house) => house.name.trim() && !house.code.trim())) {
-          return setError("Every house with a name must have a code.");
+          return setError("Adı girilen her kolun bir kodu olmalı.");
         }
         s.setHousesSkipped(skip);
         break;
       case 2:
-        if (s.selectedGrades.size === 0) return setError("Select at least one grade.");
+        if (s.selectedGrades.size === 0) return setError("En az bir sınıf seviyesi seçin.");
         break;
       case 3:
         s.setMediumsSkipped(skip);
         break;
       case CLASSES_STEP:
-        if (!skip && !s.yearLabel.trim()) return setError("An academic year label is required.");
+        if (!skip && !s.yearLabel.trim()) return setError("Eğitim-öğretim yılı etiketi gerekli.");
         if (!skip && (!Number.isFinite(s.classCapacity) || s.classCapacity < 1 || s.classCapacity > 200)) {
-          return setError("Class capacity must be a number between 1 and 200.");
+          return setError("Sınıf kapasitesi 1 ile 200 arasında bir sayı olmalı.");
         }
         s.setClassesSkipped(skip);
         break;
@@ -84,18 +84,18 @@ export default function SchoolSetup() {
         <img src="/favicon.webp" alt="" width={36} height={36} />
         <div>
           <p className="os-school-setup-brand__name">Open<span>School</span></p>
-          <p className="os-school-setup-brand__context">School onboarding</p>
+          <p className="os-school-setup-brand__context">Okul kurulumu</p>
         </div>
       </header>
       <div className="os-school-setup-card">
         <div className="os-school-setup-heading">
-          <p className="os-school-setup-eyebrow">Let’s get your school ready</p>
-          <h1>Set up your school</h1>
-          <p>Complete these steps to create the structure OpenSchool will use for your school day to day.</p>
+          <p className="os-school-setup-eyebrow">Okulunuzu hazırlayalım</p>
+          <h1>Okulunuzu kurun</h1>
+          <p>OpenSchool&apos;un okulunuzun günlük işleyişinde kullanacağı yapıyı oluşturmak için bu adımları tamamlayın.</p>
         </div>
-        <CustomStepper currentIndex={step} steps={STEPS} />
+        <CustomStepper currentIndex={step} steps={STEPS.map((stepKey) => STEP_LABELS[stepKey])} />
 
-        {error && <InlineNotification kind="error" title="Could not continue" subtitle={error} hideCloseButton lowContrast className="os-school-setup-error" />}
+        {error && <InlineNotification kind="error" title="Devam edilemedi" subtitle={error} hideCloseButton lowContrast className="os-school-setup-error" />}
 
         <ErrorSummary errors={summaryErrors} />
 
@@ -128,10 +128,10 @@ export default function SchoolSetup() {
 
         {step < DONE_STEP && (
           <div className="os-school-setup-actions">
-            <Button kind="ghost" onClick={goBack} disabled={step === 0}>Back</Button>
+            <Button kind="ghost" onClick={goBack} disabled={step === 0}>Geri</Button>
             <div className="os-school-setup-actions__right">
-              {SKIPPABLE.has(step) && <Button kind="secondary" onClick={() => advance(true)}>Skip</Button>}
-              <Button kind="primary" onClick={() => advance(false)}>{step === ROOMS_STEP ? "Finish setup" : "Continue"}</Button>
+              {SKIPPABLE.has(step) && <Button kind="secondary" onClick={() => advance(true)}>Atla</Button>}
+              <Button kind="primary" onClick={() => advance(false)}>{step === ROOMS_STEP ? "Kurulumu tamamla" : "Devam"}</Button>
             </div>
           </div>
         )}

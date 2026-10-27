@@ -31,7 +31,7 @@ export default function ClassDetail() {
   const initialTab = (location.state as { tab?: string } | null)?.tab === "attendance" ? 1 : 0;
   const detail = useClassDetail(id);
   const cls = detail.cls.data;
-  usePageTitle(cls ? `Class ${cls.name}` : null);
+  usePageTitle(cls ? `${cls.name} sınıfı` : null);
   const m = useClassDetailModals(id, cls, detail);
   const { names, formTeacher, girlMonitor, boyMonitor } = detail;
 
@@ -39,19 +39,19 @@ export default function ClassDetail() {
   if (detail.cls.isError || !cls) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load classroom details" onRetry={detail.cls.refetch} />
+        <ErrorMessage message="Sınıf bilgileri yüklenemedi." onRetry={detail.cls.refetch} />
       </div>
     );
   }
 
-  const meta = [names.academicYear, formTeacher && `Form teacher: ${displayName(formTeacher)}`].filter(Boolean).join(" · ");
+  const meta = [names.academicYear, formTeacher && `Sınıf öğretmeni: ${displayName(formTeacher)}`].filter(Boolean).join(" · ");
   const students = detail.roster.data;
   const sessions = detail.sessions.data;
 
   return (
     <div className="os-bg-layer-hover os-min-h-content">
       <ProfileBanner
-        name={`Grade ${formatClassLabel(cls.name)}`}
+        name={`${formatClassLabel(cls.name)} sınıfı`}
         avatar={<GradeAvatar gradeName={names.grade} className={cls.name} size="lg" />}
         meta={meta}
         actions={(
@@ -59,14 +59,14 @@ export default function ClassDetail() {
           {names.stream && <StreamTag name={names.stream} />}
           {names.medium && <MediumTag name={names.medium} />}
           {names.homeClassroom && <Tag type="teal" size="sm">{names.homeClassroom}</Tag>}
-          <Button renderIcon={Edit} kind="ghost" size="sm" onClick={m.openEdit}>Edit</Button>
+          <Button renderIcon={Edit} kind="ghost" size="sm" onClick={m.openEdit}>Düzenle</Button>
           <Button renderIcon={UserMultiple} kind="ghost" size="sm" onClick={m.openTeacher}>
-            {formTeacher ? "Change teacher" : "Assign teacher"}
+            {formTeacher ? "Öğretmeni değiştir" : "Öğretmen ata"}
           </Button>
           <Button renderIcon={UserFollow} kind="ghost" size="sm" onClick={m.openMonitors}>
-            {girlMonitor || boyMonitor ? "Change monitors" : "Assign monitors"}
+            {girlMonitor || boyMonitor ? "Sınıf temsilcilerini değiştir" : "Sınıf temsilcisi ata"}
           </Button>
-          <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/classes">Back</Button>
+          <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/classes">Geri</Button>
           </>
         )}
       />
@@ -75,12 +75,12 @@ export default function ClassDetail() {
         <div className="os-grid os-grid-cols-2-1 os-gap-6 os-items-grid-start">
           <div>
             <Tabs defaultSelectedIndex={initialTab}>
-              <TabList aria-label="Class sections">
-                <Tab>Students</Tab>
-                <Tab>Attendance</Tab>
-                <Tab>Marks</Tab>
-                <Tab>Subjects & teachers</Tab>
-                <Tab>Details</Tab>
+              <TabList aria-label="Sınıf bölümleri">
+                <Tab>Öğrenciler</Tab>
+                <Tab>Yoklama</Tab>
+                <Tab>Notlar</Tab>
+                <Tab>Dersler ve öğretmenler</Tab>
+                <Tab>Ayrıntılar</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel className="os-p-0">
@@ -130,23 +130,23 @@ export default function ClassDetail() {
           </div>
 
           <div>
-            <SectionCard title="Quick info" className="os-mb-4">
+            <SectionCard title="Kısa bilgiler" className="os-mb-4">
               <div className="os-py-3">
-                <InfoRow label="Grade" value={names.grade ?? "-"} />
-                <InfoRow label="Stream" value={names.stream ?? "None"} />
-                <InfoRow label="Medium" value={names.medium ?? "Not designated"} />
-                <InfoRow label="Home classroom" value={names.homeClassroom ?? "Not assigned"} />
-                <InfoRow label="Enrolled" value={students?.length ?? 0} />
-                <InfoRow label="Academic year" value={names.academicYear ?? "-"} divider={false} />
+                <InfoRow label="Sınıf seviyesi" value={names.grade ?? "-"} />
+                <InfoRow label="Alan" value={names.stream ?? "Yok"} />
+                <InfoRow label="Öğretim dili" value={names.medium ?? "Belirlenmedi"} />
+                <InfoRow label="Ana derslik" value={names.homeClassroom ?? "Atanmadı"} />
+                <InfoRow label="Kayıtlı öğrenci" value={students?.length ?? 0} />
+                <InfoRow label="Eğitim-öğretim yılı" value={names.academicYear ?? "-"} divider={false} />
               </div>
             </SectionCard>
-            <SectionCard title="Attendance summary">
+            <SectionCard title="Yoklama özeti">
               <div className="os-py-3">
-                <InfoRow label="Total sessions" value={sessions?.length ?? 0} bold divider={false} />
+                <InfoRow label="Toplam oturum" value={sessions?.length ?? 0} bold divider={false} />
                 <div className="os-mt-2">
                   <Button kind="ghost" size="sm" onClick={m.openNewSession} className="os-c-accent os-p-0">
                     <EventSchedule size={14} className="os-mr-1h" />
-                    New session →
+                    Yeni oturum →
                   </Button>
                 </div>
               </div>

@@ -34,7 +34,7 @@ function useSectionHeadRows() {
     const byGrade = new Map<string, { gradeName: string; streamIds: Map<string, string> }>();
     for (const c of classes ?? []) {
       if (!byGrade.has(c.grade_id)) byGrade.set(c.grade_id, { gradeName: c.grade_name, streamIds: new Map() });
-      if (c.stream_id) byGrade.get(c.grade_id)!.streamIds.set(c.stream_id, streams?.find((s) => s.id === c.stream_id)?.name ?? "Stream");
+      if (c.stream_id) byGrade.get(c.grade_id)!.streamIds.set(c.stream_id, streams?.find((s) => s.id === c.stream_id)?.name ?? "Alan");
     }
     const rows: Row[] = [];
     for (const [gradeId, { gradeName, streamIds }] of byGrade) {
@@ -64,29 +64,29 @@ export default function SectionHeadsPanel() {
 
   return (
     <SectionCard
-      title="Section heads"
+      title="Şube rehber öğretmenleri"
       meta={currentYear ? <span className="os-section__meta">{currentYear.label}</span> : undefined}
       flush
     >
 
       {!currentYear ? (
-        <EmptyState title="No current academic year" description="Set an academic year as current before assigning section heads." />
+        <EmptyState title="Güncel eğitim-öğretim yılı yok" description="Şube rehber öğretmeni atamadan önce bir eğitim-öğretim yılını güncel yıl olarak ayarlayın." />
       ) : isLoading ? (
         <div className="os-py-2"><ListRowSkeleton trailingWidth="12rem" /></div>
       ) : isError && !sectionHeads ? (
-        <div className="os-p-6"><ErrorMessage message="Could not load section heads." onRetry={refetch} /></div>
+        <div className="os-p-6"><ErrorMessage message="Şube rehber öğretmenleri yüklenemedi." onRetry={refetch} /></div>
       ) : (classesQuery.isLoading || streamsQuery.isLoading) && rows.length === 0 ? (
         <div className="os-py-2"><ListRowSkeleton trailingWidth="12rem" /></div>
       ) : (classesQuery.isError && !classesQuery.data) || (streamsQuery.isError && !streamsQuery.data) ? (
-        <div className="os-p-6"><ErrorMessage message="Could not load classes and streams." onRetry={() => { void classesQuery.refetch(); void streamsQuery.refetch(); }} /></div>
+        <div className="os-p-6"><ErrorMessage message="Sınıflar ve alanlar yüklenemedi." onRetry={() => { void classesQuery.refetch(); void streamsQuery.refetch(); }} /></div>
       ) : rows.length === 0 ? (
-        <EmptyState title="No classes yet" description="Section heads are derived from the grades and streams your classes actually use." />
+        <EmptyState title="Henüz sınıf yok" description="Şube rehber öğretmenleri, sınıflarınızın kullandığı sınıf seviyeleri ve alanlardan oluşturulur." />
       ) : (
         <>
           {(classesQuery.isError || streamsQuery.isError || isError) && (
             <div className="os-flex os-items-center os-gap-2 os-px-6 os-py-3">
-              <InlineNotification kind="error" lowContrast hideCloseButton title="Some section-head data could not refresh" subtitle="Showing the last available rows. Retry to get the latest classes, streams, or assignments." className="os-flex-1 os-m-0" />
-              <Button kind="ghost" size="sm" onClick={() => { void classesQuery.refetch(); void streamsQuery.refetch(); void refetch(); }}>Retry</Button>
+              <InlineNotification kind="error" lowContrast hideCloseButton title="Bazı şube rehber öğretmeni verileri yenilenemedi" subtitle="Son geçerli satırlar gösteriliyor. En güncel sınıflar, alanlar ve atamalar için yeniden deneyin." className="os-flex-1 os-m-0" />
+              <Button kind="ghost" size="sm" onClick={() => { void classesQuery.refetch(); void streamsQuery.refetch(); void refetch(); }}>Yeniden dene</Button>
             </div>
           )}
           {rows.map((row) => (
@@ -104,20 +104,20 @@ export default function SectionHeadsPanel() {
         </>
       )}
 
-      <MutationErrorNotification isError={assign.isError} error={assign.error} title="Could not assign section head" fallback="Please try again." onClose={() => assign.reset()} className="os-mx-6" />
-      <MutationErrorNotification isError={remove.isError} error={remove.error} title="Could not remove section head" fallback="Please try again." onClose={() => remove.reset()} className="os-mx-6" />
+      <MutationErrorNotification isError={assign.isError} error={assign.error} title="Şube rehber öğretmeni atanamadı" fallback="Lütfen yeniden deneyin." onClose={() => assign.reset()} className="os-mx-6" />
+      <MutationErrorNotification isError={remove.isError} error={remove.error} title="Şube rehber öğretmeni kaldırılamadı" fallback="Lütfen yeniden deneyin." onClose={() => remove.reset()} className="os-mx-6" />
 
       <ConfirmDeleteModal
         open={!!toRemove}
-        title="Remove section head"
+        title="Şube rehber öğretmenini kaldır"
         description={
           <>
-            Remove <strong>{toRemove?.teacher_name}</strong> as teacher-in-charge of {toRemove?.grade_name}
-            {toRemove?.stream_name ? ` - ${toRemove.stream_name}` : ""}? The post is left vacant, and they lose the notification reach the role grants.
+            <strong>{toRemove?.teacher_name}</strong>, {toRemove?.grade_name}
+            {toRemove?.stream_name ? ` - ${toRemove.stream_name}` : ""} sorumlu öğretmeni olarak kaldırılsın mı? Görev boş kalır ve ilgili öğretmen bu rolün sağladığı bildirim erişimini kaybeder.
           </>
         }
-        subject="Section head"
-        successVerb="removed"
+        subject="Şube rehber öğretmeni"
+        successVerb="kaldırıldı"
         mutation={remove}
         onClose={() => setToRemove(null)}
         onConfirm={() => toRemove && currentYear && remove.mutate({ id: toRemove.id, academicYearId: currentYear.id })}
@@ -154,7 +154,7 @@ function SectionHeadRow({ row, head, teachers, onSearch, onAssign, onRemoveClick
       <div className="os-flex-1 os-min-w-0">
         <p className="os-m-0 os-text-md os-fw-500 os-c-primary">{row.gradeName}{row.streamName ? ` - ${row.streamName}` : ""}</p>
         <div className="os-flex os-items-center os-gap-2 os-mt-1">
-          <Tag type={head ? "green" : "gray"} size="sm">{head ? "Assigned" : "Vacant"}</Tag>
+          <Tag type={head ? "green" : "gray"} size="sm">{head ? "Atandı" : "Boş"}</Tag>
           {head && <span className="os-text-xs os-c-secondary">{head.teacher_name}</span>}
         </div>
       </div>
@@ -167,11 +167,11 @@ function SectionHeadRow({ row, head, teachers, onSearch, onAssign, onRemoveClick
           onSearch={onSearch}
           getId={(t) => t.id}
           itemToString={(t) => `${displayName(t)} - ${t.employee_number}`}
-          placeholder="Search teachers…"
+          placeholder="Öğretmen arayın…"
         />
       </div>
       {/* Vacating a post is only possible by removing the appointment. */}
-      <Button kind="danger--ghost" size="sm" onClick={() => head && onRemoveClick(head)} disabled={!head || removeDisabled}>Remove</Button>
+      <Button kind="danger--ghost" size="sm" onClick={() => head && onRemoveClick(head)} disabled={!head || removeDisabled}>Kaldır</Button>
     </div>
   );
 }

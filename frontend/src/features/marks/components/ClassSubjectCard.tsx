@@ -25,9 +25,9 @@ export default function ClassSubjectCard({ classId, className, gradeName, subjec
         <div>
           <p className="os-mt-0 os-mx-0 os-mb-1 os-fw-600 os-text-md">{classLabel(gradeName, className)}</p>
           {isLoading ? (
-            <p className="os-m-0 os-text-xs os-c-tertiary">Loading…</p>
+            <p className="os-m-0 os-text-xs os-c-tertiary">Yükleniyor…</p>
           ) : (
-            <p className={`os-m-0 os-text-xs ${complete ? "os-c-success" : "os-c-tertiary"}`}>{entered}/{total} marks entered</p>
+            <p className={`os-m-0 os-text-xs ${complete ? "os-c-success" : "os-c-tertiary"}`}>{entered}/{total} not girildi</p>
           )}
         </div>
         {complete && <CheckmarkFilled size={18} className="os-fill-success os-shrink-0" />}

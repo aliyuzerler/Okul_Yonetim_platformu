@@ -52,22 +52,22 @@ export default function Societies() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Societies</h1>
+          <h1 className="os-page__title">Topluluklar</h1>
           <p className="os-page__subtitle">
             {isArchive
-              ? `Read only. Societies for ${allYears?.find((y) => y.id === viewingYearId)?.label ?? "this year"}.`
-              : `Clubs and societies for ${currentYear?.label ?? "the current year"}.`}
+              ? `Salt okunur. ${allYears?.find((y) => y.id === viewingYearId)?.label ?? "bu yıl"} yılına ait topluluklar.`
+              : `${currentYear?.label ?? "güncel eğitim-öğretim yılı"} için kulüpler ve topluluklar.`}
           </p>
         </div>
         <div className="os-flex os-items-end os-gap-3">
           <Select
             id="society-year-selector"
-            labelText="Year"
+            labelText="Eğitim-öğretim yılı"
             value={viewingYearId}
             onChange={(e) => setSelectedYearId(e.target.value || null)} className="os-min-w-12"
           >
             {selectableYears.map((y) => (
-              <SelectItem key={y.id} value={y.id} text={y.id === currentYear?.id ? `${y.label} (current)` : y.label} />
+              <SelectItem key={y.id} value={y.id} text={y.id === currentYear?.id ? `${y.label} (güncel)` : y.label} />
             ))}
           </Select>
           <Button
@@ -77,7 +77,7 @@ export default function Societies() {
             onClick={() => setFormSociety("new")}
             disabled={!currentYear || isArchive}
           >
-            New society
+            Yeni topluluk
           </Button>
         </div>
       </div>
@@ -87,8 +87,8 @@ export default function Societies() {
           kind="info"
           lowContrast
           hideCloseButton
-          title="Viewing a past year"
-          subtitle="This is a read-only archive. Switch to the current year to make changes." className="os-mb-6 os-max-w-full"
+          title="Geçmiş bir yıl görüntüleniyor"
+          subtitle="Bu salt okunur bir arşivdir. Değişiklik yapmak için güncel yıla geçin." className="os-mb-6 os-max-w-full"
         />
       )}
 
@@ -97,22 +97,22 @@ export default function Societies() {
           kind="info"
           lowContrast
           hideCloseButton
-          title="No current academic year"
-          subtitle="Set an academic year as current before creating societies." className="os-mb-6 os-max-w-full"
+          title="Güncel eğitim-öğretim yılı yok"
+          subtitle="Topluluk oluşturmadan önce bir eğitim-öğretim yılını güncel olarak ayarlayın." className="os-mb-6 os-max-w-full"
         />
       )}
 
       {isError && (
         <div className="os-mb-6">
-          <ErrorMessage message="Could not load societies." onRetry={refetch} />
+          <ErrorMessage message="Topluluklar yüklenemedi." onRetry={refetch} />
         </div>
       )}
 
       <MutationErrorNotification
         isError={deleteSociety.isError}
         error={deleteSociety.error}
-        title="Could not delete society"
-        fallback="Please try again."
+        title="Topluluk silinemedi"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => deleteSociety.reset()} className="os-mb-6"
       />
 
@@ -125,7 +125,7 @@ export default function Societies() {
           )}
 
           {!loading && (societies ?? []).length === 0 && (
-            <EmptyState title="No societies yet" description="Create a society and assign its Teacher-in-Charge." />
+            <EmptyState title="Henüz topluluk yok" description="Bir topluluk oluşturun ve sorumlu öğretmenini atayın." />
           )}
 
           {!loading &&
@@ -139,7 +139,7 @@ export default function Societies() {
                   <span className="os-society-list-row__icon"><Idea size={16} /></span>
                   <span className="os-flex-1 os-min-w-0">
                     <span className="os-block os-fw-600 os-text-md os-c-primary os-truncate">{s.name}</span>
-                    <span className="os-block os-text-xs os-c-tertiary os-truncate">Teacher-in-Charge: {s.teacher_name}</span>
+                    <span className="os-block os-text-xs os-c-tertiary os-truncate">Sorumlu öğretmen: {s.teacher_name}</span>
                   </span>
                   <Tag type="cool-gray" size="sm"><UserMultiple size={12} className="os-mr-1" />{s.member_count}</Tag>
                 </div>
@@ -159,26 +159,26 @@ export default function Societies() {
                     hasIconOnly
                     kind="ghost"
                     size="sm"
-                    iconDescription="Edit"
+                    iconDescription="Düzenle"
                     renderIcon={Edit}
                     onClick={() => setFormSociety(selected)}
                   />
-                  <RemoveIconButton label="Delete" onClick={() => setDeleting(selected)} />
+                  <RemoveIconButton label="Sil" onClick={() => setDeleting(selected)} />
                 </div>
               )}
             </div>
             <div className="os-section__body">
               <div className="os-society-detail__owner os-mb-5">
                 <div className="os-society-detail__owner-icon"><Idea size={18} /></div>
-                <div><p className="os-m-0 os-text-xs os-c-tertiary">Teacher-in-Charge</p><p className="os-mt-1 os-mb-0 os-text-md os-fw-500">{selected.teacher_name}</p></div>
-                <Tag type={isArchive ? "cool-gray" : "teal"} size="sm">{isArchive ? "Read only" : "Active"}</Tag>
+                <div><p className="os-m-0 os-text-xs os-c-tertiary">Sorumlu öğretmen</p><p className="os-mt-1 os-mb-0 os-text-md os-fw-500">{selected.teacher_name}</p></div>
+                <Tag type={isArchive ? "cool-gray" : "teal"} size="sm">{isArchive ? "Salt okunur" : "Etkin"}</Tag>
               </div>
               <SocietyRoster societyId={selected.id} readOnly={isArchive} />
             </div>
           </div>
         ) : (
           <div className="os-section os-mt-0">
-            <EmptyState title="Select a society" description="Pick a society from the list to manage its roster." />
+            <EmptyState title="Bir topluluk seçin" description="Kadrosunu yönetmek için listeden bir topluluk seçin." />
           </div>
         )}
       </div>
@@ -193,9 +193,9 @@ export default function Societies() {
 
       <ConfirmDeleteModal
         open={!!deleting}
-        title="Delete society"
-        description={`Delete "${deleting?.name}"? This removes its entire roster and cannot be undone.`}
-        subject="Society"
+        title="Topluluğu sil"
+        description={`"${deleting?.name}" silinsin mi? Bu işlem topluluğun tüm üye listesini kaldırır ve geri alınamaz.`}
+        subject="Topluluk"
         mutation={deleteSociety}
         onClose={() => setDeleting(null)}
         onConfirm={handleDelete}

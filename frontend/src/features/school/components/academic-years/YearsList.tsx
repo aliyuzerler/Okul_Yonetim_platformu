@@ -30,8 +30,8 @@ export default function YearsList({
   return (
     <div className="os-section">
       <SectionHeader
-        title="Academic years"
-        meta={years && <span className="os-section__meta">{years.length} total</span>}
+        title="Eğitim-öğretim yılları"
+        meta={years && <span className="os-section__meta">Toplam {years.length}</span>}
       />
 
       {isLoading && (
@@ -41,10 +41,10 @@ export default function YearsList({
           ))}
         </div>
       )}
-      {isError && <ErrorMessage message="Could not load academic years." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Eğitim-öğretim yılları yüklenemedi." onRetry={refetch} />}
 
       {!isLoading && !isError && years?.length === 0 && (
-        <EmptyState title="No academic years" description="Create the first academic year to get started." />
+        <EmptyState title="Henüz eğitim-öğretim yılı yok" description="Başlamak için ilk eğitim-öğretim yılını oluşturun." />
       )}
 
       {!isLoading && years && years.length > 0 && (
@@ -63,10 +63,10 @@ export default function YearsList({
               <div className="os-flex os-items-center os-gap-2">
                 <Tag type={y.is_current ? "teal" : "gray"} size="sm">
                   {y.is_current && <Checkmark size={12} className="os-mr-1" />}
-                  {y.is_current ? "Current" : "Closed"}
+                  {y.is_current ? "Güncel" : "Kapalı"}
                 </Tag>
                 <Button kind="ghost" size="sm" onClick={() => onOpenTerms(y)}>
-                  Terms
+                  Dönemler
                 </Button>
                 {!y.is_current && (
                   <Button
@@ -75,12 +75,12 @@ export default function YearsList({
                     onClick={() => setCurrent.mutate(y.id)}
                     disabled={setCurrent.isPending}
                   >
-                    Set current
+                    Güncel yap
                   </Button>
                 )}
                 {!y.is_current && (
                   <Button kind="danger--ghost" size="sm" onClick={() => onRequestDelete(y)}>
-                    Delete
+                    Sil
                   </Button>
                 )}
               </div>

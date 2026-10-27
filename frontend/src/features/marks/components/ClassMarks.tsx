@@ -70,13 +70,13 @@ export default function ClassMarks({
       <AgentFindingsBanner />
       <div className="os-section">
         <SectionHeader
-          title="Term marks"
+          title="Dönem notları"
           className="os-wrap os-gap-3"
           meta={
             <div className="os-flex os-gap-3 os-wrap">
               <Select
                 id="marks-term"
-                labelText="Term"
+                labelText="Dönem"
                 hideLabel
                 size="sm"
                 value={effectiveTermId}
@@ -85,9 +85,9 @@ export default function ClassMarks({
                   setTermTouched(true);
                 }}
               >
-                <SelectItem value="" text="Choose a term…" />
+                <SelectItem value="" text="Dönem seçin…" />
                 {terms?.map((t) => (
-                  <SelectItem key={t.id} value={t.id} text={t.is_current ? `${t.name} (current)` : t.name} />
+                  <SelectItem key={t.id} value={t.id} text={t.is_current ? `${t.name} (güncel)` : t.name} />
                 ))}
               </Select>
               <div className="os-min-w-12">
@@ -98,7 +98,7 @@ export default function ClassMarks({
                   onSelect={setSubjectId}
                   getId={(s) => s.id}
                   itemToString={(s) => s.name}
-                  placeholder="Choose a subject…"
+                  placeholder="Ders seçin…"
                 />
               </div>
             </div>
@@ -107,8 +107,8 @@ export default function ClassMarks({
 
         {!effectiveTermId || !subjectId ? (
           <EmptyState
-            title="Pick a term and subject"
-            description="Choose which term test and subject you're recording marks for."
+            title="Dönem ve ders seçin"
+            description="Notlarını gireceğiniz dönem sınavını ve dersi seçin."
           />
         ) : isLoading ? (
           <LoadingSpinner />
@@ -117,14 +117,14 @@ export default function ClassMarks({
             <MutationErrorNotification
               isError={saveMarks.isError}
               error={saveMarks.error}
-              title="Could not save marks"
-              fallback="Please try again."
+              title="Notlar kaydedilemedi"
+              fallback="Lütfen tekrar deneyin."
               onClose={() => saveMarks.reset()} className="os-mt-0 os-mx-6 os-mb-4"
             />
             {saveMarks.isSuccess && (
               <InlineNotification
                 kind="success"
-                title="Marks saved"
+                title="Notlar kaydedildi"
                 lowContrast
                 onClose={() => saveMarks.reset()} className="os-max-w-full os-mt-0 os-mx-6 os-mb-4"
               />
@@ -132,11 +132,11 @@ export default function ClassMarks({
             <table className="os-table os-table--no-hover">
               <thead>
                 <tr>
-                  <th>Index no.</th>
-                  <th>Student</th>
-                  <th className="os-w-8">Marks</th>
-                  <th className="os-w-8">Out of</th>
-                  <th className="os-w-5">Absent</th>
+                  <th>Okul no.</th>
+                  <th>Öğrenci</th>
+                  <th className="os-w-8">Not</th>
+                  <th className="os-w-8">Maks.</th>
+                  <th className="os-w-5">Devamsız</th>
                 </tr>
               </thead>
               <tbody>
@@ -145,7 +145,7 @@ export default function ClassMarks({
                   return (
                   <tr key={r.student_id}>
                     <td className="os-table__mono">{r.index_number}</td>
-                    <td>{r.student_name}{isAbsent && <Tag type="red" size="sm" className="os-ml-2">AB</Tag>}</td>
+                    <td>{r.student_name}{isAbsent && <Tag type="red" size="sm" className="os-ml-2">Dev</Tag>}</td>
                     <td>
                       <NumberInput
                         id={`marks-${r.student_id}`}
@@ -189,7 +189,7 @@ export default function ClassMarks({
                     <td>
                       <Checkbox
                         id={`absent-${r.student_id}`}
-                        labelText="AB"
+                        labelText="Dev"
                         checked={isAbsent}
                         onChange={(_e, { checked }) =>
                           setDraft((d) => ({
@@ -216,14 +216,14 @@ export default function ClassMarks({
                 onClick={handleSave}
                 disabled={saveMarks.isPending}
               >
-                {saveMarks.isPending ? "Saving…" : "Save marks"}
+                {saveMarks.isPending ? "Kaydediliyor…" : "Notları kaydet"}
               </Button>
             </div>
           </>
         ) : (
           <EmptyState
-            title="No students enrolled"
-            description="Enrol students into this class before recording marks."
+            title="Kayıtlı öğrenci yok"
+            description="Not girmeden önce bu sınıfa öğrenci kaydedin."
           />
         )}
       </div>

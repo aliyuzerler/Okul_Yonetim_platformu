@@ -55,19 +55,19 @@ export default function TermsModal({ year, onClose }: { year: AcademicYear; onCl
 
   return (
     <>
-      <ComposedModal open size="md" onClose={onClose} aria-label={`Terms - ${year.label}`}>
-        <ModalHeader title={`Terms - ${year.label}`} />
+      <ComposedModal open size="md" onClose={onClose} aria-label={`Dönemler - ${year.label}`}>
+        <ModalHeader title={`Dönemler - ${year.label}`} />
         <ModalBody>
           <div className="os-terms-modal-intro">
             <Calendar size={20} className="os-fill-accent" />
-            <p className="os-m-0 os-text-sm os-c-secondary">Organise this academic year into terms. Set one term as current for attendance, marks, and reports.</p>
+            <p className="os-m-0 os-text-sm os-c-secondary">Bu eğitim-öğretim yılını dönemlere ayırın. Yoklama, not ve raporlar için bir dönemi güncel olarak ayarlayın.</p>
           </div>
-          <MutationErrorNotification isError={createTerm.isError} error={createTerm.error} title="Could not create term" fallback="Please try again." />
-          <MutationErrorNotification isError={updateTerm.isError} error={updateTerm.error} title="Could not update term" fallback="Please try again." />
-          <MutationErrorNotification isError={deleteTerm.isError} error={deleteTerm.error} title="Could not delete term" fallback="Please try again." />
+          <MutationErrorNotification isError={createTerm.isError} error={createTerm.error} title="Dönem oluşturulamadı" fallback="Lütfen tekrar deneyin." />
+          <MutationErrorNotification isError={updateTerm.isError} error={updateTerm.error} title="Dönem güncellenemedi" fallback="Lütfen tekrar deneyin." />
+          <MutationErrorNotification isError={deleteTerm.isError} error={deleteTerm.error} title="Dönem silinemedi" fallback="Lütfen tekrar deneyin." />
 
           {isLoading && <SkeletonText paragraph lineCount={3} />}
-          {!isLoading && terms?.length === 0 && <p className="os-terms-empty os-text-md os-c-tertiary os-mb-5">No terms yet. Add the first term below to get started.</p>}
+          {!isLoading && terms?.length === 0 && <p className="os-terms-empty os-text-md os-c-tertiary os-mb-5">Henüz dönem yok. Başlamak için ilk dönemi aşağıdan ekleyin.</p>}
           {!!terms?.length && (
             <div className="os-term-list os-mb-6">
               {terms.map((t) => (
@@ -79,12 +79,12 @@ export default function TermsModal({ year, onClose }: { year: AcademicYear; onCl
                   </div>
                   <div className="os-term-card__actions">
                     {t.is_current ? (
-                      <Tag type="teal" size="sm"><Checkmark size={12} className="os-mr-1" />Current</Tag>
+                      <Tag type="teal" size="sm"><Checkmark size={12} className="os-mr-1" />Güncel</Tag>
                     ) : (
-                      <Button kind="ghost" size="sm" onClick={() => setCurrentTerm.mutate(t.id)} disabled={setCurrentTerm.isPending}>Set current</Button>
+                      <Button kind="ghost" size="sm" onClick={() => setCurrentTerm.mutate(t.id)} disabled={setCurrentTerm.isPending}>Güncel yap</Button>
                     )}
-                    <Button hasIconOnly kind="ghost" size="sm" iconDescription="Edit term" renderIcon={Edit} onClick={() => startEdit(t)} />
-                    <RemoveIconButton label="Delete term" onClick={() => setToDelete(t)} />
+                    <Button hasIconOnly kind="ghost" size="sm" iconDescription="Dönemi düzenle" renderIcon={Edit} onClick={() => startEdit(t)} />
+                    <RemoveIconButton label="Dönemi sil" onClick={() => setToDelete(t)} />
                   </div>
                 </div>
               ))}
@@ -93,22 +93,22 @@ export default function TermsModal({ year, onClose }: { year: AcademicYear; onCl
 
           <div className="os-term-form-panel">
             <div className="os-term-form-panel__heading">
-              <h3 className="os-m-0 os-text-sm os-fw-600">{editing ? `Edit ${editing.name}` : "Add a term"}</h3>
-              {!editing && <span className="os-text-xs os-c-tertiary">Use clear dates so staff know the active period.</span>}
+              <h3 className="os-m-0 os-text-sm os-fw-600">{editing ? `${editing.name} düzenleniyor` : "Dönem ekle"}</h3>
+              {!editing && <span className="os-text-xs os-c-tertiary">Personelin aktif dönemi bilmesi için net tarihler kullanın.</span>}
             </div>
             <TermForm form={form} onChange={setForm} touched={touched} onTouch={(f) => setTouched((t) => ({ ...t, [f]: true }))} editing={editing} isSaving={createTerm.isPending || updateTerm.isPending} onSubmit={submit} onCancelEdit={resetForm} />
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button kind="secondary" onClick={onClose}>Close</Button>
+          <Button kind="secondary" onClick={onClose}>Kapat</Button>
         </ModalFooter>
       </ComposedModal>
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete term"
-        description={<>Delete <strong>{toDelete?.name}</strong>? Every examination mark recorded against this term is deleted with it. To correct a name or date, use Edit instead. This cannot be undone.</>}
-        subject="Term"
+        title="Dönemi sil"
+        description={<><strong>{toDelete?.name}</strong> silinsin mi? Bu döneme kaydedilmiş tüm sınav notları da birlikte silinir. Ad veya tarihi düzeltmek için Düzenle'yi kullanın. Bu işlem geri alınamaz.</>}
+        subject="Dönem"
         mutation={deleteTerm}
         onClose={() => setToDelete(null)}
         onConfirm={() => toDelete && deleteTerm.mutate(toDelete.id)}

@@ -35,20 +35,20 @@ export default function AssignClassSubjectTeacherModal({
   return (
     <FormModal
       open={open}
-      title="Assign class subject teacher"
+      title="Branş öğretmeni ata"
       onClose={onClose}
       onSubmit={handleAssign}
       isPending={assignSubjectTeacher.isPending}
       submitDisabled={!subjectId || !teacherId}
-      submitLabel="Assign"
+      submitLabel="Ata"
       isError={assignSubjectTeacher.isError}
       error={assignSubjectTeacher.error}
-      errorFallback="Failed to assign subject teacher"
+      errorFallback="Branş öğretmeni atanamadı"
     >
       <div className="os-grid os-gap-4">
         <EntityCombobox
           id="class-subject-choice"
-          labelText="Subject"
+          labelText="Ders"
           items={subjects ?? []}
           selectedId={subjectId}
           onSelect={(id) => {
@@ -57,31 +57,30 @@ export default function AssignClassSubjectTeacherModal({
           }}
           getId={(s) => s.id}
           itemToString={(s) => `${s.name} (${s.code})`}
-          placeholder="Search subjects by name or code…"
+          placeholder="İsim veya kodla ders arayın…"
         />
         <div>
           <EntityCombobox
             id="class-subject-teacher-choice"
-            labelText="Teacher"
+            labelText="Öğretmen"
             items={qualifiedTeachers ?? []}
             selectedId={teacherId}
             onSelect={setTeacherId}
             getId={(t) => t.id}
             itemToString={(t) => `${displayName(t)} - ${t.employee_number}`}
-            placeholder={subjectId ? "Search qualified teachers…" : "Choose a subject first…"}
+            placeholder={subjectId ? "Yeterliliği olan öğretmenlerde arayın…" : "Önce bir ders seçin…"}
             disabled={!subjectId}
           />
           <p className="os-mt-1h os-mx-0 os-mb-0 os-text-xs os-c-tertiary">
-            Only teachers qualified for this subject on the{" "}
-            <Link to="/teacher-subjects">Teacher subjects</Link> page are shown.
+            Yalnızca <Link to="/teacher-subjects">Öğretmen branşları</Link> sayfasında bu ders için yeterliliği olan öğretmenler gösterilir.
           </p>
         </div>
 
         {subjectId && !teachersLoading && (qualifiedTeachers?.length ?? 0) === 0 && (
           <InlineNotification
             kind="warning"
-            title="No qualified teachers"
-            subtitle="No teacher holds this subject as a qualification yet - assign it on the Teacher Subjects page first."
+            title="Yeterliliği olan öğretmen yok"
+            subtitle="Henüz bu dersi yeterlilik olarak tutan bir öğretmen yok - önce Öğretmen branşları sayfasından atayın."
             lowContrast
             hideCloseButton className="os-max-w-full"
           />

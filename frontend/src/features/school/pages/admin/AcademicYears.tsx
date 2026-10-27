@@ -69,13 +69,13 @@ export default function AcademicYears() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Academic years</h1>
+          <h1 className="os-page__title">Eğitim-öğretim yılları</h1>
           <p className="os-page__subtitle">
-            Manage academic year periods for the school
+            Okulun eğitim-öğretim yılı dönemlerini yönetin
           </p>
         </div>
         <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>
-          New academic year
+          Yeni eğitim-öğretim yılı
         </Button>
       </div>
 
@@ -106,13 +106,13 @@ export default function AcademicYears() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete academic year"
+        title="Eğitim-öğretim yılını sil"
         description={
           <>
-            Delete <strong>{toDelete?.label}</strong>? This cannot be undone.
+            <strong>{toDelete?.label}</strong> silinsin mi? Bu işlem geri alınamaz.
           </>
         }
-        subject="Academic year"
+        subject="Eğitim-öğretim yılı"
         mutation={deleteYear}
         onClose={() => setToDelete(null)}
         onConfirm={handleDelete}

@@ -12,23 +12,23 @@ export default function PresetConfirmModal({ open, runPreset, onClose, onLoad }:
   return (
     <FormModal
       open={open}
-      title="Load Sri Lanka curriculum preset"
+      title="Sri Lanka müfredat ön ayarını yükle"
       onClose={onClose}
       onSubmit={onLoad}
       isPending={runPreset.isPending}
-      submitLabel="Load preset"
-      pendingLabel="Loading…"
+      submitLabel="Ön ayarı yükle"
+      pendingLabel="Yükleniyor…"
       isError={runPreset.isError}
       error={runPreset.error}
-      errorFallback="Failed to load the curriculum preset"
+      errorFallback="Müfredat ön ayarı yüklenemedi"
     >
       <p className="os-text-md os-c-secondary os-mb-3">
-        This creates the standard Grade 1-13 curriculum - compulsory subjects for primary and junior secondary,
-        O/L baskets, and A/L streams - as subjects, levels, and selection groups.
+        Bu işlem standart 1-13. sınıf müfredatını oluşturur - ilkokul ve ilk ortaokul için zorunlu dersler,
+        10. sınıf (O/L) ders sepetleri ve 12. sınıf (A/L) alanları - dersler, seviyeler ve seçim grupları olarak.
       </p>
       <p className="os-text-md os-c-secondary">
-        It only fills in what's missing for the grades your school actually has - safe to run more than once, and
-        it won't touch anything you've already set up by hand.
+        Yalnızca okulunuzun fiilen sahip olduğu sınıf seviyeleri için eksikleri doldurur - birden fazla
+        çalıştırmak güvenlidir ve elle kurduğunuz hiçbir şeye dokunmaz.
       </p>
     </FormModal>
   );

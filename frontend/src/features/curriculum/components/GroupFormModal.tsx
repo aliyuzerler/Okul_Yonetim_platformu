@@ -34,42 +34,42 @@ export default function GroupFormModal({
   return (
     <FormModal
       open={!!groupModal}
-      title={groupModal === "create" ? "New selection group" : "Edit group"}
+      title={groupModal === "create" ? "Yeni seçim grubu" : "Grubu düzenle"}
       onClose={onClose}
       onSubmit={onSave}
       isPending={createGroup.isPending || updateGroup.isPending}
       submitDisabled={!groupFormValid}
       isError={createGroup.isError || updateGroup.isError}
       error={createGroup.error ?? updateGroup.error}
-      errorFallback="Failed to save group"
+      errorFallback="Grup kaydedilemedi"
     >
       <div className="os-grid os-gap-4">
         <TextInput
           id="group-label"
-          labelText="Label"
-          placeholder="e.g. Compulsory, or Basket 1"
+          labelText="Etiket"
+          placeholder="örn. Zorunlu veya Sepet 1"
           value={groupForm.label}
           onChange={(e) => setGroupForm((f) => ({ ...f, label: e.target.value }))}
         />
         <NumberInput
           id="group-min"
-          label="Minimum subjects"
+          label="En az ders sayısı"
           min={0}
           value={groupForm.min_select}
           onChange={(_e, { value }) => setGroupForm((f) => ({ ...f, min_select: Number(value) || 0 }))}
         />
         <NumberInput
           id="group-max"
-          label="Maximum subjects"
+          label="En çok ders sayısı"
           min={0}
           invalid={groupForm.max_select < groupForm.min_select}
-          invalidText="Maximum must be greater than or equal to minimum."
+          invalidText="En çok değeri en az değerinden büyük veya ona eşit olmalıdır."
           value={groupForm.max_select}
           onChange={(_e, { value }) => setGroupForm((f) => ({ ...f, max_select: Number(value) || 0 }))}
         />
         <NumberInput
           id="group-sort"
-          label="Sort order"
+          label="Sıralama"
           min={0}
           value={groupForm.sort_order}
           onChange={(_e, { value }) => setGroupForm((f) => ({ ...f, sort_order: Number(value) || 0 }))}

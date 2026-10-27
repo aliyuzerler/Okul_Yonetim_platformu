@@ -22,21 +22,21 @@ export default function NewSessionModal({
   return (
     <FormModal
       open={open}
-      title="New attendance session"
+      title="Yeni yoklama oturumu"
       onClose={onClose}
       onSubmit={onCreate}
       isPending={createSession.isPending}
       submitDisabled={!sessionDate}
-      submitLabel="Create"
-      pendingLabel="Creating…"
+      submitLabel="Oluştur"
+      pendingLabel="Oluşturuluyor…"
       isError={createSession.isError}
       error={createSession.error}
-      errorFallback="A session may already exist for this class on this date."
+      errorFallback="Bu tarih için bu sınıfta zaten bir oturum olabilir."
     >
       <p className="os-text-md os-c-secondary os-mb-4">
-        One session per class per day. Creating it takes you straight to marking attendance.
+        Her sınıf için günde bir oturum açılır. Oluşturduğunuzda doğrudan yoklama işaretleme ekranına gidilir.
       </p>
-      <DateField value={sessionDate} onChange={(ymd) => onSessionDateChange(ymd)} id="session-date" labelText="Date" />
+      <DateField value={sessionDate} onChange={(ymd) => onSessionDateChange(ymd)} id="session-date" labelText="Tarih" />
     </FormModal>
   );
 }

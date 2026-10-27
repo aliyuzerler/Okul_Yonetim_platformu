@@ -28,26 +28,26 @@ export default function AssignTeacherModal({
   return (
     <FormModal
       open={open}
-      title="Assign class teacher"
+      title="Sınıf öğretmeni ata"
       onClose={onClose}
       onSubmit={onAssign}
       isPending={assignFormTeacher.isPending}
       submitDisabled={!teacherChoice}
-      submitLabel="Assign"
+      submitLabel="Ata"
       isError={assignFormTeacher.isError}
       error={assignFormTeacher.error}
-      errorFallback="Failed to assign teacher"
+      errorFallback="Öğretmen atanamadı"
     >
       <EntityCombobox
         id="teacher-choice"
-        labelText="Teacher"
+        labelText="Öğretmen"
         items={teachers ?? []}
         selectedId={teacherChoice}
         onSelect={onTeacherChoiceChange}
         onSearch={onTeacherSearch}
         getId={(t) => t.id}
         itemToString={(t) => `${displayName(t)} - ${t.employee_number}`}
-        placeholder="Search teachers by name or employee number…"
+        placeholder="İsim veya sicil numarasıyla öğretmen arayın…"
       />
     </FormModal>
   );

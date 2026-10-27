@@ -10,6 +10,14 @@ const STATUS_ICONS: Record<StaffAttendanceStatus, typeof CheckmarkFilled> = {
   leave: Renew,
 };
 
+// Durum kodları backend'den gelir; görünen etiketler yerel haritadan Türkçedir (shared/ etiketleri İngilizce kalır).
+const STATUS_TR: Record<StaffAttendanceStatus, string> = {
+  present: "Mevcut",
+  absent: "Devamsız",
+  late: "Geç",
+  leave: "İzin",
+};
+
 
 interface Props {
   value: StaffAttendanceStatus;
@@ -26,12 +34,12 @@ export default function StaffStatusButton({ value, selected, onClick, personName
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      aria-label={`${cfg.label}: ${personName}`}
+      aria-label={`${STATUS_TR[value]}: ${personName}`}
       className={`os-staff-status os-py-1 os-px-3 os-text-xs ${selected ? "os-fw-600" : "os-fw-400"} os-pointer os-rounded-sm os-nowrap`}
       style={{ border: `1px solid ${selected ? cfg.border : "var(--os-border-subtle)"}`, background: selected ? cfg.bg : "var(--os-layer)", color: selected ? cfg.color : "var(--os-text-secondary)" }}
     >
       <Icon size={12} className="os-mr-1 os-align-middle" style={{ fill: selected ? cfg.color : "var(--os-text-tertiary)" }} />
-      {cfg.label}
+      {STATUS_TR[value]}
     </button>
   );
 }

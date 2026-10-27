@@ -28,33 +28,32 @@ export default function EnrolStudentModal({
   return (
     <FormModal
       open={open}
-      title="Enrol student"
+      title="Öğrenci kaydet"
       onClose={onClose}
       onSubmit={onEnrol}
       isPending={enrollStudent.isPending}
       submitDisabled={!studentChoice}
-      submitLabel="Enrol"
-      pendingLabel="Enrolling…"
+      submitLabel="Kaydet"
+      pendingLabel="Kaydediliyor…"
       isError={enrollStudent.isError}
       error={enrollStudent.error}
-      errorFallback="Failed to enrol student"
+      errorFallback="Öğrenci kaydedilemedi"
     >
       {enrolCandidates.length === 0 ? (
         <p className="os-text-md">
-          Every student in the school is already enrolled in this class, or there are no students
-          yet.
+          Okuldaki tüm öğrenciler bu sınıfa zaten kayıtlı veya henüz öğrenci yok.
         </p>
       ) : (
         <EntityCombobox
           id="student-choice"
-          labelText="Student"
+          labelText="Öğrenci"
           items={enrolCandidates}
           selectedId={studentChoice}
           onSelect={onStudentChoiceChange}
           onSearch={onStudentSearch}
           getId={(s) => s.id}
           itemToString={(s) => `${displayName(s)} - ${s.index_number}`}
-          placeholder="Search students by name or index number…"
+          placeholder="İsim veya okul numarasıyla öğrenci arayın…"
         />
       )}
     </FormModal>

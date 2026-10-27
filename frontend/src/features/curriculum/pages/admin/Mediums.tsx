@@ -74,21 +74,21 @@ export default function Mediums() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Mediums</h1>
+          <h1 className="os-page__title">Öğretim dilleri</h1>
           <div className="os-page__subtitle os-page__subtitle--tip">
-            Languages subjects are taught in.
-            <InfoTip>Use these to limit a subject in a selection group to one language.</InfoTip>
+            Derslerin öğretildiği diller.
+            <InfoTip>Bir seçim grubundaki dersi tek bir dille sınırlamak için bunları kullanın.</InfoTip>
           </div>
         </div>
         <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>
-          New medium
+          Yeni öğretim dili
         </Button>
       </div>
 
       <div className="os-section">
         <SectionHeader
-          title="Mediums"
-          meta={mediums && <span className="os-section__meta">{mediums.length} total</span>}
+          title="Öğretim dilleri"
+          meta={mediums && <span className="os-section__meta">Toplam {mediums.length}</span>}
         />
 
         {isLoading && (
@@ -99,24 +99,24 @@ export default function Mediums() {
           </div>
         )}
         {isError && (
-          <ErrorMessage message="Could not load mediums." onRetry={refetch} />
+          <ErrorMessage message="Öğretim dilleri yüklenemedi." onRetry={refetch} />
         )}
 
         <MutationErrorNotification
           isError={deleteMedium.isError}
           error={deleteMedium.error}
-          title="Could not delete medium"
-          fallback="The medium may be in use by a group subject or enrolment."
+          title="Öğretim dili silinemedi"
+          fallback="Öğretim dili, bir grup dersi veya kayıt tarafından kullanılıyor olabilir."
           onClose={() => deleteMedium.reset()} className="os-mt-0 os-mx-6 os-mb-4"
         />
 
         {!isLoading && !isError && mediums?.length === 0 && (
           <EmptyState
-            title="No mediums"
-            description="Add the languages your school teaches in, for example Sinhala, Tamil or English."
+            title="Henüz öğretim dili yok"
+            description="Okulunuzun öğretim yaptığı dilleri ekleyin, örneğin Sinhala, Tamil veya İngilizce."
             action={
               <Button renderIcon={Add} kind="primary" onClick={openCreate}>
-                New medium
+                Yeni öğretim dili
               </Button>
             }
           />
@@ -131,14 +131,14 @@ export default function Mediums() {
                   {m.name}
                 </span>
                 <Button kind="ghost" size="sm" onClick={() => openEdit(m)}>
-                  Edit
+                  Düzenle
                 </Button>
                 <Button
                   kind="danger--ghost"
                   size="sm"
                   onClick={() => setToDelete(m)}
                 >
-                  Delete
+                  Sil
                 </Button>
               </div>
             ))}
@@ -146,28 +146,28 @@ export default function Mediums() {
         )}
       </div>
 
-      <ComposedModal open={!!modal} size="sm" onClose={() => setModal(null)} aria-label={modal === "create" ? "New medium" : "Edit medium"}>
-        <ModalHeader title={modal === "create" ? "New medium" : "Edit medium"} />
+      <ComposedModal open={!!modal} size="sm" onClose={() => setModal(null)} aria-label={modal === "create" ? "Yeni öğretim dili" : "Öğretim dilini düzenle"}>
+        <ModalHeader title={modal === "create" ? "Yeni öğretim dili" : "Öğretim dilini düzenle"} />
         <ModalBody>
           <MutationErrorNotification
             isError={createMedium.isError || updateMedium.isError}
             error={createMedium.error ?? updateMedium.error}
-            title="Could not save medium" fallback="Please try again." className="os-mb-4"
+            title="Öğretim dili kaydedilemedi" fallback="Lütfen yeniden deneyin." className="os-mb-4"
           />
           <TextInput
             id="medium-name"
-            labelText="Name"
-            placeholder="e.g. English"
+            labelText="Ad"
+            placeholder="örn. İngilizce"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setNameTouched(true)}
             invalid={nameTouched && !name.trim()}
-            invalidText="Medium name is required."
+            invalidText="Öğretim dili adı zorunludur."
           />
         </ModalBody>
         <ModalFooter>
           <Button kind="secondary" onClick={() => setModal(null)}>
-            Cancel
+            İptal
           </Button>
           <Button
             kind="primary"
@@ -177,21 +177,21 @@ export default function Mediums() {
             }
           >
             {createMedium.isPending || updateMedium.isPending
-              ? "Saving…"
-              : "Save"}
+              ? "Kaydediliyor…"
+              : "Kaydet"}
           </Button>
         </ModalFooter>
       </ComposedModal>
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete medium"
+        title="Öğretim dilini sil"
         description={
           <>
-            Delete <strong>{toDelete?.name}</strong>? This cannot be undone.
+            <strong>{toDelete?.name}</strong> silinsin mi? Bu işlem geri alınamaz.
           </>
         }
-        subject="Medium"
+        subject="Öğretim dili"
         mutation={deleteMedium}
         onClose={() => setToDelete(null)}
         onConfirm={handleDelete}

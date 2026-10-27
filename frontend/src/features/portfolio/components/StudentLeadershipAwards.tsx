@@ -54,27 +54,27 @@ export default function StudentLeadershipAwards({ studentId }: { studentId: stri
     <>
       <div className="os-section os-mt-4">
         <div className="os-section__header">
-          <h2 className="os-section__title">Leadership roles</h2>
+          <h2 className="os-section__title">Liderlik rolleri</h2>
         </div>
         <div className="os-section__body">
           <MutationErrorNotification
             isError={createRole.isError}
             error={createRole.error}
-            title="Could not add role" fallback="Please try again." className="os-mb-4"
+            title="Rol eklenemedi" fallback="Lütfen yeniden deneyin." className="os-mb-4"
           />
           <div className="os-grid os-grid-form-2-auto os-gap-3 os-items-grid-end os-mb-6">
-            <TextInput id="leadership-title" labelText="Title" placeholder="e.g. Debate Club President" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <TextInput id="leadership-scope" labelText="Scope (optional)" value={scope} onChange={(e) => setScope(e.target.value)} />
-            <Button renderIcon={Add} kind="primary" size="md" onClick={addRole} disabled={!title.trim() || createRole.isPending}>Add</Button>
+            <TextInput id="leadership-title" labelText="Ünvan" placeholder="örn. Münazara Kulübü Başkanı" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <TextInput id="leadership-scope" labelText="Kapsam (isteğe bağlı)" value={scope} onChange={(e) => setScope(e.target.value)} />
+            <Button renderIcon={Add} kind="primary" size="md" onClick={addRole} disabled={!title.trim() || createRole.isPending}>Ekle</Button>
           </div>
-          {!rolesLoading && (roles?.length ?? 0) === 0 && <EmptyState title="No leadership roles yet" description="Roles outside the prefect board (club president, sports captain, etc.)." />}
+          {!rolesLoading && (roles?.length ?? 0) === 0 && <EmptyState title="Henüz liderlik rolü yok" description="Temsilci kurulu dışındaki roller (kulüp başkanı, spor kaptanı vb.)." />}
           {roles?.map((r) => (
             <div key={r.id} className="os-list-row os-list-row--compact os-justify-between">
               <div>
                 <span className="os-fw-500 os-text-md">{r.title}</span>
                 {r.scope && <span className="os-ml-2 os-text-sm os-c-tertiary">{r.scope}</span>}
               </div>
-              <RemoveIconButton label="Delete" onClick={() => setPendingDeleteRoleId(r.id)} />
+              <RemoveIconButton label="Sil" onClick={() => setPendingDeleteRoleId(r.id)} />
             </div>
           ))}
         </div>
@@ -82,9 +82,9 @@ export default function StudentLeadershipAwards({ studentId }: { studentId: stri
 
       <ConfirmDeleteModal
         open={pendingDeleteRoleId !== null}
-        title="Delete leadership role"
-        description="This will permanently remove this leadership role. This action cannot be undone."
-        subject="Leadership role"
+        title="Liderlik rolünü sil"
+        description="Bu liderlik rolü kalıcı olarak kaldırılır. Bu işlem geri alınamaz."
+        subject="Liderlik rolü"
         mutation={deleteRole}
         onClose={() => setPendingDeleteRoleId(null)}
         onConfirm={() => {
@@ -94,29 +94,29 @@ export default function StudentLeadershipAwards({ studentId }: { studentId: stri
 
       <div className="os-section">
         <div className="os-section__header">
-          <h2 className="os-section__title">Awards &amp; achievements</h2>
+          <h2 className="os-section__title">Ödüller ve başarılar</h2>
         </div>
         <div className="os-section__body">
           <MutationErrorNotification
             isError={createAward.isError}
             error={createAward.error}
-            title="Could not add award" fallback="Please try again." className="os-mb-4"
+            title="Ödül eklenemedi" fallback="Lütfen yeniden deneyin." className="os-mb-4"
           />
           <div className="os-grid os-grid-form-1-12-auto os-gap-3 os-items-grid-end os-mb-6">
-            <TextInput id="award-title" labelText="Title" value={awardTitle} onChange={(e) => setAwardTitle(e.target.value)} />
+            <TextInput id="award-title" labelText="Ödül adı" value={awardTitle} onChange={(e) => setAwardTitle(e.target.value)} />
             <DateField value={awardDate} onChange={(ymd) => {
               if (ymd) setAwardDate(ymd);
-            }} id="award-date" labelText="Date" />
-            <Button renderIcon={Add} kind="primary" size="md" onClick={addAward} disabled={!awardTitle.trim() || createAward.isPending}>Add</Button>
+            }} id="award-date" labelText="Tarih" />
+            <Button renderIcon={Add} kind="primary" size="md" onClick={addAward} disabled={!awardTitle.trim() || createAward.isPending}>Ekle</Button>
           </div>
-          {!awardsLoading && (awards?.length ?? 0) === 0 && <EmptyState title="No awards yet" description="Add awards and achievements for this student." />}
+          {!awardsLoading && (awards?.length ?? 0) === 0 && <EmptyState title="Henüz ödül yok" description="Bu öğrenci için ödül ve başarı ekleyin." />}
           {awards?.map((a) => (
             <div key={a.id} className="os-list-row os-list-row--compact os-justify-between">
               <div>
                 <span className="os-fw-500 os-text-md">{a.title}</span>
                 <span className="os-ml-2 os-text-sm os-c-tertiary">{a.awarded_date}</span>
               </div>
-              <RemoveIconButton label="Delete" onClick={() => setPendingDeleteAwardId(a.id)} />
+              <RemoveIconButton label="Sil" onClick={() => setPendingDeleteAwardId(a.id)} />
             </div>
           ))}
         </div>
@@ -124,9 +124,9 @@ export default function StudentLeadershipAwards({ studentId }: { studentId: stri
 
       <ConfirmDeleteModal
         open={pendingDeleteAwardId !== null}
-        title="Delete award"
-        description="This will permanently remove this award. This action cannot be undone."
-        subject="Award"
+        title="Ödülü sil"
+        description="Bu ödül kalıcı olarak kaldırılır. Bu işlem geri alınamaz."
+        subject="Ödül"
         mutation={deleteAward}
         onClose={() => setPendingDeleteAwardId(null)}
         onConfirm={() => {

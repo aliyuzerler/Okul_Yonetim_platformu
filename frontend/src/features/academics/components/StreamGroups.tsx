@@ -28,30 +28,30 @@ export default function StreamGroups({ stream }: { stream: Stream }) {
         ) : groups?.length ? (
           groups.map((g) => <Tag key={g.id} type="teal" size="sm">{g.name}</Tag>)
         ) : (
-          <span className="os-text-xs os-c-tertiary">No sub-groups</span>
+          <span className="os-text-xs os-c-tertiary">Alt grup yok</span>
         )}
       </div>
       <Button kind="ghost" size="sm" renderIcon={Add} onClick={() => setCreateOpen(true)}>
-        Add subgroup
+        Alt grup ekle
       </Button>
 
       <FormModal
         open={createOpen}
-        title={`For ${stream.name}, add a subgroup`}
+        title={`${stream.name} alanı için alt grup ekle`}
         onClose={() => { setCreateOpen(false); setName(""); createGroup.reset(); }}
         onSubmit={add}
         isPending={createGroup.isPending}
         submitDisabled={!name.trim()}
-        submitLabel="Add subgroup"
-        pendingLabel="Adding…"
+        submitLabel="Alt grup ekle"
+        pendingLabel="Ekleniyor…"
         isError={createGroup.isError}
         error={createGroup.error}
-        errorFallback="Could not add this subgroup. Please try again."
+        errorFallback="Alt grup eklenemedi. Lütfen yeniden deneyin."
       >
         <TextInput
           id={`new-group-${stream.id}`}
-          labelText="Subgroup name"
-          placeholder="e.g. Physical Science"
+          labelText="Alt grup adı"
+          placeholder="örn. Physical Science"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />

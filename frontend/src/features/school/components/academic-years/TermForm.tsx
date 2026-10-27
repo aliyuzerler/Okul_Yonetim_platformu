@@ -23,28 +23,28 @@ export default function TermForm({ form, onChange, touched, onTouch, editing, is
   const pickerKey = editing?.id ?? "new";
   return (
     <div className="os-grid os-gap-3">
-      {editing && <p className="os-m-0 os-text-xs os-fw-600 os-c-primary">Editing {editing.name}</p>}
+      {editing && <p className="os-m-0 os-text-xs os-fw-600 os-c-primary">Düzenleniyor: {editing.name}</p>}
       <TextInput
         id="term-name"
-        labelText="Term name"
-        placeholder="e.g. Term 1"
+        labelText="Dönem adı"
+        placeholder="örn. 1. Dönem"
         value={form.name}
         onChange={(e) => onChange({ ...form, name: e.target.value })}
         onBlur={() => onTouch("name")}
         invalid={!!touched.name && !form.name.trim()}
-        invalidText="A name is required."
+        invalidText="Ad gerekli."
       />
-      <DateField key={`start-${pickerKey}`} value={form.start_date} onChange={(ymd) => onChange({ ...form, start_date: ymd })} id="term-start" labelText="Start date" onBlur={() => onTouch("start_date")} invalid={!!touched.start_date && !form.start_date} invalidText="A start date is required." />
+      <DateField key={`start-${pickerKey}`} value={form.start_date} onChange={(ymd) => onChange({ ...form, start_date: ymd })} id="term-start" labelText="Başlangıç tarihi" onBlur={() => onTouch("start_date")} invalid={!!touched.start_date && !form.start_date} invalidText="Başlangıç tarihi gerekli." />
       <DateField key={`end-${pickerKey}`} value={form.end_date} onChange={(ymd) => onChange({ ...form, end_date: ymd })} id="term-end"
-          labelText="End date"
+          labelText="Bitiş tarihi"
           onBlur={() => onTouch("end_date")}
           invalid={!!touched.end_date && (!form.end_date || rangeInvalid)}
-          invalidText={rangeInvalid ? "End date must be after the start date." : "An end date is required."} />
+          invalidText={rangeInvalid ? "Bitiş tarihi başlangıç tarihinden sonra olmalı." : "Bitiş tarihi gerekli."} />
       <div className="os-flex os-gap-2">
         <Button kind="ghost" size="sm" renderIcon={editing ? Checkmark : Add} onClick={onSubmit} disabled={isSaving}>
-          {isSaving ? (editing ? "Saving…" : "Adding…") : editing ? "Save changes" : "Add term"}
+          {isSaving ? (editing ? "Kaydediliyor…" : "Ekleniyor…") : editing ? "Değişiklikleri kaydet" : "Dönem ekle"}
         </Button>
-        {editing && <Button kind="ghost" size="sm" onClick={onCancelEdit} disabled={isSaving}>Cancel</Button>}
+        {editing && <Button kind="ghost" size="sm" onClick={onCancelEdit} disabled={isSaving}>İptal</Button>}
       </div>
     </div>
   );

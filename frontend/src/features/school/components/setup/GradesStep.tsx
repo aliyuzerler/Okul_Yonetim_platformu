@@ -17,13 +17,13 @@ export default function GradesStep({
   setSelectedGrades,
 }: Props) {
   return (
-    <StepShell icon={Education} title="Grades" subtitle="Pre-selected from the range you set. Grades 12 and 13 are paired because they share the same A/L streams.">
+    <StepShell icon={Education} title="Sınıf seviyeleri" subtitle="Belirlediğiniz araliğe göre önceden seçildi. 12 ve 13. sınıf seviyeleri aynı A/L alanlarını paylaştığı için birlikte seçilir.">
       <div className="os-grid os-grid-cols-4 os-gap-3">
         {Array.from({ length: gradeRangeEnd - gradeRangeStart + 1 }, (_, i) => i + gradeRangeStart).map((n) => (
           <Checkbox
             key={n}
             id={`grade-${n}`}
-            labelText={`Grade ${n}`}
+            labelText={`${n}. sınıf seviyesi`}
             checked={selectedGrades.has(n)}
             onChange={(_e, { checked }) =>
               setSelectedGrades((prev) => {

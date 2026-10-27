@@ -58,34 +58,34 @@ export default function Classes() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Grades &amp; classes</h1>
-          <p className="os-page__subtitle">Grades and their classes for the current academic year.</p>
+          <h1 className="os-page__title">Sınıf seviyeleri ve sınıflar</h1>
+          <p className="os-page__subtitle">Güncel eğitim-öğretim yılında sınıf seviyeleri ve bu seviyelere bağlı sınıflar.</p>
         </div>
         <div className="os-flex os-gap-3">
-          <Button renderIcon={Add} kind="secondary" size="md" onClick={page.openCreateGrade}>Add grade</Button>
-          <Button renderIcon={Add} kind="primary" size="md" onClick={() => setClassModalGradeId("")}>Add class</Button>
+          <Button renderIcon={Add} kind="secondary" size="md" onClick={page.openCreateGrade}>Sınıf seviyesi ekle</Button>
+          <Button renderIcon={Add} kind="primary" size="md" onClick={() => setClassModalGradeId("")}>Sınıf ekle</Button>
         </div>
       </div>
 
       <AgentFindingsBanner />
 
       <SectionCard
-        title="Grade catalogue"
-        meta={!isLoading && !isError && <span className="os-section__meta">{orderedGrades.length} {orderedGrades.length === 1 ? "grade" : "grades"}</span>}
+        title="Sınıf seviyesi listesi"
+        meta={!isLoading && !isError && <span className="os-section__meta">{orderedGrades.length} sınıf seviyesi</span>}
         flush
       >
 
         {(deleteGrade.isError || deleteClass.isError || reorder.isError) && (
           <div className="os-pt-4 os-px-6 os-pb-0">
-            <MutationErrorNotification isError={deleteGrade.isError} error={deleteGrade.error} title="Could not delete grade" fallback="The grade may be used by a class or curriculum level." onClose={() => deleteGrade.reset()} />
-            <MutationErrorNotification isError={deleteClass.isError} error={deleteClass.error} title="Could not delete class" fallback="The class may still have students enrolled." onClose={() => deleteClass.reset()} />
-            <MutationErrorNotification isError={reorder.isError} error={reorder.error} title="Could not reorder" fallback="Please try again." onClose={() => reorder.reset()} />
+            <MutationErrorNotification isError={deleteGrade.isError} error={deleteGrade.error} title="Sınıf seviyesi silinemedi" fallback="Sınıf seviyesi bir sınıf veya müfredat düzeyi tarafından kullanılıyor olabilir." onClose={() => deleteGrade.reset()} />
+            <MutationErrorNotification isError={deleteClass.isError} error={deleteClass.error} title="Sınıf silinemedi" fallback="Sınıfta hâlâ kayıtlı öğrenciler olabilir." onClose={() => deleteClass.reset()} />
+            <MutationErrorNotification isError={reorder.isError} error={reorder.error} title="Sıralama güncellenemedi" fallback="Lütfen yeniden deneyin." onClose={() => reorder.reset()} />
           </div>
         )}
 
         {isError && (
           <div className="os-py-5 os-px-6">
-            <ErrorMessage message="Could not load grades and classes." onRetry={() => { page.grades.refetch(); page.classes.refetch(); }} />
+            <ErrorMessage message="Sınıf seviyeleri ve sınıflar yüklenemedi." onRetry={() => { page.grades.refetch(); page.classes.refetch(); }} />
           </div>
         )}
 
@@ -93,14 +93,14 @@ export default function Classes() {
           <div className="os-flex os-items-center os-gap-2 os-wrap os-pt-4 os-px-6 os-pb-0">
             <InlineNotification
               kind="warning"
-              title={page.duplicateCount > 0 ? `${page.duplicateCount} grades share the same position` : "Positions have gaps"}
-              subtitle="Renumber them in the order shown below."
+              title={page.duplicateCount > 0 ? `${page.duplicateCount} sınıf seviyesi aynı konumu paylaşıyor` : "Konumlarda boşluklar var"}
+              subtitle="Aşağıda gösterilen sıraya göre yeniden numaralandırın."
               lowContrast
               hideCloseButton
               className="os-max-w-full os-m-0 os-flex-1"
             />
             <Button kind="tertiary" size="sm" disabled={busy} onClick={() => reorder.mutate(orderedGrades)}>
-              {busy ? "Fixing…" : "Fix ordering"}
+              {busy ? "Düzeltiliyor…" : "Sıralamayı düzelt"}
             </Button>
           </div>
         )}
@@ -113,9 +113,9 @@ export default function Classes() {
 
         {!isLoading && !isError && orderedGrades.length === 0 && (
           <EmptyState
-            title="No grades yet"
-            description="Add the grades this school runs, then create classes under each one."
-            action={<Button renderIcon={Add} kind="primary" onClick={page.openCreateGrade}>Add grade</Button>}
+            title="Henüz sınıf seviyesi yok"
+            description="Okulun yürüttüğü sınıf seviyelerini ekleyin, ardından her birinin altında sınıflar oluşturun."
+            action={<Button renderIcon={Add} kind="primary" onClick={page.openCreateGrade}>Sınıf seviyesi ekle</Button>}
           />
         )}
 
@@ -181,9 +181,9 @@ export default function Classes() {
 
       <ConfirmDeleteModal
         open={!!gradeToDelete}
-        title="Delete grade"
-        description={<>Delete <strong>{gradeToDelete?.name}</strong>? This is blocked while a class or curriculum level uses it.</>}
-        subject="Grade"
+        title="Sınıf seviyesini sil"
+        description={<><strong>{gradeToDelete?.name}</strong> silinsin mi? Bir sınıf veya müfredat düzeyi tarafından kullanılıyorsa silme işlemi engellenir.</>}
+        subject="Sınıf seviyesi"
         mutation={deleteGrade}
         onClose={() => setGradeToDelete(null)}
         onConfirm={() => gradeToDelete && deleteGrade.mutate(gradeToDelete.id)}
@@ -191,9 +191,9 @@ export default function Classes() {
 
       <ConfirmDeleteModal
         open={!!classToDelete}
-        title="Delete class"
-        description={<>Delete <strong>{classToDelete?.name}</strong>? This is blocked while students are still enrolled in it.</>}
-        subject="Class"
+        title="Sınıfı sil"
+        description={<><strong>{classToDelete?.name}</strong> silinsin mi? Sınıfta hâlâ kayıtlı öğrenciler varken silme işlemi engellenir.</>}
+        subject="Sınıf"
         mutation={deleteClass}
         onClose={() => setClassToDelete(null)}
         onConfirm={() => classToDelete && deleteClass.mutate(classToDelete.id)}
