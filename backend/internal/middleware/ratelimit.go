@@ -96,7 +96,7 @@ func keyedRateLimit(rps float64, burst int, keyFunc func(*gin.Context) string) g
 		}
 		if !limiterFor(key).Allow() {
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-				"error": "Too many requests. Please wait a moment and try again.",
+				"error": "Çok fazla istek gönderildi. Lütfen kısa bir süre bekleyip yeniden deneyin.",
 			})
 			return
 		}

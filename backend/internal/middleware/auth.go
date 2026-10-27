@@ -135,7 +135,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "missing authorization header",
+				"error": "Yetkilendirme başlığı eksik.",
 			})
 			return
 		}
@@ -143,7 +143,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		parts := strings.SplitN(authHeader, " ", 2)
 		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid authorization header format",
+				"error": "Yetkilendirme başlığı biçimi geçersiz.",
 			})
 			return
 		}
@@ -161,7 +161,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		if err != nil || !token.Valid {
 			log.Printf("auth: token validation failed: %v", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid or expired token",
+				"error": "Oturum geçersiz veya süresi doldu.",
 			})
 			return
 		}

@@ -81,19 +81,19 @@ func TestStudentImportPlacesStudentsInCurrentClasses(t *testing.T) {
 	if byIndex["IM-2"].Cells["class"] != classA.String() || byIndex["IM-3"].Cells["class"] != classB.String() {
 		t.Fatal("class names should match regardless of spelling")
 	}
-	if !strings.Contains(byIndex["IM-6"].Reason, "not added again") || !strings.Contains(byIndex["IM-6"].Reason, "parent portal") {
+	if !strings.Contains(byIndex["IM-6"].Reason, "zaten kayıtlı") || !strings.Contains(byIndex["IM-6"].Reason, "veli portalında") {
 		t.Fatalf("existing guardian with a login: %q", byIndex["IM-6"].Reason)
 	}
-	if !strings.Contains(byIndex["IM-7"].Warning, "belongs to Kumari Silva on record") {
+	if !strings.Contains(byIndex["IM-7"].Warning, "kayıtlarda Kumari Silva") {
 		t.Fatalf("NIC clash with the record: %q", byIndex["IM-7"].Warning)
 	}
-	if !strings.Contains(byIndex["IM-8"].Warning, "is Sunil Perera on line 2 but Kamal Perera here") {
+	if !strings.Contains(byIndex["IM-8"].Warning, "2. satırında Sunil Perera, burada Kamal Perera") {
 		t.Fatalf("NIC clash inside the file: %q", byIndex["IM-8"].Warning)
 	}
-	if !strings.Contains(byIndex["IM-9"].Reason, "already on record with 801234567V") {
+	if !strings.Contains(byIndex["IM-9"].Reason, "kayıtlarda var: 801234567V") {
 		t.Fatalf("same mother under a new NIC: %q", byIndex["IM-9"].Reason)
 	}
-	if byIndex["IM-4"].Warning != "" || !strings.Contains(byIndex["IM-4"].Reason, "choose a class") {
+	if byIndex["IM-4"].Warning != "" || !strings.Contains(byIndex["IM-4"].Reason, "bir sınıf seçin") {
 		t.Fatalf("an unknown class should ask for a choice, not block: %q / %q", byIndex["IM-4"].Reason, byIndex["IM-4"].Warning)
 	}
 
@@ -105,7 +105,7 @@ func TestStudentImportPlacesStudentsInCurrentClasses(t *testing.T) {
 		}
 	}
 	edit(byIndex["IM-4"], map[string]string{"import": "true"})
-	if code, body := call(t, router, http.MethodPost, "/workflow-runs/"+run.ID.String()+"/apply", nil); code != http.StatusBadRequest || !strings.Contains(string(body), "choose a class") {
+	if code, body := call(t, router, http.MethodPost, "/workflow-runs/"+run.ID.String()+"/apply", nil); code != http.StatusBadRequest || !strings.Contains(string(body), "birini seçin") {
 		t.Fatalf("apply without class: %d %s", code, body)
 	}
 	edit(byIndex["IM-4"], map[string]string{"class": classB.String()})

@@ -20,25 +20,25 @@ func tool(name, description string, mutates bool) string {
 }
 
 var (
-	ToolReadYears          = tool("read_academic_years", "Reads academic years, their dates and which one is current.", false)
-	ToolReadClasses        = tool("read_classes", "Reads a year's classes with grade, stream, medium, homeroom, capacity and student count.", false)
-	ToolReadTerms          = tool("read_terms", "Reads a year's terms in order.", false)
-	ToolReadStudents       = tool("read_students", "Reads active students with their class, grade, gender, house and medium.", false)
-	ToolReadChoices        = tool("read_subject_choices", "Reads each student's subject enrolments for the target year and the stream of the level they chose.", false)
-	ToolReadPolicies       = tool("read_promotion_policies", "Reads the promotion rule for each grade move (keep section, reshuffle, by subject choice, by stream, graduate).", false)
-	ToolPlaceStudents      = tool("place_students", "Deterministic placement engine: gives every student a class by the grade move's rule, class capacity and medium, with a reason for each.", false)
-	ToolPlanNewClasses     = tool("plan_new_classes", "Works out extra sections a grade needs when its students do not fit the existing classes.", false)
-	ToolCreateYear         = tool("create_academic_year", "Creates an academic year that is not yet current.", true)
-	ToolCopyTerms          = tool("copy_terms", "Copies term names into the new year, moving the dates forward by whole years.", true)
-	ToolCopyClasses        = tool("copy_classes", "Creates the new year's classes with the same grade, stream, medium, capacity and homeroom.", true)
-	ToolCopyTimetableSetup = tool("copy_timetable_setup", "Copies grade sections, period grids, subject hours, timetable settings and section heads.", true)
-	ToolMarkLeavers        = tool("mark_leavers", "Marks students as left with a leaving date; starts the PDPA retention clock.", true)
-	ToolCreateClasses      = tool("create_classes", "Creates the extra sections the placement needs, each with a homeroom.", true)
-	ToolAssignClasses      = tool("assign_classes", "Writes each student's class for the target year, replacing any earlier assignment for that year.", true)
-	ToolSetCurrentYear     = tool("set_current_year", "Makes the target year and its first term current; exactly one year stays current (ADR 0003).", true)
-	ToolNotifySchool       = tool("notify_school", "Sends one in-app notice to everyone that the new year is live.", true)
-	ToolSavePolicies       = tool("save_promotion_rules", "Remembers the rule chosen for each grade move, so next year starts from it.", true)
-	ToolCheckYearReadiness = tool("check_year_readiness", "Counts classes, placed students, published timetables and terms for a year.", false)
+	ToolReadYears          = tool("read_academic_years", "Eğitim-öğretim yıllarını, tarihlerini ve hangisinin güncel olduğunu okur.", false)
+	ToolReadClasses        = tool("read_classes", "Bir yılın sınıflarını sınıf seviyesi, alan, öğretim dili, sınıf öğretmeni, kontenjan ve öğrenci sayısıyla okur.", false)
+	ToolReadTerms          = tool("read_terms", "Bir yılın dönemlerini sırayla okur.", false)
+	ToolReadStudents       = tool("read_students", "Aktif öğrencileri sınıf, sınıf seviyesi, cinsiyet, kol ve öğretim diliyle okur.", false)
+	ToolReadChoices        = tool("read_subject_choices", "Her öğrencinin hedef yıl ders kayıtlarını ve seçtiği seviyenin alanını okur.", false)
+	ToolReadPolicies       = tool("read_promotion_policies", "Her seviye geçişinin sınıf geçme kuralını okur (şubeyi koru, yeniden karıştır, ders seçimine göre grupla, alana göre grupla, okuldan ayrılır).", false)
+	ToolPlaceStudents      = tool("place_students", "Deterministik yerleştirme motoru: her öğrenciye seviye geçişi kuralına, sınıf kontenjanına ve öğretim diline göre bir sınıf verir; her biri için neden bildirir.", false)
+	ToolPlanNewClasses     = tool("plan_new_classes", "Öğrenciler mevcut sınıflara sığmadığında bir seviyenin ihtiyaç duyduğu ek şubeleri hesaplar.", false)
+	ToolCreateYear         = tool("create_academic_year", "Henüz güncel olmayan bir eğitim-öğretim yılı oluşturur.", true)
+	ToolCopyTerms          = tool("copy_terms", "Dönem adlarını yeni yıla kopyalar, tarihleri tam yıl kadar ileri alır.", true)
+	ToolCopyClasses        = tool("copy_classes", "Yeni yılın sınıflarını aynı sınıf seviyesi, alan, öğretim dili, kontenjan ve sınıf öğretmeniyle oluşturur.", true)
+	ToolCopyTimetableSetup = tool("copy_timetable_setup", "Seviye şubelerini, ders saati çizelgelerini, ders saatlerini, ders programı ayarlarını ve şube rehber öğretmenlerini kopyalar.", true)
+	ToolMarkLeavers        = tool("mark_leavers", "Öğrencileri bir ayrılış tarihiyle ayrıldı olarak işaretler; PDPA saklama süresini başlatır.", true)
+	ToolCreateClasses      = tool("create_classes", "Yerleştirmenin ihtiyaç duyduğu ek şubeleri, her biri bir sınıf öğretmeniyle oluşturur.", true)
+	ToolAssignClasses      = tool("assign_classes", "Her öğrencinin hedef yıl sınıfını yazar, o yılın önceki atamasının yerine geçer.", true)
+	ToolSetCurrentYear     = tool("set_current_year", "Hedef yılı ve ilk dönemini güncel yapar; aynı anda yalnızca bir yıl güncel kalır (ADR 0003).", true)
+	ToolNotifySchool       = tool("notify_school", "Yeni yılın yayında olduğunu herkese tek bir uygulama içi duyuruyla bildirir.", true)
+	ToolSavePolicies       = tool("save_promotion_rules", "Her seviye geçişi için seçilen kuralı hatırlar, böylece gelecek yıl bu kuraldan başlar.", true)
+	ToolCheckYearReadiness = tool("check_year_readiness", "Bir yıl için sınıfları, yerleştirilen öğrencileri, yayınlanmış ders programlarını ve dönemleri sayar.", false)
 )
 
 // ---- Input helpers shared by the definitions ----
@@ -48,7 +48,7 @@ func yearOptions(years []Year) []Option {
 	for i, y := range years {
 		label := y.Label
 		if y.Current {
-			label += " (current)"
+			label += " (güncel)"
 		}
 		out[i] = Option{Value: y.ID.String(), Label: label}
 	}

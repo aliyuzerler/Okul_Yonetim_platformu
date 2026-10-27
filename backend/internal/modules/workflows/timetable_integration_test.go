@@ -75,7 +75,7 @@ func TestTimetableWorkflowWithOptionBlocks(t *testing.T) {
 		t.Fatalf("blocks: %+v", blocks)
 	}
 	for _, r := range run.Proposal.Section("classes").Rows {
-		if r.Cells["placed"] != "5 of 5" || r.Warning != "" {
+		if r.Cells["placed"] != "5 / 5" || r.Warning != "" {
 			t.Fatalf("dry run for %s: %+v", r.Cells["class"], r)
 		}
 	}
@@ -91,8 +91,8 @@ func TestTimetableWorkflowWithOptionBlocks(t *testing.T) {
 	}
 	// Both classes hold the block at the same two periods, and maths three times each.
 	shared := scalar[int](t, pool, `SELECT COUNT(*) FROM timetable_entries a JOIN timetables ta ON ta.id = a.timetable_id AND ta.class_id = $1
-		JOIN timetable_entries b ON b.day_of_week = a.day_of_week AND b.period_number = a.period_number AND b.option_block_id = a.option_block_id
-		JOIN timetables tb ON tb.id = b.timetable_id AND tb.class_id = $2 WHERE a.option_block_id IS NOT NULL`, classA, classB)
+                JOIN timetable_entries b ON b.day_of_week = a.day_of_week AND b.period_number = a.period_number AND b.option_block_id = a.option_block_id
+                JOIN timetables tb ON tb.id = b.timetable_id AND tb.class_id = $2 WHERE a.option_block_id IS NOT NULL`, classA, classB)
 	if shared != 2 {
 		t.Fatalf("shared block periods = %d, want 2", shared)
 	}

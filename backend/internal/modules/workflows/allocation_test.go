@@ -33,7 +33,7 @@ func TestAllocateKeepsContinuityAndRespectsLimit(t *testing.T) {
 		if got[1].TeacherID != ana.ID {
 			t.Fatalf("limit: %+v", got[1])
 		}
-		if got[4].TeacherID != uuid.Nil || !strings.Contains(got[4].Warning, "No teacher is qualified for Art") {
+		if got[4].TeacherID != uuid.Nil || !strings.Contains(got[4].Warning, "Art için yetkin öğretmen yok") {
 			t.Fatalf("unfilled: %+v", got[4])
 		}
 		if load[ben.ID] != 12 || load[ana.ID] != 6 {

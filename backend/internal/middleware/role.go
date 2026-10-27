@@ -23,7 +23,7 @@ func RequireRole(roles ...string) gin.HandlerFunc {
 		}
 
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-			"error": "insufficient permissions",
+			"error": "Bu işlem için yetkiniz yok.",
 		})
 	}
 }

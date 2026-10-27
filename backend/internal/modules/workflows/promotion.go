@@ -16,21 +16,21 @@ import (
 type Promotion struct{}
 
 func (Promotion) Key() string   { return "promotion" }
-func (Promotion) Title() string { return "Promotion and class formation" }
+func (Promotion) Title() string { return "Sınıf geçme ve sınıf oluşturma" }
 func (Promotion) Description() string {
-	return "Places every student in next year's class by the rule for their grade: keep the section, reshuffle, group by subject choice or by A/L stream. New admissions are placed too, and full grades get extra sections."
+	return "Her öğrenciyi sınıf seviyesinin kuralına göre gelecek yılın sınıfına yerleştirir: şubeyi koru, yeniden karıştır, ders seçimine veya A/L alanına göre grupla. Yeni kayıtlı öğrenciler de yerleştirilir ve dolu seviyelere ek şube açılır."
 }
 
 func (Promotion) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_students", Title: "Read students and new admissions", Tool: ToolReadStudents, Phase: "propose"},
-		{Key: "read_choices", Title: "Read next year's subject choices", Tool: ToolReadChoices, Phase: "propose"},
-		{Key: "read_policies", Title: "Read the rule for each grade", Tool: ToolReadPolicies, Phase: "propose"},
-		{Key: "read_classes", Title: "Read next year's classes and free seats", Tool: ToolReadClasses, Phase: "propose"},
-		{Key: "place", Title: "Place students", Tool: ToolPlaceStudents, Phase: "propose"},
-		{Key: "create_classes", Title: "Create the extra sections", Tool: ToolCreateClasses, Phase: "apply"},
-		{Key: "assign_classes", Title: "Assign next year's classes", Tool: ToolAssignClasses, Phase: "apply"},
-		{Key: "save_policies", Title: "Remember the rules", Tool: ToolSavePolicies, Phase: "apply"},
+		{Key: "read_students", Title: "Öğrencileri ve yeni kayıtları oku", Tool: ToolReadStudents, Phase: "propose"},
+		{Key: "read_choices", Title: "Gelecek yılın ders seçimlerini oku", Tool: ToolReadChoices, Phase: "propose"},
+		{Key: "read_policies", Title: "Her seviyenin kuralını oku", Tool: ToolReadPolicies, Phase: "propose"},
+		{Key: "read_classes", Title: "Gelecek yılın sınıflarını ve boş kontenjanlarını oku", Tool: ToolReadClasses, Phase: "propose"},
+		{Key: "place", Title: "Öğrencileri yerleştir", Tool: ToolPlaceStudents, Phase: "propose"},
+		{Key: "create_classes", Title: "Ek şubeleri oluştur", Tool: ToolCreateClasses, Phase: "apply"},
+		{Key: "assign_classes", Title: "Gelecek yılın sınıflarını ata", Tool: ToolAssignClasses, Phase: "apply"},
+		{Key: "save_policies", Title: "Kuralları kaydet", Tool: ToolSavePolicies, Phase: "apply"},
 	}
 }
 
@@ -83,9 +83,9 @@ func (Promotion) Inputs(ctx context.Context, s *Store) ([]InputField, error) {
 		return nil, err
 	}
 	fields := []InputField{
-		{Key: "source_year", Label: "From year", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "target_year", Label: "Into year", Type: "select", Required: true, Options: yearOptions(years), Help: "Create it first with Year rollover."},
-		{Key: "spread_by_marks", Label: "Spread reshuffled grades by last term's marks", Type: "boolean", Default: "false", Help: "Only affects grades set to reshuffle."},
+		{Key: "source_year", Label: "Kaynak yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "target_year", Label: "Hedef yıl", Type: "select", Required: true, Options: yearOptions(years), Help: "Önce Yıl devri ile oluşturun."},
+		{Key: "spread_by_marks", Label: "Yeniden karıştırılan seviyeleri son dönem notlarına göre yayın", Type: "boolean", Default: "false", Help: "Yalnızca yeniden karıştırma kuralı olan seviyeleri etkiler."},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -102,10 +102,10 @@ func (Promotion) Inputs(ctx context.Context, s *Store) ([]InputField, error) {
 	}
 	for i, g := range grades {
 		var next *GradeInfo
-		label := g.Name + " leaves school"
+		label := g.Name + " okuldan ayrılır"
 		if i+1 < len(grades) {
 			next = &grades[i+1]
-			label = g.Name + " to " + next.Name
+			label = g.Name + " sınıfından " + next.Name + " sınıfına"
 		}
 		fields = append(fields, InputField{Key: policyKey(g.ID), Label: label, Type: "select", Required: true, Options: policyOptions, Default: defaultPolicy(stored, g, next, withChoice, withStreams)})
 	}
@@ -124,7 +124,7 @@ func (w Promotion) Check(ctx context.Context, s *Store, in Inputs) ([]Check, err
 			valid = false
 		}
 	}
-	checks = append(checks, Check{Key: "years", Title: "Two different years are chosen", OK: valid, Blocking: true})
+	checks = append(checks, Check{Key: "years", Title: "İki farklı yıl seçilmiş", OK: valid, Blocking: true})
 	if !valid {
 		return checks, nil
 	}
@@ -132,7 +132,7 @@ func (w Promotion) Check(ctx context.Context, s *Store, in Inputs) ([]Check, err
 	if err != nil {
 		return nil, err
 	}
-	checks = append(checks, Check{Key: "target_classes", Title: "Next year has classes", OK: len(classes) > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(len(classes), "class", "classes")})
+	checks = append(checks, Check{Key: "target_classes", Title: "Gelecek yılın sınıfları var", OK: len(classes) > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(len(classes), "sınıf", "sınıf")})
 
 	students, err := s.promotionStudents(ctx, source)
 	if err != nil {
@@ -174,9 +174,9 @@ func (w Promotion) Check(ctx context.Context, s *Store, in Inputs) ([]Check, err
 		}
 	}
 	checks = append(checks,
-		Check{Key: "leavers", Title: "Leavers are marked", OK: graduating == 0, FixPath: "/year-end/leavers", Detail: fmt.Sprintf("%s in leaving grades are still active; they will be listed as leaving, not placed.", plural(graduating, "student", "students"))},
-		Check{Key: "choices", Title: "Subject choices are recorded", OK: needChoice == 0, FixPath: "/year-end/subject_choices", Detail: fmt.Sprintf("%s have no choice for next year and will be placed by size only.", plural(needChoice, "student", "students"))},
-		Check{Key: "streams", Title: "A/L streams are recorded", OK: needStream == 0, FixPath: "/year-end/subject_choices", Detail: fmt.Sprintf("%s have no stream and will be left for you to place.", plural(needStream, "student", "students"))},
+		Check{Key: "leavers", Title: "Ayrılanlar işaretlenmiş", OK: graduating == 0, FixPath: "/year-end/leavers", Detail: fmt.Sprintf("Ayrılma seviyelerindeki %s hâlâ aktif; yerleştirilmek yerine ayrılan olarak listelenecekler.", plural(graduating, "öğrenci", "öğrenci"))},
+		Check{Key: "choices", Title: "Ders seçimleri girilmiş", OK: needChoice == 0, FixPath: "/year-end/subject_choices", Detail: fmt.Sprintf("%s gelecek yıl için seçim girmedi ve yalnızca kontenjana göre yerleştirilecek.", plural(needChoice, "öğrenci", "öğrenci"))},
+		Check{Key: "streams", Title: "A/L alanları girilmiş", OK: needStream == 0, FixPath: "/year-end/subject_choices", Detail: fmt.Sprintf("%s alan girmedi ve yerleştirilmesi size bırakılacak.", plural(needStream, "öğrenci", "öğrenci"))},
 	)
 	return checks, nil
 }
@@ -229,7 +229,7 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 			return "", err
 		}
 		candidates = append(current, intake...)
-		return fmt.Sprintf("%d current students, %d new admissions", len(current), len(intake)), nil
+		return fmt.Sprintf("%d mevcut öğrenci, %d yeni kayıt", len(current), len(intake)), nil
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -261,7 +261,7 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 			}
 			movers = append(movers, moving{PromotionCandidate: c, target: next[c.FromGradeID].ID, policy: policy})
 		}
-		return fmt.Sprintf("%d moving up, %d leaving", len(movers), len(leaving)), nil
+		return fmt.Sprintf("%d sınıf geçiyor, %d ayrılıyor", len(movers), len(leaving)), nil
 	})
 
 	ids := make([]uuid.UUID, len(movers))
@@ -280,7 +280,7 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 				return "", err
 			}
 		}
-		return fmt.Sprintf("%d students have next-year subjects", len(choices)), nil
+		return fmt.Sprintf("%d öğrencinin gelecek yıl dersleri var", len(choices)), nil
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -305,7 +305,7 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 				streamName[c.StreamID.String()] = c.StreamName
 			}
 		}
-		return plural(len(targetClasses), "class", "classes") + " next year", err
+		return plural(len(targetClasses), "sınıf", "sınıf") + " gelecek yıl", err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -370,11 +370,11 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 			}
 			for _, nc := range added {
 				if nc.grade == g.ID {
-					options[g.ID] = append(options[g.ID], Option{Value: nc.class.ID, Label: nc.class.Name + " (new)"})
+					options[g.ID] = append(options[g.ID], Option{Value: nc.class.ID, Label: nc.class.Name + " (yeni)"})
 				}
 			}
 		}
-		return fmt.Sprintf("%d placed, %d new sections", len(placements), len(added)), nil
+		return fmt.Sprintf("%d yerleştirildi, %d yeni şube", len(placements), len(added)), nil
 	})
 
 	// Rows in school order: grade, then name.
@@ -398,13 +398,13 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 	newRows := make([]Row, len(added))
 	for i, nc := range added {
 		stream := streamName[nc.class.StreamID]
-		newRows[i] = Row{ID: nc.class.ID, Group: gradeName[nc.grade], Reason: fmt.Sprintf("%d students do not fit the existing classes.", planned[nc.class.ID]),
+		newRows[i] = Row{ID: nc.class.ID, Group: gradeName[nc.grade], Reason: fmt.Sprintf("%d öğrenci mevcut sınıflara sığmıyor.", planned[nc.class.ID]),
 			Cells: map[string]string{"grade": gradeName[nc.grade], "class": nc.class.Name, "medium": mediumName[nc.class.MediumID], "stream": stream, "capacity": strconv.Itoa(nc.class.Capacity), "create": "true",
 				"grade_id": nc.grade.String(), "medium_id": nc.class.MediumID, "stream_id": nc.class.StreamID, "stream_group_id": nc.class.StreamGroupID}}
 	}
 	leaveRows := make([]Row, len(leaving))
 	for i, l := range leaving {
-		leaveRows[i] = Row{ID: l.ID.String(), Group: gradeName[l.FromGradeID], Reason: "Leaves school. Mark as left in the Leavers step.",
+		leaveRows[i] = Row{ID: l.ID.String(), Group: gradeName[l.FromGradeID], Reason: "Okuldan ayrılıyor. Ayrılan öğrenciler adımında ayrıldı olarak işaretleyin.",
 			Cells: map[string]string{"from": l.ClassName, "name": l.Name, "index": l.Index}}
 	}
 	var sizeRows []Row
@@ -420,29 +420,29 @@ func (w Promotion) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 	}
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "Moving up", Value: strconv.Itoa(len(movers) - admissions)},
-			{Label: "New admissions", Value: strconv.Itoa(admissions)},
-			{Label: "Leaving", Value: strconv.Itoa(len(leaving))},
-			{Label: "New sections", Value: strconv.Itoa(len(added))},
-			{Label: "Not placed", Value: strconv.Itoa(unplaced)},
+			{Label: "Sınıf geçen", Value: strconv.Itoa(len(movers) - admissions)},
+			{Label: "Yeni kayıtlar", Value: strconv.Itoa(admissions)},
+			{Label: "Ayrılanlar", Value: strconv.Itoa(len(leaving))},
+			{Label: "Yeni şubeler", Value: strconv.Itoa(len(added))},
+			{Label: "Yerleştirilemeyen", Value: strconv.Itoa(unplaced)},
 		},
 		Sections: []Section{
-			{Key: "placements", Title: "Placements", Description: "Change any student's class here. Every row says why it was placed there.", Columns: []Column{
-				{Key: "from", Label: "Now in", Type: "text"}, {Key: "name", Label: "Name", Type: "text"}, {Key: "index", Label: "Index no.", Type: "text"},
-				{Key: "to_grade", Label: "Moves to", Type: "text"}, {Key: "class", Label: "Class", Type: "select", Editable: true},
+			{Key: "placements", Title: "Yerleştirmeler", Description: "Burada herhangi bir öğrencinin sınıfını değiştirebilirsiniz. Her satır neden oraya yerleştirildiğini açıklar.", Columns: []Column{
+				{Key: "from", Label: "Şu anki sınıfı", Type: "text"}, {Key: "name", Label: "Ad", Type: "text"}, {Key: "index", Label: "Okul no.", Type: "text"},
+				{Key: "to_grade", Label: "Gideceği seviye", Type: "text"}, {Key: "class", Label: "Sınıf", Type: "select", Editable: true},
 			}, Rows: placeRows},
-			{Key: "new_classes", Title: "Extra sections", Description: "Untick a section to not create it; its students are then left unplaced.", Columns: []Column{
-				{Key: "grade", Label: "Grade", Type: "text"}, {Key: "class", Label: "Class", Type: "text"}, {Key: "medium", Label: "Medium", Type: "text"},
-				{Key: "stream", Label: "Stream", Type: "text"}, {Key: "capacity", Label: "Capacity", Type: "number"}, {Key: "create", Label: "Create", Type: "boolean", Editable: true},
+			{Key: "new_classes", Title: "Ek şubeler", Description: "Oluşturulmasını istemediğiniz şubenin işaretini kaldırın; bu durumda öğrencileri yerleştirilmeden kalır.", Columns: []Column{
+				{Key: "grade", Label: "Sınıf seviyesi", Type: "text"}, {Key: "class", Label: "Sınıf", Type: "text"}, {Key: "medium", Label: "Öğretim dili", Type: "text"},
+				{Key: "stream", Label: "Alan", Type: "text"}, {Key: "capacity", Label: "Kontenjan", Type: "number"}, {Key: "create", Label: "Oluştur", Type: "boolean", Editable: true},
 			}, Rows: newRows},
-			{Key: "leaving", Title: "Leaving school", Columns: []Column{{Key: "from", Label: "Class", Type: "text"}, {Key: "name", Label: "Name", Type: "text"}, {Key: "index", Label: "Index no.", Type: "text"}}, Rows: leaveRows},
-			{Key: "class_sizes", Title: "Class sizes", Description: "As proposed, before any changes you make above.", Columns: []Column{
-				{Key: "class", Label: "Class", Type: "text"}, {Key: "capacity", Label: "Capacity", Type: "number"}, {Key: "before", Label: "Already placed", Type: "number"}, {Key: "after", Label: "After", Type: "number"},
+			{Key: "leaving", Title: "Okuldan ayrılanlar", Columns: []Column{{Key: "from", Label: "Sınıf", Type: "text"}, {Key: "name", Label: "Ad", Type: "text"}, {Key: "index", Label: "Okul no.", Type: "text"}}, Rows: leaveRows},
+			{Key: "class_sizes", Title: "Sınıf mevcutları", Description: "Yukarıda yapacağınız değişikliklerden önceki, öneri hâlindeki değerler.", Columns: []Column{
+				{Key: "class", Label: "Sınıf", Type: "text"}, {Key: "capacity", Label: "Kontenjan", Type: "number"}, {Key: "before", Label: "Önceden yerleşmiş", Type: "number"}, {Key: "after", Label: "Sonra", Type: "number"},
 			}, Rows: sizeRows},
 		},
 	}
 	if unplaced > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s could not be placed. Pick a class for each by hand or fix their stream first.", plural(unplaced, "student", "students")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s yerleştirilemedi. Her biri için elle bir sınıf seçin veya önce alanını düzeltin.", plural(unplaced, "öğrenci", "öğrenci")))
 	}
 	return p, "promotion:" + target.String(), nil
 }
@@ -495,12 +495,12 @@ func (w Promotion) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 			capacity, _ := strconv.Atoi(r.Cells["capacity"])
 			id, err := tx.createClass(ctx, target, YearClass{GradeID: grade, Name: r.Cells["class"], MediumID: optionalID(r.Cells["medium_id"]), StreamID: optionalID(r.Cells["stream_id"]), StreamGroupID: optionalID(r.Cells["stream_group_id"]), Capacity: int32(capacity)})
 			if err != nil {
-				return "", fmt.Errorf("class %s: %w", r.Cells["class"], err)
+				return "", fmt.Errorf("sınıf %s: %w", r.Cells["class"], err)
 			}
 			realID[r.ID] = id
 			snap.Created = append(snap.Created, id)
 		}
-		return plural(len(snap.Created), "section", "sections") + " created", nil
+		return plural(len(snap.Created), "şube", "şube") + " oluşturuldu", nil
 	}); err != nil {
 		return nil, "", err
 	}
@@ -543,7 +543,7 @@ func (w Promotion) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 		if err := tx.deleteIntakes(ctx, placed); err != nil {
 			return "", err
 		}
-		return fmt.Sprintf("%d students in %d classes", len(assignments), len(classSet)), nil
+		return fmt.Sprintf("%d öğrenci, %d sınıfta", len(assignments), len(classSet)), nil
 	}); err != nil {
 		return nil, "", err
 	}
@@ -565,15 +565,15 @@ func (w Promotion) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 				saved++
 			}
 		}
-		return plural(saved, "rule", "rules") + " saved", nil
+		return plural(saved, "kural", "kural") + " kaydedildi", nil
 	}); err != nil {
 		return nil, "", err
 	}
 
 	data, _ := json.Marshal(snap)
-	summary := fmt.Sprintf("Placed %s in %s", plural(len(assignments), "student", "students"), plural(len(classSet), "class", "classes"))
+	summary := fmt.Sprintf("%s, %s içine yerleştirildi", plural(len(assignments), "öğrenci", "öğrenci"), plural(len(classSet), "sınıf", "sınıf"))
 	if len(snap.Created) > 0 {
-		summary += fmt.Sprintf(", created %s", plural(len(snap.Created), "section", "sections"))
+		summary += fmt.Sprintf(", %s oluşturuldu", plural(len(snap.Created), "şube", "şube"))
 	}
 	return data, summary, nil
 }

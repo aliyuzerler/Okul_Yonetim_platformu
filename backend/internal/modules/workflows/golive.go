@@ -19,16 +19,16 @@ type GoLive struct {
 func NewGoLive(notices *notifications.NotificationService) GoLive { return GoLive{notices: notices} }
 
 func (GoLive) Key() string   { return "go_live" }
-func (GoLive) Title() string { return "Go live" }
+func (GoLive) Title() string { return "Yılı açılışa alma" }
 func (GoLive) Description() string {
-	return "Makes the new year and its first term current, so every page switches to it, and sends one notice to the school."
+	return "Yeni yılı ve ilk dönemini güncel yapar, böylece her sayfa ona geçer, ve okula tek bir duyuru gönderir."
 }
 
 func (GoLive) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "check_readiness", Title: "Count classes, students and timetables", Tool: ToolCheckYearReadiness, Phase: "propose"},
-		{Key: "set_current", Title: "Make the year and first term current", Tool: ToolSetCurrentYear, Phase: "apply"},
-		{Key: "notify", Title: "Tell the school", Tool: ToolNotifySchool, Phase: "apply"},
+		{Key: "check_readiness", Title: "Sınıfları, öğrencileri ve ders programlarını say", Tool: ToolCheckYearReadiness, Phase: "propose"},
+		{Key: "set_current", Title: "Yılı ve ilk dönemi güncel yap", Tool: ToolSetCurrentYear, Phase: "apply"},
+		{Key: "notify", Title: "Okula duyur", Tool: ToolNotifySchool, Phase: "apply"},
 	}
 }
 
@@ -38,8 +38,8 @@ func (GoLive) Inputs(ctx context.Context, s *Store) ([]InputField, error) {
 		return nil, err
 	}
 	fields := []InputField{
-		{Key: "target_year", Label: "Year to make current", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "notify", Label: "Send a notice to everyone", Type: "boolean", Default: "true"},
+		{Key: "target_year", Label: "Güncel yapılacak yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "notify", Label: "Herkese duyuru gönder", Type: "boolean", Default: "true"},
 	}
 	// Years are newest first, so the first non-current one is the year being prepared.
 	for _, y := range years {
@@ -64,11 +64,11 @@ func (GoLive) Check(ctx context.Context, s *Store, in Inputs) ([]Check, error) {
 		}
 	}
 	return []Check{
-		{Key: "not_current", Title: "The year exists and is not current yet", OK: ok && !year.Current, Blocking: true},
-		{Key: "classes", Title: "The year has classes", OK: r.Classes > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(int(r.Classes), "class", "classes")},
-		{Key: "students", Title: "Students are placed in classes", OK: r.Students > 0, FixPath: "/year-end/promotion", Detail: plural(int(r.Students), "student", "students") + " placed"},
-		{Key: "timetables", Title: "Every class has a published timetable", OK: r.Classes > 0 && r.PublishedTimetables >= r.Classes, FixPath: "/timetables", Detail: fmt.Sprintf("%d of %d published", r.PublishedTimetables, r.Classes)},
-		{Key: "terms", Title: "The year has terms", OK: r.Terms > 0, FixPath: "/academic-years", Detail: plural(int(r.Terms), "term", "terms")},
+		{Key: "not_current", Title: "Yıl var ve henüz güncel değil", OK: ok && !year.Current, Blocking: true},
+		{Key: "classes", Title: "Yılın sınıfları var", OK: r.Classes > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(int(r.Classes), "sınıf", "sınıf")},
+		{Key: "students", Title: "Öğrenciler sınıflara yerleştirilmiş", OK: r.Students > 0, FixPath: "/year-end/promotion", Detail: plural(int(r.Students), "öğrenci", "öğrenci") + " yerleştirilmiş"},
+		{Key: "timetables", Title: "Her sınıfın yayınlanmış bir ders programı var", OK: r.Classes > 0 && r.PublishedTimetables >= r.Classes, FixPath: "/timetables", Detail: fmt.Sprintf("%d / %d yayınlandı", r.PublishedTimetables, r.Classes)},
+		{Key: "terms", Title: "Yılın dönemleri var", OK: r.Terms > 0, FixPath: "/academic-years", Detail: plural(int(r.Terms), "dönem", "dönem")},
 	}, nil
 }
 
@@ -91,29 +91,29 @@ func (w GoLive) Propose(ctx context.Context, s *Store, in Inputs, trace *Trace) 
 		}
 		years, err := s.years(ctx)
 		current = currentYear(years)
-		return fmt.Sprintf("%d classes, %d students, %d published timetables", r.Classes, r.Students, r.PublishedTimetables), err
+		return fmt.Sprintf("%d sınıf, %d öğrenci, %d yayınlanmış ders programı", r.Classes, r.Students, r.PublishedTimetables), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
-	from := "None"
+	from := "Yok"
 	if current != nil {
 		from = current.Label
 	}
-	firstTerm := "None"
+	firstTerm := "Yok"
 	if len(terms) > 0 {
 		firstTerm = terms[0].Name
 	}
 	p := Proposal{
-		Summary: []Stat{{Label: "Classes", Value: strconv.Itoa(int(r.Classes))}, {Label: "Students placed", Value: strconv.Itoa(int(r.Students))}, {Label: "Timetables published", Value: fmt.Sprintf("%d of %d", r.PublishedTimetables, r.Classes)}},
-		Sections: []Section{{Key: "changes", Title: "What changes", Columns: []Column{{Key: "what", Label: "Setting", Type: "text"}, {Key: "from", Label: "Now", Type: "text"}, {Key: "to", Label: "After", Type: "text"}},
+		Summary: []Stat{{Label: "Sınıflar", Value: strconv.Itoa(int(r.Classes))}, {Label: "Yerleştirilen öğrenci", Value: strconv.Itoa(int(r.Students))}, {Label: "Yayınlanan ders programı", Value: fmt.Sprintf("%d / %d", r.PublishedTimetables, r.Classes)}},
+		Sections: []Section{{Key: "changes", Title: "Neler değişir", Columns: []Column{{Key: "what", Label: "Ayar", Type: "text"}, {Key: "from", Label: "Şu an", Type: "text"}, {Key: "to", Label: "Sonra", Type: "text"}},
 			Rows: []Row{
-				{ID: "year", Cells: map[string]string{"what": "Current academic year", "from": from, "to": year.Label}},
-				{ID: "term", Cells: map[string]string{"what": "Current term", "from": "-", "to": firstTerm}},
-				{ID: "notice", Cells: map[string]string{"what": "Notice to everyone", "from": "-", "to": map[bool]string{true: "Sent", false: "Not sent"}[in["notify"] == "true"]}},
+				{ID: "year", Cells: map[string]string{"what": "Güncel eğitim-öğretim yılı", "from": from, "to": year.Label}},
+				{ID: "term", Cells: map[string]string{"what": "Güncel dönem", "from": "-", "to": firstTerm}},
+				{ID: "notice", Cells: map[string]string{"what": "Herkese duyuru", "from": "-", "to": map[bool]string{true: "Gönderilir", false: "Gönderilmez"}[in["notify"] == "true"]}},
 			}}},
 	}
 	if r.PublishedTimetables < r.Classes {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%d classes have no published timetable yet; teachers and students will see an empty timetable.", r.Classes-r.PublishedTimetables))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%d sınıfın henüz yayınlanmış ders programı yok; öğretmenler ve öğrenciler boş bir ders programı görecek.", r.Classes-r.PublishedTimetables))
 	}
 	return p, "golive:" + target.String(), nil
 }
@@ -155,12 +155,12 @@ func (w GoLive) Apply(ctx context.Context, tx *Store, in Inputs, _ Proposal, _ u
 				return "", err
 			}
 		}
-		return label + " is now current", nil
+		return label + " artık güncel", nil
 	}); err != nil {
 		return nil, "", err
 	}
 	data, _ := json.Marshal(snap)
-	return data, label + " is now the current year", nil
+	return data, label + " artık güncel eğitim-öğretim yılı", nil
 }
 
 // AfterApply sends the notice once the switch has committed; a failure never undoes the switch.
@@ -174,11 +174,11 @@ func (w GoLive) AfterApply(ctx context.Context, s *Store, in Inputs, actor uuid.
 		return err
 	}
 	_, err = w.notices.Create(ctx, notifications.CreateNotificationRequest{
-		Title:          "The " + year.Label + " school year has started",
-		Message:        "Classes and timetables for " + year.Label + " are now live in OpenSchool.",
+		Title:          year.Label + " eğitim-öğretim yılı başladı",
+		Message:        year.Label + " yılı sınıfları ve ders programları artık OpenSchool'de yayında.",
 		Category:       "general",
 		Priority:       "normal",
-		RecipientRules: []notifications.RecipientRule{{Type: notifications.RuleEveryone, Label: "Everyone"}},
+		RecipientRules: []notifications.RecipientRule{{Type: notifications.RuleEveryone, Label: "Herkese"}},
 	}, actor, authz.RoleAdmin)
 	return err
 }

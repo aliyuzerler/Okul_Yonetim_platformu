@@ -60,17 +60,17 @@ type testRequest struct {
 func (h handler) sendTest(c *gin.Context) {
 	actor, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "çağıran kimliği doğrulanamadı"})
 		return
 	}
 	var req testRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "choose a template"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bir şablon seçin"})
 		return
 	}
 	to, err := h.users.userEmail(c.Request.Context(), actor)
 	if err != nil || to == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "your account has no email address to send to"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "hesabınızda gönderim yapılacak bir e-posta adresi yok"})
 		return
 	}
 	err = h.sender.SendTest(c.Request.Context(), req.Template, to)

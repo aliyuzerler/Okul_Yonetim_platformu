@@ -18,22 +18,22 @@ import (
 type SubjectChoices struct{}
 
 func (SubjectChoices) Key() string   { return "subject_choices" }
-func (SubjectChoices) Title() string { return "Subject choices" }
+func (SubjectChoices) Title() string { return "Ders seçimleri" }
 func (SubjectChoices) Description() string {
-	return "Records next year's subject choices for one curriculum level, such as the O/L baskets or one A/L stream. Enter them in the table or import the paper forms as a CSV; each group's rules are checked before saving."
+	return "Bir müfredat seviyesinin (O/L sepetleri veya bir A/L alanı) gelecek yıl ders seçimlerini kaydeder. Tabloya girin veya kâğıt formları CSV olarak içe aktarın; her grubun kuralı kaydetmeden önce denetlenir."
 }
 
 var (
-	ToolReadCurriculum = tool("read_curriculum", "Reads a level's selection groups with their subjects and how many a student must pick.", false)
-	ToolSaveChoices    = tool("save_subject_choices", "Replaces each student's subjects in the level for next year and locks them, so the portal cannot change them.", true)
+	ToolReadCurriculum = tool("read_curriculum", "Bir seviyenin seçim gruplarını, derslerini ve öğrencinin kaç ders seçmesi gerektiğini okur.", false)
+	ToolSaveChoices    = tool("save_subject_choices", "Seviyedeki her öğrencinin gelecek yıl derslerini değiştirir ve kilitler, böylece portaldan değiştirilemez.", true)
 )
 
 func (SubjectChoices) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_curriculum", Title: "Read the level's subject groups", Tool: ToolReadCurriculum, Phase: "propose"},
-		{Key: "read_students", Title: "Read students moving into the grade", Tool: ToolReadStudents, Phase: "propose"},
-		{Key: "read_choices", Title: "Read choices already recorded and the CSV", Tool: ToolReadChoices, Phase: "propose"},
-		{Key: "save_choices", Title: "Save choices", Tool: ToolSaveChoices, Phase: "apply"},
+		{Key: "read_curriculum", Title: "Seviyenin ders gruplarını oku", Tool: ToolReadCurriculum, Phase: "propose"},
+		{Key: "read_students", Title: "Bu seviyeye geçecek öğrencileri oku", Tool: ToolReadStudents, Phase: "propose"},
+		{Key: "read_choices", Title: "Kayıtlı seçimleri ve CSV'yi oku", Tool: ToolReadChoices, Phase: "propose"},
+		{Key: "save_choices", Title: "Seçimleri kaydet", Tool: ToolSaveChoices, Phase: "apply"},
 	}
 }
 
@@ -57,12 +57,12 @@ func (SubjectChoices) Inputs(ctx context.Context, s *Store) ([]InputField, error
 		levelOptions[i] = Option{Value: l.ID.String(), Label: l.GradeName + ": " + l.Label}
 	}
 	fields := []InputField{
-		{Key: "source_year", Label: "From year", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "target_year", Label: "Choices for year", Type: "select", Required: true, Options: yearOptions(years), Help: "Create it first with Year rollover."},
-		{Key: "level", Label: "Curriculum level", Type: "select", Required: true, Options: levelOptions, Help: "For A/L, run once per stream."},
-		{Key: "csv", Label: "Choices CSV (optional)", Type: "csv", Template: "index_number,level,subjects\n2026/0101,,Subject one;Subject two;Subject three\n",
-			Help: "Subjects by name or code, separated by ;. Leave level blank or use the level's name; rows for other levels are ignored."},
-		{Key: "lock", Label: "Lock saved choices so students cannot change them in the portal", Type: "boolean", Default: "true"},
+		{Key: "source_year", Label: "Kaynak yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "target_year", Label: "Seçimlerin yapılacağı yıl", Type: "select", Required: true, Options: yearOptions(years), Help: "Önce Yıl devri ile oluşturun."},
+		{Key: "level", Label: "Müfredat seviyesi", Type: "select", Required: true, Options: levelOptions, Help: "A/L için her alan için bir kez çalıştırın."},
+		{Key: "csv", Label: "Ders seçimleri CSV (isteğe bağlı)", Type: "csv", Template: "index_number,level,subjects\n2026/0101,,Ders bir;Ders iki;Ders üç\n",
+			Help: "Dersler ad veya kodla, ; ile ayrılmış. level sütununu boş bırakın veya seviyenin adını yazın; diğer seviyelere ait satırlar yok sayılır."},
+		{Key: "lock", Label: "Kaydedilen seçimleri kilitle: öğrenciler portaldan değiştiremesin", Type: "boolean", Default: "true"},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -93,20 +93,20 @@ func (w SubjectChoices) Check(ctx context.Context, s *Store, in Inputs) ([]Check
 			validYears = false
 		}
 	}
-	checks := []Check{{Key: "years", Title: "Two different years are chosen", OK: validYears, Blocking: true, FixPath: "/year-end/year_rollover"}}
+	checks := []Check{{Key: "years", Title: "İki farklı yıl seçilmiş", OK: validYears, Blocking: true, FixPath: "/year-end/year_rollover"}}
 	level, groups, err := w.level(ctx, s, in)
 	if err != nil {
 		return nil, err
 	}
-	checks = append(checks, Check{Key: "level", Title: "The level has subject groups", OK: level != nil && len(groups) > 0, Blocking: true, FixPath: "/curriculum",
-		Detail: plural(len(groups), "group", "groups")})
+	checks = append(checks, Check{Key: "level", Title: "Seviyenin ders grupları var", OK: level != nil && len(groups) > 0, Blocking: true, FixPath: "/curriculum",
+		Detail: plural(len(groups), "grup", "grup")})
 	if in["csv"] != "" {
 		_, err := parseChoicesCSV(in["csv"])
 		detail := ""
 		if err != nil {
 			detail = err.Error()
 		}
-		checks = append(checks, Check{Key: "csv", Title: "The CSV can be read", OK: err == nil, Blocking: true, Detail: detail})
+		checks = append(checks, Check{Key: "csv", Title: "CSV okunabiliyor", OK: err == nil, Blocking: true, Detail: detail})
 	}
 	if validYears && level != nil {
 		classes, err := s.yearClasses(ctx, target)
@@ -119,8 +119,8 @@ func (w SubjectChoices) Check(ctx context.Context, s *Store, in Inputs) ([]Check
 				n++
 			}
 		}
-		checks = append(checks, Check{Key: "classes", Title: "Next year has classes for " + level.GradeName, OK: n > 0, FixPath: "/year-end/year_rollover",
-			Detail: "Choices can be saved without classes; Promotion needs them to place students."})
+		checks = append(checks, Check{Key: "classes", Title: level.GradeName + " seviyesinin gelecek yıl sınıfları var", OK: n > 0, FixPath: "/year-end/year_rollover",
+			Detail: "Seçimler sınıflar olmadan da kaydedilebilir; Sınıf geçme ve sınıf oluşturma, öğrencileri yerleştirmek için sınıflara ihtiyaç duyar."})
 	}
 	return checks, nil
 }
@@ -155,10 +155,10 @@ func parseChoicesCSV(text string) (map[string]choiceRecord, error) {
 	r.TrimLeadingSpace = true
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, fmt.Errorf("the CSV could not be read: %w", err)
+		return nil, fmt.Errorf("CSV okunamadı: %w", err)
 	}
 	if len(records) == 0 {
-		return nil, fmt.Errorf("the CSV is empty")
+		return nil, fmt.Errorf("CSV boş")
 	}
 	col := map[string]int{}
 	for i, h := range records[0] {
@@ -167,7 +167,7 @@ func parseChoicesCSV(text string) (map[string]choiceRecord, error) {
 	idx, okIdx := col["index_number"]
 	subj, okSubj := col["subjects"]
 	if !okIdx || !okSubj {
-		return nil, fmt.Errorf("the header needs index_number and subjects columns")
+		return nil, fmt.Errorf("başlık satırında index_number ve subjects sütunları olmalı")
 	}
 	lvl, hasLevel := col["level"]
 	out := map[string]choiceRecord{}
@@ -211,7 +211,7 @@ func choiceColumns(groups []ChoiceGroup) []Column {
 				label += " " + strconv.Itoa(n)
 			}
 			if n > g.Min {
-				label += " (optional)"
+				label += " (isteğe bağlı)"
 			}
 			out = append(out, Column{Key: slotKey(g.ID, n), Label: label, Type: "select", Editable: true, Options: g.Subjects})
 		}
@@ -287,20 +287,20 @@ func choiceProblems(groups []ChoiceGroup, picks map[uuid.UUID][]string) []string
 		}
 		for _, v := range picks[g.ID] {
 			if names[v] == "" {
-				out = append(out, g.Label+": a subject is not offered in this group")
+				out = append(out, g.Label+": bu grupta sunulmayan bir ders var")
 				continue
 			}
 			if other, dup := taken[v]; dup {
-				out = append(out, fmt.Sprintf("%s is picked twice (%s and %s)", names[v], other, g.Label))
+				out = append(out, fmt.Sprintf("%s iki kez seçilmiş (%s ve %s)", names[v], other, g.Label))
 			}
 			taken[v] = g.Label
 		}
 		if n := len(picks[g.ID]); n < g.Min || n > g.Max {
 			want := strconv.Itoa(g.Min)
 			if g.Min != g.Max {
-				want = fmt.Sprintf("%d to %d", g.Min, g.Max)
+				want = fmt.Sprintf("%d ile %d", g.Min, g.Max)
 			}
-			out = append(out, fmt.Sprintf("%s needs %s, has %d", g.Label, want, n))
+			out = append(out, fmt.Sprintf("%s: %s ders gerekir, şu an %d", g.Label, want, n))
 		}
 	}
 	return out
@@ -318,7 +318,7 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			return "", err
 		}
 		if level == nil {
-			return "", fmt.Errorf("%w: unknown level", ErrInvalidProposal)
+			return "", fmt.Errorf("%w: bilinmeyen seviye", ErrInvalidProposal)
 		}
 		levels, err := s.gradeLevels(ctx)
 		for _, l := range levels {
@@ -326,7 +326,7 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 				siblings++
 			}
 		}
-		return fmt.Sprintf("%s, %s", level.Label, plural(len(groups), "group", "groups")), err
+		return fmt.Sprintf("%s, %s", level.Label, plural(len(groups), "grup", "grup")), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -357,7 +357,7 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			}
 		}
 		sort.SliceStable(students, func(i, j int) bool { return students[i].Name < students[j].Name })
-		return fmt.Sprintf("%s moving into %s", plural(len(students), "student", "students"), level.GradeName), nil
+		return fmt.Sprintf("%s %s seviyesine geçiyor", plural(len(students), "öğrenci", "öğrenci"), level.GradeName), nil
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -404,15 +404,15 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			}
 			cells := map[string]string{"index": st.Index, "name": st.Name, "from": st.ClassName, "medium": st.MediumID}
 			include := siblings == 1 || len(here[st.ID]) > 0
-			reason := "No choice recorded yet."
+			reason := "Henüz seçim girilmemiş."
 			var warning string
 			fillSlots(groups, cells, here[st.ID])
 			if len(here[st.ID]) > 0 {
-				reason = "Choice already recorded."
+				reason = "Seçim zaten girilmiş."
 			}
 			if rec, ok := fromCSV[st.Index]; ok && (rec.level == "" || normalise(rec.level) == normalise(level.Label)) {
 				include = true
-				reason = fmt.Sprintf("From the CSV, line %d.", rec.line)
+				reason = fmt.Sprintf("CSV'den, %d. satır.", rec.line)
 				for _, c := range choiceColumns(groups) {
 					cells[c.Key] = ""
 				}
@@ -426,10 +426,10 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 					}
 				}
 				if left := fillSlots(groups, cells, subjects); len(left) > 0 {
-					warning = fmt.Sprintf("%s did not fit the groups' limits.", plural(len(left), "subject", "subjects"))
+					warning = fmt.Sprintf("%s grupların sınırlarına uymadı.", plural(len(left), "ders", "ders"))
 				}
 				if len(unknown) > 0 {
-					warning = "Not offered in this level: " + strings.Join(unknown, ", ") + "."
+					warning = "Bu seviyede sunulmayan dersler: " + strings.Join(unknown, ", ") + "."
 				}
 			}
 			picks := picksFromCells(groups, cells)
@@ -440,7 +440,7 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			}
 			if locked[st.ID] {
 				lockedCount++
-				reason += " Locked in the portal; saving here replaces it."
+				reason += " Portaldan kilitli; burada kaydetmek onu değiştirir."
 			}
 			if len(picks) > 0 && warning == "" {
 				complete++
@@ -450,13 +450,13 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			cells["include"] = strconv.FormatBool(include)
 			rows = append(rows, Row{ID: st.ID.String(), Group: st.ClassName, Reason: reason, Warning: warning, Cells: cells})
 		}
-		return fmt.Sprintf("%d complete, %d still to enter", complete, missing), nil
+		return fmt.Sprintf("%d tamamlanmış, %d girilecek", complete, missing), nil
 	}); err != nil {
 		return Proposal{}, "", err
 	}
 
-	columns := []Column{{Key: "from", Label: "Now in", Type: "text"}, {Key: "index", Label: "Index no.", Type: "text"}, {Key: "name", Label: "Name", Type: "text"},
-		{Key: "include", Label: "In " + level.Label, Type: "boolean", Editable: true}}
+	columns := []Column{{Key: "from", Label: "Şu anki sınıfı", Type: "text"}, {Key: "index", Label: "Okul no.", Type: "text"}, {Key: "name", Label: "Ad", Type: "text"},
+		{Key: "include", Label: level.Label + " içinde", Type: "boolean", Editable: true}}
 	columns = append(columns, choiceColumns(groups)...)
 	var fixed []string
 	for _, g := range groups {
@@ -466,26 +466,26 @@ func (w SubjectChoices) Propose(ctx context.Context, s *Store, in Inputs, trace 
 			}
 		}
 	}
-	description := "Pick each student's subjects. Only ticked students with a choice are saved; students left blank keep what they had."
+	description := "Her öğrencinin derslerini seçin. Yalnızca işaretli ve seçimi olan öğrenciler kaydedilir; boş bırakılan öğrenciler mevcut seçimlerini korur."
 	if len(fixed) > 0 {
-		description += " Everyone also takes " + strings.Join(fixed, ", ") + "."
+		description += " Herkes ayrıca şu dersleri alır: " + strings.Join(fixed, ", ") + "."
 	}
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "Level", Value: level.GradeName + ": " + level.Label},
-			{Label: "Students", Value: strconv.Itoa(len(rows))},
-			{Label: "Choice complete", Value: strconv.Itoa(complete)},
-			{Label: "Still to enter", Value: strconv.Itoa(missing)},
-			{Label: "In another stream", Value: strconv.Itoa(elsewhere)},
-			{Label: "Locked in the portal", Value: strconv.Itoa(lockedCount)},
+			{Label: "Seviye", Value: level.GradeName + ": " + level.Label},
+			{Label: "Öğrenci", Value: strconv.Itoa(len(rows))},
+			{Label: "Seçimi tamamlanan", Value: strconv.Itoa(complete)},
+			{Label: "Girilecek", Value: strconv.Itoa(missing)},
+			{Label: "Başka bir alanda", Value: strconv.Itoa(elsewhere)},
+			{Label: "Portaldan kilitli", Value: strconv.Itoa(lockedCount)},
 		},
-		Sections: []Section{{Key: "choices", Title: "Choices", Description: description, Columns: columns, Rows: rows}},
+		Sections: []Section{{Key: "choices", Title: "Seçimler", Description: description, Columns: columns, Rows: rows}},
 	}
 	if missing > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s have no complete choice yet. Fill them in here, or save now and finish later.", plural(missing, "student", "students")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s henüz tamamlanmış bir seçim yapmadı. Burada doldurun veya şimdi kaydedip sonra tamamlayın.", plural(missing, "öğrenci", "öğrenci")))
 	}
 	if siblings > 1 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s has %d levels. Tick the students in %s; run again for each other stream.", level.GradeName, siblings, level.Label))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s için %d müfredat seviyesi var. %s içindeki öğrencileri işaretleyin; kalan her alan için akışı yeniden çalıştırın.", level.GradeName, siblings, level.Label))
 	}
 	return p, "subject_choices:" + target.String() + ":" + level.ID.String(), nil
 }
@@ -505,7 +505,7 @@ func (w SubjectChoices) Apply(ctx context.Context, tx *Store, in Inputs, p Propo
 		return nil, "", err
 	}
 	if level == nil {
-		return nil, "", fmt.Errorf("%w: unknown level", ErrInvalidProposal)
+		return nil, "", fmt.Errorf("%w: bilinmeyen seviye", ErrInvalidProposal)
 	}
 	snap := choicesSnapshot{Year: target, Level: level.ID}
 	var rows []Enrollment
@@ -557,12 +557,12 @@ func (w SubjectChoices) Apply(ctx context.Context, tx *Store, in Inputs, p Propo
 				return "", err
 			}
 		}
-		return fmt.Sprintf("%s saved", plural(len(snap.Students), "student's choice", "students' choices")), nil
+		return fmt.Sprintf("%s kaydedildi", plural(len(snap.Students), "öğrencinin seçimi", "öğrencinin seçimi")), nil
 	}); err != nil {
 		return nil, "", err
 	}
 	data, _ := json.Marshal(snap)
-	return data, fmt.Sprintf("Saved %s subjects for %s", level.Label, plural(len(snap.Students), "student", "students")), nil
+	return data, fmt.Sprintf("%s için %s öğrencinin dersleri kaydedildi", level.Label, plural(len(snap.Students), "öğrenci", "öğrenci")), nil
 }
 
 func (SubjectChoices) Revert(ctx context.Context, tx *Store, snapshot json.RawMessage) error {

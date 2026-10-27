@@ -27,7 +27,7 @@ func (h *reconciliationHandler) listOrphaned(c *gin.Context) {
 func (h *reconciliationHandler) deleteOrphaned(c *gin.Context) {
 	actorID, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 
@@ -39,5 +39,5 @@ func (h *reconciliationHandler) deleteOrphaned(c *gin.Context) {
 		apierror.RespondInternal(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "orphaned account deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": "Sahipsiz hesap silindi"})
 }

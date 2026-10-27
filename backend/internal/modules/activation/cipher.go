@@ -12,7 +12,7 @@ import (
 )
 
 // ErrReprintDisabled means no ACTIVATION_CODE_KEY is set, so codes were not kept and cannot be shown again.
-var ErrReprintDisabled = errors.New("reprinting codes is turned off: set ACTIVATION_CODE_KEY on the server, then generate new codes")
+var ErrReprintDisabled = errors.New("kodları yeniden yazdırma kapalı: sunucuda ACTIVATION_CODE_KEY tanımlayın ve yeni kodlar üretin")
 
 // codeCipher encrypts codes for reprinting. The code's hash is the associated data, so a
 // ciphertext only decrypts on the row it was written for.

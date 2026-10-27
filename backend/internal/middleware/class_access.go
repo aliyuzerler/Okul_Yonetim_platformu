@@ -33,12 +33,12 @@ func requireAccess(param string, allowed func(context.Context, uuid.UUID, uuid.U
 		}
 		userID, err := UserIDFromContext(c)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid user id"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Geçersiz kullanıcı kimliği."})
 			return
 		}
 		id, err := uuid.Parse(c.Param(param))
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Geçersiz kimlik."})
 			return
 		}
 		ok, err := allowed(c.Request.Context(), userID, id)
@@ -48,7 +48,7 @@ func requireAccess(param string, allowed func(context.Context, uuid.UUID, uuid.U
 			return
 		}
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "you can only work with classes you teach or lead"})
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Yalnızca öğretmeni veya sınıf öğretmeni olduğunuz sınıflar üzerinde işlem yapabilirsiniz."})
 			return
 		}
 		c.Next()

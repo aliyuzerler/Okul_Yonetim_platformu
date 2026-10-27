@@ -441,7 +441,7 @@ func (s *Store) intakeStudents(ctx context.Context, year uuid.UUID) ([]Promotion
 	out := make([]PromotionCandidate, len(rows))
 	for i, r := range rows {
 		grade := r.GradeID
-		out[i] = PromotionCandidate{ID: r.ID, Name: r.FullName, Index: r.IndexNumber, Gender: r.Gender, HouseID: r.HouseID, ClassName: "New admission", MediumID: r.MediumID, IntakeGradeID: &grade}
+		out[i] = PromotionCandidate{ID: r.ID, Name: r.FullName, Index: r.IndexNumber, Gender: r.Gender, HouseID: r.HouseID, ClassName: "Yeni kayıt", MediumID: r.MediumID, IntakeGradeID: &grade}
 	}
 	return out, nil
 }

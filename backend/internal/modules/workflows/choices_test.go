@@ -13,7 +13,7 @@ func TestChoiceSlotsAndRules(t *testing.T) {
 	basket := ChoiceGroup{ID: uuid.New(), Label: "Basket", Min: 1, Max: 2, Subjects: []Option{{Value: music.String(), Label: "Music"}, {Value: art.String(), Label: "Art"}, {Value: dance.String(), Label: "Dance"}}}
 	groups := []ChoiceGroup{core, basket}
 
-	if cols := choiceColumns(groups); len(cols) != 2 || cols[1].Label != "Basket 2 (optional)" {
+	if cols := choiceColumns(groups); len(cols) != 2 || cols[1].Label != "Basket 2 (isteğe bağlı)" {
 		t.Fatalf("columns: %+v", cols)
 	}
 	cells := map[string]string{}
@@ -23,11 +23,11 @@ func TestChoiceSlotsAndRules(t *testing.T) {
 	if problems := choiceProblems(groups, picksFromCells(groups, cells)); len(problems) != 0 {
 		t.Fatalf("two basket picks are valid: %v", problems)
 	}
-	if problems := choiceProblems(groups, map[uuid.UUID][]string{}); len(problems) != 1 || !strings.Contains(problems[0], "Basket needs 1 to 2, has 0") {
+	if problems := choiceProblems(groups, map[uuid.UUID][]string{}); len(problems) != 1 || !strings.Contains(problems[0], "Basket: 1 ile 2 ders gerekir, şu an 0") {
 		t.Fatalf("empty basket: %v", problems)
 	}
 	dup := map[uuid.UUID][]string{basket.ID: {music.String(), music.String()}}
-	if problems := choiceProblems(groups, dup); len(problems) != 1 || !strings.Contains(problems[0], "Music is picked twice") {
+	if problems := choiceProblems(groups, dup); len(problems) != 1 || !strings.Contains(problems[0], "Music iki kez seçilmiş") {
 		t.Fatalf("duplicate: %v", problems)
 	}
 }

@@ -20,11 +20,11 @@ const (
 )
 
 var policyLabels = map[string]string{
-	PolicyKeepSection:     "Keep the same section",
-	PolicyBalanced:        "Reshuffle to balance classes",
-	PolicyBySubjectChoice: "Group by subject choice",
-	PolicyByStream:        "Group by A/L stream",
-	PolicyGraduate:        "Leave school",
+	PolicyKeepSection:     "Şubeyi koru",
+	PolicyBalanced:        "Sınıfları dengelemek için yeniden karıştır",
+	PolicyBySubjectChoice: "Ders seçimine göre grupla",
+	PolicyByStream:        "A/L alanına göre grupla",
+	PolicyGraduate:        "Okuldan ayrılır",
 }
 
 // PlacementStudent is one student moving into a target grade.
@@ -151,12 +151,12 @@ func hash(seed, id string) uint64 {
 func (st *placementState) place(s PlacementStudent, policy string, spreadByMarks bool, rank, defaultCapacity int) Placement {
 	p := Placement{StudentID: s.ID}
 	if policy == PolicyByStream && s.StreamID == "" {
-		p.Warning = "No A/L stream recorded for next year. Enrol the student in a stream's subjects first, or pick a class by hand."
+		p.Warning = "Gelecek yıl için A/L alanı girilmemiş. Önce öğrenciyi bir alanın derslerine kaydedin veya sınıfı elle seçin."
 		return p
 	}
 	candidates, fallback := st.compatible(s, policy)
 	if policy == PolicyByStream && len(candidates) == 0 {
-		p.Warning = "No class next year matches this student's stream."
+		p.Warning = "Gelecek yılda bu öğrencinin alanına uyan sınıf yok."
 		return p
 	}
 	if len(candidates) == 0 {
@@ -169,7 +169,7 @@ func (st *placementState) place(s PlacementStudent, policy string, spreadByMarks
 		if s.CurrentClass == "" {
 			// A new admission has no section to keep.
 			if chosen = st.leastLoaded(candidates, s); chosen != nil {
-				p.Reason = "New admission: placed where there is space."
+				p.Reason = "Yeni kayıt: kontenjan olan yere yerleştirildi."
 			}
 			break
 		}
@@ -177,14 +177,14 @@ func (st *placementState) place(s PlacementStudent, policy string, spreadByMarks
 		for _, c := range candidates {
 			if sectionOf(c.Name) == section && st.hasRoom(c) {
 				chosen = c
-				p.Reason = fmt.Sprintf("Same section: %s to %s.", s.CurrentClass, c.Name)
+				p.Reason = fmt.Sprintf("Aynı şube: %s → %s.", s.CurrentClass, c.Name)
 				break
 			}
 		}
 		if chosen == nil {
 			chosen = st.leastLoaded(candidates, s)
 			if chosen != nil {
-				p.Reason = fmt.Sprintf("No room in section %s next year; placed where there is space.", section)
+				p.Reason = fmt.Sprintf("Gelecek yıl %s şubesinde yer yok; kontenjan olan yere yerleştirildi.", section)
 			}
 		}
 	case PolicyBySubjectChoice, PolicyByStream:
@@ -192,33 +192,33 @@ func (st *placementState) place(s PlacementStudent, policy string, spreadByMarks
 		if chosen != nil {
 			label := s.ChoiceLabel
 			if label == "" {
-				label = "no optional subjects recorded"
+				label = "kaydedilmiş seçmeli ders yok"
 			}
-			p.Reason = "Grouped with the same choice: " + label + "."
+			p.Reason = "Aynı seçime göre gruplandı: " + label + "."
 			if s.ChoiceKey == "" && policy == PolicyBySubjectChoice {
-				p.Warning = "No subject choice recorded for next year; placed by size only."
+				p.Warning = "Gelecek yıl için ders seçimi girilmemiş; yalnızca kontenjana göre yerleştirildi."
 			}
 		}
 	default:
 		if spreadByMarks {
 			chosen = st.snake(candidates, rank)
 			if chosen != nil {
-				p.Reason = fmt.Sprintf("Spread by last term's marks (rank %d).", rank+1)
+				p.Reason = fmt.Sprintf("Son dönem notlarına göre yayınlandı (%d. sıra).", rank+1)
 			}
 		} else {
 			chosen = st.leastLoaded(candidates, s)
 			if chosen != nil {
-				p.Reason = "Balanced by class size, gender and house."
+				p.Reason = "Sınıf mevcudu, cinsiyet ve kol dengesine göre dağıtıldı."
 			}
 		}
 	}
 
 	if chosen == nil {
 		chosen = st.addClass(s, policy, defaultCapacity)
-		p.Warning = "The matching classes are full, so the proposal adds " + chosen.Name + "."
+		p.Warning = "Uyan sınıflar dolu, bu yüzden öneri " + chosen.Name + " şubesini ekliyor."
 	}
 	if fallback && p.Warning == "" {
-		p.Warning = "No class next year is set for this student's medium; placed in a general class."
+		p.Warning = "Gelecek yılda bu öğrencinin öğretim diline ayarlı sınıf yok; genel bir sınıfa yerleştirildi."
 	}
 	st.assign(chosen, s)
 	p.ClassID = chosen.ID
@@ -376,7 +376,7 @@ func nextSectionName(existing []string, template string) string {
 			return candidate
 		}
 	}
-	return template + " (new)"
+	return template + " (yeni)"
 }
 
 // naturalLess sorts "7-9" before "7-10" and "12-S2" before "12-S10".

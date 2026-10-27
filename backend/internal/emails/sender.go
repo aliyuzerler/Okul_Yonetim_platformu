@@ -11,7 +11,7 @@ import (
 )
 
 // ErrUnknownTemplate is returned by Preview and SendTest for a key not in Templates.
-var ErrUnknownTemplate = errors.New("unknown email template")
+var ErrUnknownTemplate = errors.New("bilinmeyen e-posta şablonu")
 
 // BrandingSource supplies the school name and contact details, read at send time so edits apply at once.
 type BrandingSource interface {
@@ -117,22 +117,22 @@ var samples = []struct {
 	key string
 	sample
 }{
-	{"activation_link", sample{"Activation link", func(s *Sender, b Branding) email {
+	{"activation_link", sample{"Etkinleştirme bağlantısı", func(s *Sender, b Branding) email {
 		return activationLinkEmail(b.SchoolName, "H.A.N. Perera", s.frontend()+"/activate#token=example", 30*time.Minute)
 	}}},
-	{"email_in_use", sample{"Email already in use", func(s *Sender, b Branding) email {
+	{"email_in_use", sample{"E-posta zaten kayıtlı", func(s *Sender, b Branding) email {
 		return emailInUseEmail(b.SchoolName, s.signInURL())
 	}}},
-	{"account_activated", sample{"Account activated", func(s *Sender, b Branding) email {
+	{"account_activated", sample{"Hesap etkinleştirildi", func(s *Sender, b Branding) email {
 		return accountActivatedEmail(b.SchoolName, "H.A.N. Perera", "2026/0001", s.signInURL(), s.now())
 	}}},
-	{"password_reset", sample{"Password reset", func(s *Sender, b Branding) email {
+	{"password_reset", sample{"Şifre sıfırlama", func(s *Sender, b Branding) email {
 		return passwordResetEmail(b.SchoolName, s.frontend()+"/reset-password#token=example", 15*time.Minute)
 	}}},
-	{"password_changed", sample{"Password changed", func(s *Sender, b Branding) email {
+	{"password_changed", sample{"Şifre değiştirildi", func(s *Sender, b Branding) email {
 		return passwordChangedEmail(b.SchoolName, s.signInURL(), s.now())
 	}}},
-	{"test", sample{"Test email", func(s *Sender, _ Branding) email {
+	{"test", sample{"Test e-postası", func(s *Sender, _ Branding) email {
 		return testEmail(s.cfg.Provider, s.cfg.From.String(), s.now())
 	}}},
 }

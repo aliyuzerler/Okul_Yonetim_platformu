@@ -11,23 +11,23 @@ import (
 
 var (
 	// ErrClosed means self-activation is switched off or outside its window for that role.
-	ErrClosed = errors.New("account activation is not open for this account type right now")
+	ErrClosed = errors.New("bu hesap türü için etkinleştirme şu anda açık değil")
 	// ErrLinkInvalid covers unknown, used and expired email links, and codes that stopped being usable.
-	ErrLinkInvalid = errors.New("this activation link is invalid, already used, or has expired - start again from the activation page")
+	ErrLinkInvalid = errors.New("bu etkinleştirme bağlantısı geçersiz, daha önce kullanılmış veya süresi dolmuş — etkinleştirme sayfasından yeniden başlayın")
 	// ErrAlreadyActivated means the record got a login by another route since the code was issued.
-	ErrAlreadyActivated = errors.New("this account is already active - sign in or use Forgot password")
+	ErrAlreadyActivated = errors.New("bu hesap zaten etkin — oturum açın veya Şifremi unuttum seçeneğini kullanın")
 	// ErrEmailTaken means another account already uses the email.
-	ErrEmailTaken = errors.New("that email is already used by another account - start again with a different email")
+	ErrEmailTaken = errors.New("bu e-posta adresi başka bir hesap tarafından kullanılıyor — farklı bir e-posta adresiyle yeniden başlayın")
 	// ErrPasswordMatchesID blocks reusing the index or NIC number, which other people can see.
-	ErrPasswordMatchesID = errors.New("your password must not be your index or NIC number")
+	ErrPasswordMatchesID = errors.New("şifreniz okul numaranız veya T.C. Kimlik Numaranız olamaz")
 	// ErrRoleDisabled blocks issuing codes for a role that is switched off in settings.
-	ErrRoleDisabled = errors.New("turn on self-activation for this account type before generating codes")
+	ErrRoleDisabled = errors.New("kod üretmeden önce bu hesap türü için etkinleştirmeyi açın")
 	// ErrBatchTooLarge asks the admin to narrow the selection, for example to one class.
-	ErrBatchTooLarge = errors.New("too many records in one batch - generate codes class by class")
+	ErrBatchTooLarge = errors.New("tek partide çok fazla kayıt var — kodları sınıf sınıf üretin")
 	// ErrMailUnavailable means the details matched but the email could not be sent; the user can retry.
-	ErrMailUnavailable = errors.New("we could not send the email right now - please try again in a few minutes or contact the school office")
+	ErrMailUnavailable = errors.New("e-posta şu anda gönderilemedi — lütfen birkaç dakika sonra yeniden deneyin veya okul yönetimiyle iletişime geçin")
 	// ErrInvalidSettings covers a bad window or code lifetime.
-	ErrInvalidSettings = errors.New("the closing date must be after the opening date, and codes must last 1 to 90 days")
+	ErrInvalidSettings = errors.New("kapanış tarihi açılış tarihinden sonra olmalıdır ve kodların geçerlilik süresi 1 ile 90 gün arasında olmalıdır")
 )
 
 // supportedRoles are the roles that can self-activate; teacher records always carry a login today.

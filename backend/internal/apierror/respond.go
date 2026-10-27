@@ -19,13 +19,13 @@ func Respond(c *gin.Context, err error) {
 	var netErr net.Error
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):
-		c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Kayıt bulunamadı."})
 	case errors.As(err, &pgErr) && pgErr.Code == "23505":
-		c.JSON(http.StatusConflict, gin.H{"error": "a record with these details already exists"})
+		c.JSON(http.StatusConflict, gin.H{"error": "Bu bilgilerle bir kayıt zaten mevcut."})
 	case errors.As(err, &pgErr) && pgErr.Code == "23503":
-		c.JSON(http.StatusConflict, gin.H{"error": "this is still linked to other records, or refers to one that does not exist"})
+		c.JSON(http.StatusConflict, gin.H{"error": "Bu kayıt başka kayıtlara bağlı ya da var olmayan bir kayda başvuruyor."})
 	case errors.As(err, &pgErr) && (pgErr.Code == "23514" || strings.HasPrefix(pgErr.Code, "22")):
-		c.JSON(http.StatusBadRequest, gin.H{"error": "one of the values is not allowed"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Girilen değerlerden biri geçersiz."})
 	case errors.As(err, &pgErr), errors.As(err, &connErr), errors.As(err, &netErr),
 		errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
 		RespondInternal(c, err)

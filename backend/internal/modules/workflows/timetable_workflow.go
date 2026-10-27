@@ -19,26 +19,26 @@ import (
 type Timetable struct{}
 
 func (Timetable) Key() string   { return "timetable" }
-func (Timetable) Title() string { return "Timetable" }
+func (Timetable) Title() string { return "Ders programı" }
 func (Timetable) Description() string {
-	return "Checks the timetable setup, runs basket and A/L option subjects as option blocks at the same period across classes, and generates draft timetables for whole grade sections. The drafts then go to section-head review as usual."
+	return "Ders programı ayarlarını denetler, sepet ve A/L seçmeli derslerini aynı ders saatinde seçmeli ders blokları olarak sınıflar arasında çalıştırır ve tüm seviye şubeleri için taslak ders programları üretir. Taslaklar ardından her zamanki gibi şube rehber öğretmeni incelemesine gider."
 }
 
 var (
-	ToolCheckTimetableSetup = tool("check_timetable_setup", "Checks period grids, subject hours, subject teachers, lab rooms, section heads and teacher availability for the year.", false)
-	ToolPlanOptionBlocks    = tool("plan_option_blocks", "Turns each one-pick subject group into an option block covering the classes whose students chose from it.", false)
-	ToolPreviewTimetables   = tool("preview_timetables", "Runs the generator in a transaction that is rolled back, to show what each class would get.", false)
-	ToolSaveOptionBlocks    = tool("save_option_blocks", "Replaces the option blocks of the chosen grades for the year.", true)
-	ToolGenerateTimetables  = tool("generate_timetables", "Generates draft timetables per grade section: option blocks first, then lessons, then a repair pass that moves a lesson to close a gap.", true)
+	ToolCheckTimetableSetup = tool("check_timetable_setup", "Yılın ders saati çizelgelerini, ders saatlerini, branş öğretmenlerini, laboratuvar dersliklerini, şube rehber öğretmenlerini ve öğretmen müsaitliklerini denetler.", false)
+	ToolPlanOptionBlocks    = tool("plan_option_blocks", "Tek seçimli her ders grubunu, öğrencileri o gruptan seçen sınıfları kapsayan bir seçmeli ders bloğuna dönüştürür.", false)
+	ToolPreviewTimetables   = tool("preview_timetables", "Üreticiyi geri alınan bir işlem içinde çalıştırır, böylece her sınıfın ne alacağını gösterir.", false)
+	ToolSaveOptionBlocks    = tool("save_option_blocks", "Yıl için seçilen seviyelerin seçmeli ders bloklarını değiştirir.", true)
+	ToolGenerateTimetables  = tool("generate_timetables", "Seviye şubesi başına taslak ders programı üretir: önce seçmeli ders blokları, sonra dersler, ardından boşluğu kapatmak için bir dersi taşıyan onarım turu.", true)
 )
 
 func (Timetable) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "check_setup", Title: "Check the timetable setup", Tool: ToolCheckTimetableSetup, Phase: "propose"},
-		{Key: "plan_blocks", Title: "Plan option blocks", Tool: ToolPlanOptionBlocks, Phase: "propose"},
-		{Key: "preview", Title: "Preview the timetables", Tool: ToolPreviewTimetables, Phase: "propose"},
-		{Key: "save_blocks", Title: "Save option blocks", Tool: ToolSaveOptionBlocks, Phase: "apply"},
-		{Key: "generate", Title: "Generate draft timetables", Tool: ToolGenerateTimetables, Phase: "apply"},
+		{Key: "check_setup", Title: "Ders programı ayarlarını denetle", Tool: ToolCheckTimetableSetup, Phase: "propose"},
+		{Key: "plan_blocks", Title: "Seçmeli ders bloklarını planla", Tool: ToolPlanOptionBlocks, Phase: "propose"},
+		{Key: "preview", Title: "Ders programlarını önizle", Tool: ToolPreviewTimetables, Phase: "propose"},
+		{Key: "save_blocks", Title: "Seçmeli ders bloklarını kaydet", Tool: ToolSaveOptionBlocks, Phase: "apply"},
+		{Key: "generate", Title: "Taslak ders programlarını üret", Tool: ToolGenerateTimetables, Phase: "apply"},
 	}
 }
 
@@ -76,9 +76,9 @@ func (Timetable) Inputs(ctx context.Context, s *Store) ([]InputField, error) {
 		}
 	}
 	fields := []InputField{
-		{Key: "target_year", Label: "Timetable year", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "sections", Label: "Grade sections", Type: "multiselect", Required: true, Options: sectionOptions, Default: strings.Join(defaults, ","), Help: "Classes whose timetable is already submitted or published are left alone."},
-		{Key: "blocks", Label: "Run basket and A/L option subjects as option blocks", Type: "boolean", Default: "true", Help: "Needs subject choices recorded for next year."},
+		{Key: "target_year", Label: "Ders programı yılı", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "sections", Label: "Seviye şubeleri", Type: "multiselect", Required: true, Options: sectionOptions, Default: strings.Join(defaults, ","), Help: "Ders programı incelemeye gönderilmiş veya yayınlanmış sınıflara dokunulmaz."},
+		{Key: "blocks", Label: "Sepet ve A/L seçmeli derslerini seçmeli ders blokları olarak çalıştır", Type: "boolean", Default: "true", Help: "Gelecek yılın ders seçimlerinin girilmiş olmasını gerektirir."},
 	}
 	if target != nil {
 		fields[0].Default = target.ID.String()
@@ -119,8 +119,8 @@ func (w Timetable) Check(ctx context.Context, s *Store, in Inputs) ([]Check, err
 		return nil, err
 	}
 	checks := []Check{
-		{Key: "year", Title: "A year is chosen", OK: year != nil, Blocking: true},
-		{Key: "sections", Title: "At least one grade section of that year is chosen", OK: len(sections) > 0, Blocking: true, FixPath: "/grade-sections"},
+		{Key: "year", Title: "Bir yıl seçilmiş", OK: year != nil, Blocking: true},
+		{Key: "sections", Title: "O yıldan en az bir seviye şubesi seçilmiş", OK: len(sections) > 0, Blocking: true, FixPath: "/grade-sections"},
 	}
 	if year == nil || len(sections) == 0 {
 		return checks, nil
@@ -186,14 +186,14 @@ func (w Timetable) Check(ctx context.Context, s *Store, in Inputs) ([]Check, err
 	}
 	sort.Strings(gradeNames)
 	checks = append(checks,
-		Check{Key: "grids", Title: "Every section has a period grid", OK: len(noGrid) == 0, Blocking: true, FixPath: "/grade-sections", Detail: listDetail("Missing for", noGrid)},
-		Check{Key: "classes", Title: "The sections have classes", OK: inScope > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(inScope, "class", "classes")},
-		Check{Key: "hours", Title: "Every grade has subject hours", OK: len(gradeNames) == 0, Blocking: len(gradeNames) > 0 && len(gradeNames) == len(gradesInScope(classes, chosen)), FixPath: "/subject-requirements", Detail: listDetail("Missing for", gradeNames)},
-		Check{Key: "teachers", Title: "Every class subject has a teacher", OK: missingTeacher == 0, FixPath: "/year-end/teacher_allocation",
-			Detail: fmt.Sprintf("%s have no teacher; the form teacher is used where set, otherwise they are left as gaps.", plural(missingTeacher, "class subject", "class subjects"))},
-		Check{Key: "labs", Title: "Subjects with lab periods have a lab room", OK: len(labs) == 0, FixPath: "/classrooms", Detail: listDetail("No lab for", labs)},
-		Check{Key: "heads", Title: "Every section has a section head to review", OK: len(noHead) == 0, FixPath: "/grade-sections", Detail: listDetail("No section head for", noHead) + " Drafts cannot be submitted for review without one, unless the grade has a teacher in charge."},
-		Check{Key: "availability", Title: "Teacher availability is entered", OK: withAvailability > 0, FixPath: "/teachers", Detail: "Optional. Without it every teacher is treated as free all week."},
+		Check{Key: "grids", Title: "Her şubenin ders saati çizelgesi var", OK: len(noGrid) == 0, Blocking: true, FixPath: "/grade-sections", Detail: listDetail("Eksik:", noGrid)},
+		Check{Key: "classes", Title: "Şubelerin sınıfları var", OK: inScope > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(inScope, "sınıf", "sınıf")},
+		Check{Key: "hours", Title: "Her seviyenin ders saatleri var", OK: len(gradeNames) == 0, Blocking: len(gradeNames) > 0 && len(gradeNames) == len(gradesInScope(classes, chosen)), FixPath: "/subject-requirements", Detail: listDetail("Eksik:", gradeNames)},
+		Check{Key: "teachers", Title: "Her sınıf dersinin bir öğretmeni var", OK: missingTeacher == 0, FixPath: "/year-end/teacher_allocation",
+			Detail: fmt.Sprintf("%s öğretmensiz; sınıf öğretmeni atanmışsa o kullanılır, aksi hâlde boşluk bırakılır.", plural(missingTeacher, "sınıf dersi", "sınıf dersi"))},
+		Check{Key: "labs", Title: "Laboratuvar ders saati olan derslerin laboratuvar dersliği var", OK: len(labs) == 0, FixPath: "/classrooms", Detail: listDetail("Laboratuvarı olmayan:", labs)},
+		Check{Key: "heads", Title: "Her şubenin inceleme yapacak bir şube rehber öğretmeni var", OK: len(noHead) == 0, FixPath: "/grade-sections", Detail: listDetail("Şube rehber öğretmeni olmayan:", noHead) + " Bunlardan biri olmadan taslaklar incelemeye gönderilemez; yalnızca seviyede sorumlu öğretmen (TIC) varsa bu kural esner."},
+		Check{Key: "availability", Title: "Öğretmen müsaitlikleri girilmiş", OK: withAvailability > 0, FixPath: "/teachers", Detail: "İsteğe bağlı. Girilmezse her öğretmen hafta boyunca müsait sayılır."},
 	)
 	return checks, nil
 }
@@ -250,7 +250,7 @@ func (Timetable) planBlocks(ctx context.Context, s *Store, year uuid.UUID, class
 				continue
 			}
 			if g.Max > 1 {
-				notes = append(notes, fmt.Sprintf("%s %s: students pick %d subjects, so it cannot run as one option block; its subjects are timetabled as ordinary lessons.", l.GradeName, g.Label, g.Max))
+				notes = append(notes, fmt.Sprintf("%s %s: öğrenciler %d ders seçiyor, bu yüzden tek bir seçmeli ders bloğu olarak çalışamaz; dersleri normal dersler olarak programlanır.", l.GradeName, g.Label, g.Max))
 				continue
 			}
 			ids, err := s.groupClasses(ctx, year, g.ID)
@@ -280,7 +280,7 @@ func (Timetable) planBlocks(ctx context.Context, s *Store, year uuid.UUID, class
 				}
 			}
 			if most == 0 {
-				notes = append(notes, fmt.Sprintf("%s %s: none of its subjects has subject hours, so no block was planned.", l.GradeName, g.Label))
+				notes = append(notes, fmt.Sprintf("%s %s: hiçbir dersinin ders saati yok, bu yüzden blok planlanmadı.", l.GradeName, g.Label))
 				continue
 			}
 			for _, c := range cls {
@@ -292,7 +292,7 @@ func (Timetable) planBlocks(ctx context.Context, s *Store, year uuid.UUID, class
 				name = l.Label + " " + g.Label
 			}
 			rows = append(rows, Row{ID: "block:" + l.GradeID.String() + ":" + g.ID.String(), Group: l.GradeName,
-				Reason: fmt.Sprintf("Students in these classes chose from %s; the block takes the most hours of its subjects.", g.Label),
+				Reason: fmt.Sprintf("Bu sınıflardaki öğrenciler %s grubundan seçim yaptı; bloğun ders saati sayısı, dersleri arasından en yüksektir.", g.Label),
 				Cells: map[string]string{"grade": l.GradeName, "name": name, "subjects": strings.Join(subjectNames, ", "), "classes": strings.Join(classNames, ", "),
 					"periods": strconv.Itoa(most), "create": "true", "grade_id": l.GradeID.String(), "subject_ids": strings.Join(subjectIDs, ","), "class_ids": strings.Join(classIDs, ",")}})
 		}
@@ -323,7 +323,7 @@ func (w Timetable) build(ctx context.Context, tx *Store, year Year, sections []S
 		if used, err := tx.optionBlocksInSubmittedTimetables(ctx, old); err != nil {
 			return snap, nil, err
 		} else if used {
-			return snap, nil, fmt.Errorf("%w: a submitted or published timetable uses these grades' current option blocks; revise it first, or untick option blocks", ErrInvalidProposal)
+			return snap, nil, fmt.Errorf("%w: incelenmekte olan veya yayınlanmış bir ders programı bu seviyelerin mevcut seçmeli ders bloklarını kullanıyor; önce onu revize edin veya seçmeli ders bloklarının işaretini kaldırın", ErrInvalidProposal)
 		}
 		if err := tx.deleteOptionBlocks(ctx, old); err != nil {
 			return snap, nil, err
@@ -337,7 +337,7 @@ func (w Timetable) build(ctx context.Context, tx *Store, year Year, sections []S
 			def := BlockDef{GradeID: grade, Name: r.Cells["name"], Periods: int32(periods), Subjects: parseIDs(r.Cells["subject_ids"]), Classes: parseIDs(r.Cells["class_ids"])}
 			id, err := tx.createOptionBlock(ctx, year.ID, def)
 			if err != nil {
-				return snap, nil, fmt.Errorf("block %s: %w", def.Name, err)
+				return snap, nil, fmt.Errorf("%s bloğu: %w", def.Name, err)
 			}
 			snap.CreatedBlocks = append(snap.CreatedBlocks, id)
 		}
@@ -346,7 +346,7 @@ func (w Timetable) build(ctx context.Context, tx *Store, year Year, sections []S
 	for _, sec := range sections {
 		res, err := tx.generateSection(ctx, year.ID, sec.ID, actor)
 		if err != nil {
-			return snap, nil, fmt.Errorf("section %s: %w", sec.Name, err)
+			return snap, nil, fmt.Errorf("%s şubesi: %w", sec.Name, err)
 		}
 		for _, c := range res.Classes {
 			if c.TimetableID != nil {
@@ -386,7 +386,7 @@ func (w Timetable) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 			return "", err
 		}
 		status, err = s.latestTimetableStatus(ctx, year.ID)
-		return fmt.Sprintf("%s in %s", plural(len(classes), "class", "classes"), plural(len(sections), "section", "sections")), err
+		return fmt.Sprintf("%s içinde %s", plural(len(sections), "şube", "şube"), plural(len(classes), "sınıf", "sınıf")), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -398,14 +398,14 @@ func (w Timetable) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 		if err := trace.Run(stepByKey(w, "plan_blocks"), func() (string, error) {
 			var err error
 			blockRows, notes, err = w.planBlocks(ctx, s, year.ID, classes, gradesInScope(classes, chosen))
-			return plural(len(blockRows), "option block", "option blocks"), err
+			return plural(len(blockRows), "seçmeli ders bloğu", "seçmeli ders bloğu"), err
 		}); err != nil {
 			return Proposal{}, "", err
 		}
 	}
 	var results []timetablemodule.ClassGenerationResult
 	if err := trace.Run(stepByKey(w, "preview"), func() (string, error) {
-		return "rolled back", s.dryRun(ctx, func(tx *Store) error {
+		return "geri alındı", s.dryRun(ctx, func(tx *Store) error {
 			var err error
 			_, results, err = w.build(ctx, tx, *year, sections, blockRows, useBlocks, actorFrom(ctx))
 			return err
@@ -426,18 +426,18 @@ func (w Timetable) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 	complete, withGaps, skipped, replaced := 0, 0, 0, 0
 	for _, r := range results {
 		row := Row{ID: r.ClassID.String(), Group: classSection[r.ClassID], Cells: map[string]string{"class": r.ClassName, "now": statusLabel(status[r.ClassID]),
-			"placed": fmt.Sprintf("%d of %d", r.Placed, r.Required)}}
+			"placed": fmt.Sprintf("%d / %d", r.Placed, r.Required)}}
 		switch {
 		case r.Skipped:
 			skipped++
 			row.Cells["placed"] = "-"
-			row.Reason = "Left alone: the timetable is " + statusLabel(status[r.ClassID]) + "."
+			row.Reason = "Dokunulmadı: ders programı " + statusLabel(status[r.ClassID]) + "."
 		case len(r.Gaps) > 0:
 			withGaps++
 			row.Warning = gapSummary(r.Gaps)
 		default:
 			complete++
-			row.Reason = "Every period placed."
+			row.Reason = "Tüm ders saatleri yerleştirildi."
 		}
 		if !r.Skipped && status[r.ClassID] == "draft" {
 			replaced++
@@ -446,28 +446,28 @@ func (w Timetable) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 	}
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "Classes", Value: strconv.Itoa(len(results))},
-			{Label: "Complete", Value: strconv.Itoa(complete)},
-			{Label: "With gaps", Value: strconv.Itoa(withGaps)},
-			{Label: "Left alone", Value: strconv.Itoa(skipped)},
-			{Label: "Option blocks", Value: strconv.Itoa(len(blockRows))},
+			{Label: "Sınıflar", Value: strconv.Itoa(len(results))},
+			{Label: "Tamamlanan", Value: strconv.Itoa(complete)},
+			{Label: "Boşluklu", Value: strconv.Itoa(withGaps)},
+			{Label: "Dokunulmayan", Value: strconv.Itoa(skipped)},
+			{Label: "Seçmeli ders blokları", Value: strconv.Itoa(len(blockRows))},
 		},
 		Warnings: notes,
 		Sections: []Section{
-			{Key: "classes", Title: "Timetables", Description: "What each class gets, from a dry run of the generator. Unticking a block changes this; propose again to see the new result.", Columns: []Column{
-				{Key: "class", Label: "Class", Type: "text"}, {Key: "now", Label: "Now", Type: "text"}, {Key: "placed", Label: "Periods placed", Type: "text"},
+			{Key: "classes", Title: "Ders programları", Description: "Her sınıfın ne aldığı, üreticinin deneme çalıştırmasından. Bir bloğun işaretini kaldırmak bunu değiştirir; yeni sonucu görmek için yeniden çalıştırın.", Columns: []Column{
+				{Key: "class", Label: "Sınıf", Type: "text"}, {Key: "now", Label: "Şu an", Type: "text"}, {Key: "placed", Label: "Yerleşen ders saati", Type: "text"},
 			}, Rows: classRows},
-			{Key: "blocks", Title: "Option blocks", Description: "Each block runs its subjects at the same periods in all its classes. Untick a block to timetable its subjects as ordinary lessons.", Columns: []Column{
-				{Key: "grade", Label: "Grade", Type: "text"}, {Key: "name", Label: "Block", Type: "text"}, {Key: "subjects", Label: "Subjects", Type: "text"},
-				{Key: "classes", Label: "Classes", Type: "text"}, {Key: "periods", Label: "Periods a week", Type: "number"}, {Key: "create", Label: "Use", Type: "boolean", Editable: true},
+			{Key: "blocks", Title: "Seçmeli ders blokları", Description: "Her blok, derslerini tüm sınıflarında aynı ders saatlerinde çalıştırır. Bir bloğun işaretini kaldırın; dersleri normal dersler olarak programlanır.", Columns: []Column{
+				{Key: "grade", Label: "Sınıf seviyesi", Type: "text"}, {Key: "name", Label: "Blok", Type: "text"}, {Key: "subjects", Label: "Dersler", Type: "text"},
+				{Key: "classes", Label: "Sınıflar", Type: "text"}, {Key: "periods", Label: "Haftalık ders saati", Type: "number"}, {Key: "create", Label: "Kullan", Type: "boolean", Editable: true},
 			}, Rows: blockRows},
 		},
 	}
 	if replaced > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s already have a draft; applying replaces it, and revert cannot bring the old draft back.", plural(replaced, "class", "classes")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s zaten taslağa sahip; uygulamak onu değiştirir ve geri alma eski taslağı geri getiremez.", plural(replaced, "sınıf", "sınıf")))
 	}
 	if withGaps > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s have gaps. Fix the setup and propose again, or fill the gaps by hand in the timetable editor.", plural(withGaps, "class", "classes")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s boşluklu. Ayarları düzeltip yeniden çalıştırın veya boşlukları ders programı düzenleyicisinde elle doldurun.", plural(withGaps, "sınıf", "sınıf")))
 	}
 	return p, "timetable:" + year.ID.String(), nil
 }
@@ -475,9 +475,15 @@ func (w Timetable) Propose(ctx context.Context, s *Store, in Inputs, trace *Trac
 func statusLabel(s string) string {
 	switch s {
 	case "":
-		return "no timetable"
+		return "ders programı yok"
 	case "under_review":
-		return "under review"
+		return "incelemede"
+	case "draft":
+		return "taslak"
+	case "published":
+		return "yayınlandı"
+	case "approved":
+		return "onaylandı"
 	}
 	return s
 }
@@ -486,12 +492,12 @@ func gapSummary(gaps []timetablemodule.GenerationGap) string {
 	var parts []string
 	for i, g := range gaps {
 		if i == 3 {
-			parts = append(parts, fmt.Sprintf("and %d more", len(gaps)-3))
+			parts = append(parts, fmt.Sprintf("ve %d tane daha", len(gaps)-3))
 			break
 		}
 		label := g.SubjectName
 		if label == "" {
-			label = "Timetable"
+			label = "Ders programı"
 		}
 		parts = append(parts, label+": "+g.Reason)
 	}
@@ -504,7 +510,7 @@ func (w Timetable) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 		return nil, "", err
 	}
 	if year == nil {
-		return nil, "", fmt.Errorf("%w: the year no longer exists", ErrInvalidProposal)
+		return nil, "", fmt.Errorf("%w: yıl artık mevcut değil", ErrInvalidProposal)
 	}
 	var blockRows []Row
 	if section := p.Section("blocks"); section != nil {
@@ -521,9 +527,9 @@ func (w Timetable) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 			}
 		}
 		if !useBlocks {
-			return "option blocks not used", nil
+			return "seçmeli ders blokları kullanılmadı", nil
 		}
-		return plural(used, "option block", "option blocks") + " to save", nil
+		return plural(used, "seçmeli ders bloğu", "seçmeli ders bloğu") + " kaydedilecek", nil
 	})
 	if err := trace.Run(stepByKey(w, "generate"), func() (string, error) {
 		var err error
@@ -532,12 +538,12 @@ func (w Timetable) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, 
 		for _, r := range results {
 			gaps += len(r.Gaps)
 		}
-		return fmt.Sprintf("%s generated, %s", plural(len(snap.Timetables), "draft", "drafts"), plural(gaps, "gap", "gaps")), err
+		return fmt.Sprintf("%s üretildi, %s", plural(len(snap.Timetables), "taslak", "taslak"), plural(gaps, "boşluk", "boşluk")), err
 	}); err != nil {
 		return nil, "", err
 	}
 	data, _ := json.Marshal(snap)
-	return data, fmt.Sprintf("Generated %s with %s", plural(len(snap.Timetables), "draft timetable", "draft timetables"), plural(len(snap.CreatedBlocks), "option block", "option blocks")), nil
+	return data, fmt.Sprintf("%s ve %s üretildi", plural(len(snap.Timetables), "taslak ders programı", "taslak ders programı"), plural(len(snap.CreatedBlocks), "seçmeli ders bloğu", "seçmeli ders bloğu")), nil
 }
 
 func (Timetable) Revert(ctx context.Context, tx *Store, snapshot json.RawMessage) error {

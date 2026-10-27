@@ -14,15 +14,15 @@ import (
 type Leavers struct{}
 
 func (Leavers) Key() string   { return "leavers" }
-func (Leavers) Title() string { return "Leavers" }
+func (Leavers) Title() string { return "Ayrılan öğrenciler" }
 func (Leavers) Description() string {
-	return "Marks students who are leaving as left, with a leaving date. The final grade is ticked by default; tick students from other grades by hand."
+	return "Ayrılan öğrencileri bir ayrılış tarihiyle 'ayrıldı' olarak işaretler. Son sınıf varsayılan olarak işaretlidir; diğer seviyelerdeki öğrencileri elle işaretleyin."
 }
 
 func (Leavers) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_students", Title: "Read students in the chosen grades", Tool: ToolReadStudents, Phase: "propose"},
-		{Key: "mark_leavers", Title: "Mark ticked students as left", Tool: ToolMarkLeavers, Phase: "apply"},
+		{Key: "read_students", Title: "Seçilen seviyelerdeki öğrencileri oku", Tool: ToolReadStudents, Phase: "propose"},
+		{Key: "mark_leavers", Title: "İşaretli öğrencileri ayrıldı olarak kaydet", Tool: ToolMarkLeavers, Phase: "apply"},
 	}
 }
 
@@ -40,9 +40,9 @@ func (Leavers) Inputs(ctx context.Context, s *Store) ([]InputField, error) {
 		gradeOptions[i] = Option{Value: g.ID.String(), Label: g.Name}
 	}
 	fields := []InputField{
-		{Key: "year", Label: "Year they are leaving from", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "grades", Label: "Grades", Type: "multiselect", Required: true, Options: gradeOptions, Help: "Usually the final grade; add grade 11 to review O/L leavers."},
-		{Key: "left_on", Label: "Leaving date", Type: "date", Required: true},
+		{Key: "year", Label: "Ayrıldıkları yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "grades", Label: "Sınıf seviyeleri", Type: "multiselect", Required: true, Options: gradeOptions, Help: "Genellikle son sınıf; O/L sonrası ayrılanları incelemek için 11. sınıfı da ekleyin."},
+		{Key: "left_on", Label: "Ayrılış tarihi", Type: "date", Required: true},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -58,9 +58,9 @@ func (Leavers) Check(ctx context.Context, s *Store, in Inputs) ([]Check, error) 
 	_, okYear := parseID(in["year"])
 	_, okDate := parseDate(in["left_on"])
 	return []Check{
-		{Key: "year", Title: "A year is chosen", OK: okYear, Blocking: true},
-		{Key: "grades", Title: "At least one grade is chosen", OK: len(parseIDs(in["grades"])) > 0, Blocking: true},
-		{Key: "date", Title: "The leaving date is valid", OK: okDate, Blocking: true},
+		{Key: "year", Title: "Bir yıl seçilmiş", OK: okYear, Blocking: true},
+		{Key: "grades", Title: "En az bir sınıf seviyesi seçilmiş", OK: len(parseIDs(in["grades"])) > 0, Blocking: true},
+		{Key: "date", Title: "Ayrılış tarihi geçerli", OK: okDate, Blocking: true},
 	}, nil
 }
 
@@ -78,7 +78,7 @@ func (w Leavers) Propose(ctx context.Context, s *Store, in Inputs, trace *Trace)
 	if err := trace.Run(stepByKey(w, "read_students"), func() (string, error) {
 		var err error
 		students, err = s.activeStudentsInGrades(ctx, year, parseIDs(in["grades"]))
-		return plural(len(students), "active student", "active students"), err
+		return plural(len(students), "aktif öğrenci", "aktif öğrenci"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -86,9 +86,9 @@ func (w Leavers) Propose(ctx context.Context, s *Store, in Inputs, trace *Trace)
 	ticked := 0
 	for i, st := range students {
 		leaving := st.GradeID == finalGrade
-		reason := "Tick if this student is leaving."
+		reason := "Bu öğrenci ayrılıyorsa işaretleyin."
 		if leaving {
-			reason = "Final grade: leaving by default."
+			reason = "Son sınıf: varsayılan olarak ayrılıyor."
 			ticked++
 		}
 		rows[i] = Row{ID: st.ID.String(), Group: st.GradeName, Reason: reason, Cells: map[string]string{
@@ -96,14 +96,14 @@ func (w Leavers) Propose(ctx context.Context, s *Store, in Inputs, trace *Trace)
 		}}
 	}
 	p := Proposal{
-		Summary: []Stat{{Label: "Students listed", Value: strconv.Itoa(len(rows))}, {Label: "Ticked to leave", Value: strconv.Itoa(ticked)}, {Label: "Leaving date", Value: in["left_on"]}},
-		Sections: []Section{{Key: "students", Title: "Students", Description: "Ticked students are marked as left. Untick anyone who is staying.", Columns: []Column{
-			{Key: "grade", Label: "Grade", Type: "text"}, {Key: "class", Label: "Class", Type: "text"}, {Key: "index", Label: "Index no.", Type: "text"},
-			{Key: "name", Label: "Name", Type: "text"}, {Key: "leaving", Label: "Leaving", Type: "boolean", Editable: true},
+		Summary: []Stat{{Label: "Listelenen öğrenci", Value: strconv.Itoa(len(rows))}, {Label: "Ayrılmak için işaretli", Value: strconv.Itoa(ticked)}, {Label: "Ayrılış tarihi", Value: in["left_on"]}},
+		Sections: []Section{{Key: "students", Title: "Öğrenciler", Description: "İşaretli öğrenciler ayrıldı olarak işaretlenir. Kalacak olanların işaretini kaldırın.", Columns: []Column{
+			{Key: "grade", Label: "Sınıf seviyesi", Type: "text"}, {Key: "class", Label: "Sınıf", Type: "text"}, {Key: "index", Label: "Okul no.", Type: "text"},
+			{Key: "name", Label: "Ad", Type: "text"}, {Key: "leaving", Label: "Ayrılıyor", Type: "boolean", Editable: true},
 		}, Rows: rows}},
 	}
 	if len(rows) == 0 {
-		p.Warnings = append(p.Warnings, "No active students were found in these grades for this year.")
+		p.Warnings = append(p.Warnings, "Bu yıl için bu seviyelerde aktif öğrenci bulunamadı.")
 	}
 	return p, "leavers:" + year.String(), nil
 }
@@ -126,12 +126,12 @@ func (w Leavers) Apply(ctx context.Context, tx *Store, in Inputs, p Proposal, _ 
 	if err := trace.Run(stepByKey(w, "mark_leavers"), func() (string, error) {
 		var err error
 		marked, err = tx.markLeft(ctx, ids, date)
-		return fmt.Sprintf("%d marked as left", marked), err
+		return fmt.Sprintf("%d öğrenci ayrıldı olarak işaretlendi", marked), err
 	}); err != nil {
 		return nil, "", err
 	}
 	snapshot, _ := json.Marshal(leaversSnapshot{IDs: ids})
-	return snapshot, fmt.Sprintf("Marked %s as left", plural(int(marked), "student", "students")), nil
+	return snapshot, fmt.Sprintf("%s ayrıldı olarak işaretlendi", plural(int(marked), "öğrenci", "öğrenci")), nil
 }
 
 func (Leavers) Revert(ctx context.Context, tx *Store, snapshot json.RawMessage) error {

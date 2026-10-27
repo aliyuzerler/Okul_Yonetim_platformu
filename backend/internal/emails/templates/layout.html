@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="tr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,7 +41,7 @@
     {{- if .TestRecipient}}
     <tr><td class="os-pad" style="padding:16px 40px 0;">
       <div style="background:#FCF4D6;border-left:4px solid #F1C21B;padding:10px 14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#161616;">
-        <strong>Test mode:</strong> this email was meant for {{.TestRecipient}}.
+        <strong>Test modu:</strong> bu e-posta aslında {{.TestRecipient}} adresine gönderilecekti.
       </div>
     </td></tr>
     {{- end}}
@@ -74,7 +74,7 @@
     <tr><td class="os-pad os-text" style="padding:12px 40px 28px;font-family:Arial,Helvetica,sans-serif;color:#161616;">
       {{- if .Note}}<p class="os-muted" style="margin:0 0 12px;font-size:14px;line-height:20px;color:#525252;">{{.Note}}</p>{{end}}
       {{- if .ShowLink}}
-      <p class="os-muted" style="margin:0 0 4px;font-size:13px;line-height:18px;color:#525252;">Button not working? Copy this link into your browser:</p>
+      <p class="os-muted" style="margin:0 0 4px;font-size:13px;line-height:18px;color:#525252;">Düğme çalışmıyor mu? Yukarıdaki düğmeye tıklayamıyorsanız bağlantıyı tarayıcınıza kopyalayın:</p>
       <p style="margin:0;font-size:13px;line-height:18px;word-break:break-all;"><a href="{{.Button.URL}}" style="color:#007D9C;">{{.Button.URL}}</a></p>
       {{- end}}
       {{- if .Safety}}
@@ -85,7 +85,7 @@
     </td></tr>
     <tr><td class="os-footer os-pad" style="padding:20px 40px;background:#F4F4F4;border-top:1px solid #E0E0E0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#525252;">
       <span class="os-muted"><strong>{{.Brand.SchoolName}}</strong>{{if .Brand.Phone}} &middot; {{.Brand.Phone}}{{end}}{{if .Brand.Email}} &middot; <a href="mailto:{{.Brand.Email}}" style="color:#525252;">{{.Brand.Email}}</a>{{end}}</span><br>
-      <span class="os-muted">Sent by OpenSchool. This is an automatic message about your account.</span>
+      <span class="os-muted">OpenSchool tarafından gönderilmiştir. Bu, hesabınızla ilgili otomatik bir iletidir.</span>
     </td></tr>
   </table>
 </td></tr>

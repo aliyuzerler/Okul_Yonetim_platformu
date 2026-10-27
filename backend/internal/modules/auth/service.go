@@ -22,14 +22,14 @@ var (
 	// ErrInvalidCredentials is returned for both "no such account" and "secret
 	// didn't match" — never distinguished in the response, so a ForgotPassword
 	// call can't be used to enumerate which identifiers exist.
-	ErrInvalidCredentials = errors.New("no account matches those details")
-	ErrResetTokenInvalid  = errors.New("reset link is invalid, already used, or has expired")
+	ErrInvalidCredentials = errors.New("bu bilgilerle eşleşen bir hesap bulunamadı")
+	ErrResetTokenInvalid  = errors.New("şifre sıfırlama bağlantısı geçersiz, daha önce kullanılmış veya süresi dolmuş")
 	// ErrDefaultPasswordExpired is returned when "keep this password" is no
 	// longer available and the account must set a real password (S1).
-	ErrDefaultPasswordExpired = errors.New("this account has kept its default password for too long — set a new password to continue")
+	ErrDefaultPasswordExpired = errors.New("bu hesap varsayılan şifresini çok uzun süredir koruyor — devam etmek için yeni bir şifre belirleyin")
 	// ErrPasswordAlreadyChanged is returned when KeepDefaultPassword is
 	// called on an account that has already set a real password.
-	ErrPasswordAlreadyChanged = errors.New("this account has already set a password")
+	ErrPasswordAlreadyChanged = errors.New("bu hesap için şifre zaten belirlenmiş")
 )
 
 // passwordResetTokenTTL bounds how long an emailed reset link stays valid.
@@ -128,21 +128,21 @@ func (s *Service) ForgotPassword(ctx context.Context, req ForgotPasswordRequest)
 
 	logAttempt("reset link sent")
 	return ForgotPasswordResponse{
-		Message: "If those details match an account, a password reset link has been sent to the email on file.",
+		Message: "Girilen bilgiler bir hesapla eşleşiyorsa, şifre sıfırlama bağlantısı kayıtlı e-posta adresinize gönderildi.",
 	}, nil
 }
 
 func (s *Service) issueAndEmailResetToken(ctx context.Context, userID uuid.UUID, email string) error {
 	raw := make([]byte, 32)
 	if _, err := io.ReadFull(s.random, raw); err != nil {
-		return fmt.Errorf("failed to generate reset token: %w", err)
+		return fmt.Errorf("şifre sıfırlama anahtarı oluşturulamadı: %w", err)
 	}
 	token := hex.EncodeToString(raw)
 	hash := hashResetToken(token)
 	expiresAt := s.now().Add(passwordResetTokenTTL)
 
 	if err := s.store.createResetToken(ctx, userID, hash, expiresAt); err != nil {
-		return fmt.Errorf("failed to create reset token: %w", err)
+		return fmt.Errorf("şifre sıfırlama kaydı oluşturulamadı: %w", err)
 	}
 
 	// The token travels in the URL fragment, not a query string: a fragment
@@ -150,7 +150,7 @@ func (s *Service) issueAndEmailResetToken(ctx context.Context, userID uuid.UUID,
 	// proxy's access log, though it's still POSTed to the API explicitly (S5).
 	resetLink := fmt.Sprintf("%s/reset-password#token=%s", s.frontend(), token)
 	if err := s.mailer.PasswordReset(ctx, email, resetLink, passwordResetTokenTTL); err != nil {
-		return fmt.Errorf("failed to send reset email: %w", err)
+		return fmt.Errorf("şifre sıfırlama e-postası gönderilemedi: %w", err)
 	}
 
 	return nil
@@ -179,7 +179,7 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, newPassw
 func (s *Service) KeepDefaultPassword(ctx context.Context, userID uuid.UUID) error {
 	user, err := s.store.userByID(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
+		return fmt.Errorf("kullanıcı bulunamadı: %w", err)
 	}
 	// Only a first-login account (must_change_password still true) may make
 	// this choice. Without this check, an account that already set a real
@@ -199,7 +199,7 @@ func (s *Service) KeepDefaultPassword(ctx context.Context, userID uuid.UUID) err
 func (s *Service) setPassword(ctx context.Context, userID uuid.UUID, newPassword string) error {
 	user, err := s.store.userByID(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
+		return fmt.Errorf("kullanıcı bulunamadı: %w", err)
 	}
 
 	if len(newPassword) < MinPasswordLength {
@@ -211,7 +211,7 @@ func (s *Service) setPassword(ctx context.Context, userID uuid.UUID, newPassword
 	}
 
 	if err := s.idp.UpdatePassword(ctx, userID.String(), newPassword); err != nil {
-		return fmt.Errorf("failed to update identity provider password: %w", err)
+		return fmt.Errorf("kimlik sağlayıcıdaki şifre güncellenemedi: %w", err)
 	}
 
 	if err := s.store.clearMustChangePassword(ctx, userID, false); err != nil {

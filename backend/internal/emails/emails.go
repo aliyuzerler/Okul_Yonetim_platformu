@@ -8,101 +8,101 @@ import (
 // greeting is formal and uses the name with initials (e.g. "Dear H.A.N. Perera,"), as school letters do.
 func greeting(nameWithInitials string) string {
 	if nameWithInitials == "" {
-		return "Dear student or guardian,"
+		return "Sayın veli ve öğrencimiz,"
 	}
-	return fmt.Sprintf("Dear %s,", nameWithInitials)
+	return fmt.Sprintf("Sayın %s,", nameWithInitials)
 }
 
 func minutes(d time.Duration) string {
-	return fmt.Sprintf("%d minutes", int(d.Minutes()))
+	return fmt.Sprintf("%d dakika", int(d.Minutes()))
 }
 
 func formatTime(t time.Time) string {
-	return t.Format("2 January 2006 at 3:04 PM (MST)")
+	return t.Format("2 January 2006, 15:04 (MST)")
 }
 
 func activationLinkEmail(school, name, link string, ttl time.Duration) email {
 	return email{
-		subject: "Activate your OpenSchool account",
+		subject: "OpenSchool hesabınızı etkinleştirin",
 		view: view{
-			Preheader:  "Choose a password to finish setting up your account.",
-			Title:      "Activate your account",
+			Preheader:  "Hesabınızın kurulumunu tamamlamak için bir şifre belirleyin.",
+			Title:      "Hesabınızı etkinleştirin",
 			Greeting:   greeting(name),
-			Paragraphs: []string{fmt.Sprintf("Your details matched our records at %s. Choose a password to finish setting up your OpenSchool account.", school)},
-			Button:     &button{Label: "Choose your password", URL: link},
-			Note:       fmt.Sprintf("This link expires in %s and works only once.", minutes(ttl)),
-			Safety:     "Didn't ask for this? You can ignore this email. No account is created until someone chooses a password with this link.",
+			Paragraphs: []string{fmt.Sprintf("Bilgileriniz %s kayıtlarıyla eşleşti. OpenSchool hesabınızın kurulumunu tamamlamak için bir şifre belirleyin.", school)},
+			Button:     &button{Label: "Şifrenizi belirleyin", URL: link},
+			Note:       fmt.Sprintf("Bu bağlantı %s içinde geçerliliğini yitirir ve yalnızca bir kez kullanılabilir.", minutes(ttl)),
+			Safety:     "Bu e-postayı siz istemediyseniz yok sayabilirsiniz. Bu bağlantıyla bir şifre belirlenene kadar hiçbir hesap oluşturulmaz.",
 		},
 	}
 }
 
 func emailInUseEmail(school, signInURL string) email {
 	return email{
-		subject: "This email already has an OpenSchool account",
+		subject: "Bu e-posta adresiyle zaten bir OpenSchool hesabı var",
 		view: view{
-			Preheader: "Someone tried to activate an account with this email.",
-			Title:     "This email already has an account",
+			Preheader: "Birisi bu e-posta adresiyle hesap etkinleştirmeye çalıştı.",
+			Title:     "Bu e-posta adresiyle zaten bir hesap var",
 			Paragraphs: []string{
-				fmt.Sprintf("Someone tried to activate an account at %s using this email address, but it already belongs to an OpenSchool account.", school),
-				"If that was you, sign in with your existing account. Forgot the password? Use Forgot password on the sign-in page. To activate a different account, start again with another email.",
+				fmt.Sprintf("Birisi bu e-posta adresini kullanarak %s içinde hesap etkinleştirmeye çalıştı; ancak bu adres zaten bir OpenSchool hesabına ait.", school),
+				"Bu işlemi siz yaptıysanız mevcut hesabınızla oturum açın. Şifrenizi unuttuysanız oturum açma sayfasındaki Şifremi unuttum seçeneğini kullanın. Farklı bir hesabı etkinleştirmek için başka bir e-posta adresiyle yeniden başlayın.",
 			},
-			Button: &button{Label: "Go to sign in", URL: signInURL},
-			Safety: "Didn't try this? Nothing has changed on your account and you don't need to do anything.",
+			Button: &button{Label: "Oturum açma sayfasına git", URL: signInURL},
+			Safety: "Bu işlemi siz yapmadıysanız endişelenmeyin; hesabınızda hiçbir değişiklik yapılmadı ve herhangi bir işlem yapmanıza gerek yok.",
 		},
 	}
 }
 
 func accountActivatedEmail(school, name, username, signInURL string, at time.Time) email {
 	return email{
-		subject: "Your OpenSchool account is ready",
+		subject: "OpenSchool hesabınız hazır",
 		view: view{
-			Preheader:  "Your account is active. Here is how to sign in.",
-			Title:      "Your account is ready",
+			Preheader:  "Hesabınız etkin. Oturum açmak için aşağıdaki adımları izleyin.",
+			Title:      "Hesabınız hazır",
 			Greeting:   greeting(name),
-			Paragraphs: []string{fmt.Sprintf("Your OpenSchool account at %s is now active. Keep your password private.", school)},
-			Details:    []detail{{"Sign in with", username}, {"Activated", formatTime(at)}},
-			Button:     &button{Label: "Sign in", URL: signInURL},
-			Safety:     fmt.Sprintf("Didn't activate this account? Contact %s straight away so they can lock it.", school),
+			Paragraphs: []string{fmt.Sprintf("%s içindeki OpenSchool hesabınız artık etkin. Şifrenizi kimseyle paylaşmayın.", school)},
+			Details:    []detail{{"Oturum açma adı", username}, {"Etkinleştirildi", formatTime(at)}},
+			Button:     &button{Label: "Oturum aç", URL: signInURL},
+			Safety:     fmt.Sprintf("Bu hesabı siz etkinleştirmediyseniz, hesabın kilitlenebilmesi için bir an önce %s ile iletişime geçin.", school),
 		},
 	}
 }
 
 func passwordResetEmail(school, link string, ttl time.Duration) email {
 	return email{
-		subject: "Reset your OpenSchool password",
+		subject: "OpenSchool şifrenizi sıfırlayın",
 		view: view{
-			Preheader:  "Use this link to choose a new password.",
-			Title:      "Reset your password",
-			Paragraphs: []string{fmt.Sprintf("We received a request to reset the password for your OpenSchool account at %s.", school)},
-			Button:     &button{Label: "Reset password", URL: link},
-			Note:       fmt.Sprintf("This link expires in %s and works only once.", minutes(ttl)),
-			Safety:     "Didn't ask for this? Ignore this email. Your password stays the same.",
+			Preheader:  "Yeni bir şifre belirlemek için bu bağlantıyı kullanın.",
+			Title:      "Şifrenizi belirleyin",
+			Paragraphs: []string{fmt.Sprintf("%s içindeki OpenSchool hesabınız için bir şifre sıfırlama talebi aldık.", school)},
+			Button:     &button{Label: "Şifrenizi belirleyin", URL: link},
+			Note:       fmt.Sprintf("Bu bağlantı %s içinde geçerliliğini yitirir ve yalnızca bir kez kullanılabilir.", minutes(ttl)),
+			Safety:     "Bu talebi siz yapmadıysanız bu e-postayı yok sayın. Şifreniz değişmeden kalır.",
 		},
 	}
 }
 
 func passwordChangedEmail(school, signInURL string, at time.Time) email {
 	return email{
-		subject: "Your OpenSchool password was changed",
+		subject: "OpenSchool şifreniz değiştirildi",
 		view: view{
-			Preheader:  "This is a security notice about your account.",
-			Title:      "Your password was changed",
-			Paragraphs: []string{fmt.Sprintf("The password for your OpenSchool account at %s was just changed.", school)},
-			Details:    []detail{{"Changed", formatTime(at)}},
-			Button:     &button{Label: "Sign in", URL: signInURL},
-			Safety:     fmt.Sprintf("Didn't change it? Use Forgot password on the sign-in page to reset it now, and tell %s.", school),
+			Preheader:  "Bu, hesabınızla ilgili bir güvenlik bildirimidir.",
+			Title:      "Şifreniz değiştirildi",
+			Paragraphs: []string{fmt.Sprintf("%s içindeki OpenSchool hesabınızın şifresi az önce değiştirildi.", school)},
+			Details:    []detail{{"Değiştirildi", formatTime(at)}},
+			Button:     &button{Label: "Oturum aç", URL: signInURL},
+			Safety:     fmt.Sprintf("Bu değişikliği siz yapmadıysanız hemen oturum açma sayfasındaki Şifremi unuttum seçeneğiyle şifrenizi sıfırlayın ve %s bilgilendirin.", school),
 		},
 	}
 }
 
 func testEmail(provider, sender string, at time.Time) email {
 	return email{
-		subject: "OpenSchool email is working",
+		subject: "OpenSchool e-posta gönderimi çalışıyor",
 		view: view{
-			Preheader:  "Your email settings can send messages.",
-			Title:      "Email is working",
-			Paragraphs: []string{"This test message shows that OpenSchool can send email with the current settings."},
-			Details:    []detail{{"Provider", provider}, {"Sender", sender}, {"Sent", formatTime(at)}},
+			Preheader:  "E-posta ayarlarınız ileti gönderebiliyor.",
+			Title:      "E-posta gönderimi çalışıyor",
+			Paragraphs: []string{"Bu test iletisi, OpenSchool'un geçerli ayarlarla e-posta gönderebildiğini gösterir."},
+			Details:    []detail{{"Sağlayıcı", provider}, {"Gönderen", sender}, {"Gönderildi", formatTime(at)}},
 		},
 	}
 }

@@ -24,15 +24,15 @@ type StudentIntake struct{ provider idp.Provider }
 func NewStudentIntake(provider idp.Provider) StudentIntake { return StudentIntake{provider: provider} }
 
 func (StudentIntake) Key() string   { return "intake" }
-func (StudentIntake) Title() string { return "Intake" }
+func (StudentIntake) Title() string { return "Yeni öğrenci kaydı" }
 func (StudentIntake) Description() string {
-	return "Imports new students and their guardians from a CSV (grade 6 scholarship, grade 10 or A/L intake). Duplicates are caught by index number and guardian NIC. Promotion then places them in classes."
+	return "Yeni öğrencileri ve velilerini bir CSV'den içe aktarır (6. sınıf bursluluk, 10. sınıf veya A/L kaydı). Mükerrerler okul numarası ve veli T.C. Kimlik No ile yakalanır. Sınıf geçme ve sınıf oluşturma akışı sonra onları sınıflara yerleştirir."
 }
 
 var (
-	ToolReadIntakeCSV     = tool("read_intake_csv", "Reads the intake CSV and checks every row: required fields, phone numbers, gender, medium, duplicates by index number and guardian NIC.", false)
-	ToolCreateStudents    = tool("create_students", "Creates the student profiles and guardians, links siblings to the same guardian and queues each student for the chosen grade.", true)
-	ToolCreateAccounts    = tool("create_student_accounts", "After the import commits, creates a sign-in account for each imported student with an email. The index number is the first password.", true)
+	ToolReadIntakeCSV     = tool("read_intake_csv", "Kayıt CSV'sini okur ve her satırı denetler: zorunlu alanlar, telefon numaraları, cinsiyet, öğretim dili, okul numarası ve veli T.C. Kimlik No ile mükerrer kontrolü.", false)
+	ToolCreateStudents    = tool("create_students", "Öğrenci profillerini ve velileri oluşturur, kardeşleri aynı veliye bağlar ve her öğrenciyi seçilen sınıf seviyesinin kayıt kuyruğuna alır.", true)
+	ToolCreateAccounts    = tool("create_student_accounts", "Aktarım tamamlandıktan sonra e-posta adresi olan her aktarılan öğrenci için bir giriş hesabı açar. İlk şifre okul numarasıdır.", true)
 	intakeColumns         = []string{"index_number", "full_name", "gender", "medium", "address", "phone", "email", "guardian_name", "guardian_relationship", "guardian_phone", "guardian_nic", "guardian_email"}
 	intakeTemplate        = strings.Join(intakeColumns, ",") + "\n2027/0001,Nimali Perera,female,Sinhala,\"12 Temple Road, Kandy\",0771234567,,Sunil Perera,father,0712345678,197512345678,\n"
 	emailPattern          = regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
@@ -42,9 +42,9 @@ var (
 
 func (StudentIntake) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_csv", Title: "Read and check the CSV", Tool: ToolReadIntakeCSV, Phase: "propose"},
-		{Key: "create_students", Title: "Create students and guardians", Tool: ToolCreateStudents, Phase: "apply"},
-		{Key: "create_accounts", Title: "Create sign-in accounts", Tool: ToolCreateAccounts, Phase: "apply"},
+		{Key: "read_csv", Title: "CSV'yi oku ve denetle", Tool: ToolReadIntakeCSV, Phase: "propose"},
+		{Key: "create_students", Title: "Öğrencileri ve velileri oluştur", Tool: ToolCreateStudents, Phase: "apply"},
+		{Key: "create_accounts", Title: "Giriş hesaplarını oluştur", Tool: ToolCreateAccounts, Phase: "apply"},
 	}
 }
 
@@ -70,12 +70,12 @@ func (StudentIntake) Inputs(ctx context.Context, s *Store) ([]InputField, error)
 		mediumOptions[i] = Option{Value: m.ID.String(), Label: m.Name}
 	}
 	fields := []InputField{
-		{Key: "target_year", Label: "Joining in year", Type: "select", Required: true, Options: yearOptions(years), Help: "Usually next year, created with Year rollover."},
-		{Key: "grade", Label: "Joining grade", Type: "select", Required: true, Options: gradeOptions},
-		{Key: "medium", Label: "Medium when the CSV leaves it blank", Type: "select", Options: mediumOptions},
-		{Key: "csv", Label: "Students CSV", Type: "csv", Required: true, Template: intakeTemplate,
-			Help: "One row per student. Download the template for the columns. Siblings share a guardian NIC."},
-		{Key: "create_accounts", Label: "Create sign-in accounts for students with an email", Type: "boolean", Default: "false"},
+		{Key: "target_year", Label: "Katıldıkları yıl", Type: "select", Required: true, Options: yearOptions(years), Help: "Genellikle Yıl devri ile oluşturulan gelecek yıl."},
+		{Key: "grade", Label: "Katıldıkları sınıf seviyesi", Type: "select", Required: true, Options: gradeOptions},
+		{Key: "medium", Label: "CSV boş bıraktığında kullanılacak öğretim dili", Type: "select", Options: mediumOptions},
+		{Key: "csv", Label: "Öğrenci CSV'si", Type: "csv", Required: true, Template: intakeTemplate,
+			Help: "Öğrenci başına bir satır. Sütunlar için şablonu indirin. Kardeşler aynı veli T.C. Kimlik No'yu paylaşır."},
+		{Key: "create_accounts", Label: "E-posta adresi olan öğrenciler için giriş hesapları oluştur", Type: "boolean", Default: "false"},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -104,9 +104,9 @@ func (StudentIntake) Check(ctx context.Context, s *Store, in Inputs) ([]Check, e
 		detail = err.Error()
 	}
 	return []Check{
-		{Key: "year", Title: "The joining year is chosen", OK: okYear, Blocking: true, FixPath: "/year-end/year_rollover"},
-		{Key: "grade", Title: "The joining grade is chosen", OK: okGrade, Blocking: true},
-		{Key: "csv", Title: "The CSV has a header and at least one student", OK: csvOK, Blocking: true, Detail: detail},
+		{Key: "year", Title: "Katıldıkları yıl seçilmiş", OK: okYear, Blocking: true, FixPath: "/year-end/year_rollover"},
+		{Key: "grade", Title: "Katıldıkları sınıf seviyesi seçilmiş", OK: okGrade, Blocking: true},
+		{Key: "csv", Title: "CSV'de başlık satırı ve en az bir öğrenci var", OK: csvOK, Blocking: true, Detail: detail},
 	}, nil
 }
 
@@ -127,10 +127,10 @@ func parseStudentCSV(text string, columns []string) ([]intakeRow, error) {
 	r.TrimLeadingSpace = true
 	records, err := r.ReadAll()
 	if err != nil {
-		return nil, fmt.Errorf("the CSV could not be read: %w", err)
+		return nil, fmt.Errorf("CSV okunamadı: %w", err)
 	}
 	if len(records) == 0 {
-		return nil, fmt.Errorf("the CSV is empty")
+		return nil, fmt.Errorf("CSV boş")
 	}
 	header := make([]string, len(records[0]))
 	known := map[string]bool{}
@@ -142,7 +142,7 @@ func parseStudentCSV(text string, columns []string) ([]intakeRow, error) {
 	}
 	for _, required := range []string{"index_number", "full_name"} {
 		if !strings.Contains(","+strings.Join(header, ",")+",", ","+required+",") {
-			return nil, fmt.Errorf("the header has no %s column", required)
+			return nil, fmt.Errorf("başlık satırında %s sütunu yok", required)
 		}
 	}
 	var out []intakeRow
@@ -174,39 +174,39 @@ func parseStudentCSV(text string, columns []string) ([]intakeRow, error) {
 func rowProblem(f map[string]string, schoolType string) string {
 	var problems []string
 	if f["index_number"] == "" {
-		problems = append(problems, "index number is missing")
+		problems = append(problems, "okul numarası eksik")
 	}
 	if f["full_name"] == "" {
-		problems = append(problems, "name is missing")
+		problems = append(problems, "ad eksik")
 	}
 	gender := strings.ToLower(f["gender"])
 	switch {
 	case gender != "" && gender != "male" && gender != "female":
-		problems = append(problems, "gender must be male or female")
+		problems = append(problems, "cinsiyet erkek veya kız olmalı")
 	case schoolType == "boys" && gender == "female", schoolType == "girls" && gender == "male":
-		problems = append(problems, "gender does not match a "+schoolType+" school")
+		problems = append(problems, "cinsiyet okul türüyle ("+schoolType+") uyuşmuyor")
 	}
 	if !validation.IsValidSriLankanPhone(f["phone"]) {
-		problems = append(problems, "phone is not a Sri Lankan number")
+		problems = append(problems, "telefon Sri Lanka telefon numarası değil")
 	}
 	if f["email"] != "" && !emailPattern.MatchString(f["email"]) {
-		problems = append(problems, "email is not valid")
+		problems = append(problems, "e-posta geçerli değil")
 	}
 	if hasGuardian(f) {
 		if f["guardian_name"] == "" || f["guardian_phone"] == "" || f["guardian_nic"] == "" {
-			problems = append(problems, "guardian needs a name, phone and NIC")
+			problems = append(problems, "velinin ad, telefon ve kimlik numarası bilgileri eksik")
 		}
 		if !guardianRelationships[strings.ToLower(f["guardian_relationship"])] {
-			problems = append(problems, "guardian relationship must be father, mother, guardian or other")
+			problems = append(problems, "veli yakınlığı baba, anne, vasi veya diğer olmalı")
 		}
 		if f["guardian_phone"] != "" && !validation.IsValidSriLankanPhone(f["guardian_phone"]) {
-			problems = append(problems, "guardian phone is not a Sri Lankan number")
+			problems = append(problems, "veli telefonu Sri Lanka telefon numarası değil")
 		}
 		if f["guardian_nic"] != "" && !nicPattern.MatchString(f["guardian_nic"]) {
-			problems = append(problems, "guardian NIC must be 9 digits and V or X, or 12 digits")
+			problems = append(problems, "veli kimlik numarası 9 rakam ve V veya X, ya da 12 rakam olmalı")
 		}
 		if f["guardian_email"] != "" && !emailPattern.MatchString(f["guardian_email"]) {
-			problems = append(problems, "guardian email is not valid")
+			problems = append(problems, "veli e-postası geçerli değil")
 		}
 	}
 	if len(problems) == 0 {
@@ -267,27 +267,27 @@ func (w StudentIntake) Propose(ctx context.Context, s *Store, in Inputs, trace *
 				if id, ok := mediumByName[strings.ToLower(f["medium"])]; ok {
 					medium = id
 				} else if problem == "" {
-					problem = fmt.Sprintf("Medium %q is not set up in School settings.", f["medium"])
+					problem = fmt.Sprintf("%q öğretim dili Okul ayarlarında tanımlı değil.", f["medium"])
 				}
 			}
 			if problem == "" && taken[f["index_number"]] {
-				problem = "Index number " + f["index_number"] + " already belongs to a student on record."
+				problem = f["index_number"] + " okul numarası zaten kayıtlı bir öğrenciye ait."
 			}
 			if line, dup := seenIndex[f["index_number"]]; problem == "" && dup {
-				problem = fmt.Sprintf("Same index number as line %d.", line)
+				problem = fmt.Sprintf("%d. satırla aynı okul numarası.", line)
 			}
 			seenIndex[f["index_number"]] = r.line
-			reason := "New student."
+			reason := "Yeni öğrenci."
 			switch {
 			case !hasGuardian(f):
-				reason = "New student. No guardian given; add one from the student's page."
+				reason = "Yeni öğrenci. Veli bilgisi verilmedi; öğrencinin sayfasından ekleyin."
 			case known[nic].FullName != "":
-				reason = "Guardian " + known[nic].FullName + " is already on record, so this student is linked to them."
+				reason = known[nic].FullName + " velisi zaten kayıtlı, bu öğrenci ona bağlanacak."
 				if problem == "" {
 					reused++
 				}
 			case seenNIC[nic] != "":
-				reason = "Sibling of " + seenNIC[nic] + ": linked to the same guardian."
+				reason = seenNIC[nic] + " öğrencisinin kardeşi: aynı veliye bağlanacak."
 				if problem == "" {
 					siblings++
 				}
@@ -309,27 +309,27 @@ func (w StudentIntake) Propose(ctx context.Context, s *Store, in Inputs, trace *
 					"guardian_phone": f["guardian_phone"], "guardian_email": f["guardian_email"],
 				}})
 		}
-		return fmt.Sprintf("%d rows, %d ready, %d with problems", len(records), toImport, withErrors), nil
+		return fmt.Sprintf("%d satır, %d hazır, %d sorunlu", len(records), toImport, withErrors), nil
 	}); err != nil {
 		return Proposal{}, "", err
 	}
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "Rows read", Value: strconv.Itoa(len(rows))},
-			{Label: "Ready to import", Value: strconv.Itoa(toImport)},
-			{Label: "With problems", Value: strconv.Itoa(withErrors)},
-			{Label: "Guardians already on record", Value: strconv.Itoa(reused)},
-			{Label: "Siblings in this file", Value: strconv.Itoa(siblings)},
+			{Label: "Okunan satır", Value: strconv.Itoa(len(rows))},
+			{Label: "Aktarıma hazır", Value: strconv.Itoa(toImport)},
+			{Label: "Sorunlu", Value: strconv.Itoa(withErrors)},
+			{Label: "Kayıtlı olan veliler", Value: strconv.Itoa(reused)},
+			{Label: "Dosyadaki kardeşler", Value: strconv.Itoa(siblings)},
 		},
-		Sections: []Section{{Key: "students", Title: "Students", Description: "Ticked rows are imported. Rows with a problem cannot be ticked: fix the CSV and run again.", Columns: []Column{
-			{Key: "line", Label: "Line", Type: "number"}, {Key: "index", Label: "Index no.", Type: "text"}, {Key: "name", Label: "Name", Type: "text"},
-			{Key: "gender", Label: "Gender", Type: "text"}, {Key: "medium", Label: "Medium", Type: "select", Editable: true, Options: mediumOptions},
-			{Key: "guardian", Label: "Guardian", Type: "text"}, {Key: "guardian_nic", Label: "Guardian NIC", Type: "text"},
-			{Key: "import", Label: "Import", Type: "boolean", Editable: true},
+		Sections: []Section{{Key: "students", Title: "Öğrenciler", Description: "İşaretli satırlar aktarılır. Sorunlu satırlar işaretlenemez: CSV'yi düzeltip yeniden çalıştırın.", Columns: []Column{
+			{Key: "line", Label: "Satır", Type: "number"}, {Key: "index", Label: "Okul no.", Type: "text"}, {Key: "name", Label: "Ad", Type: "text"},
+			{Key: "gender", Label: "Cinsiyet", Type: "text"}, {Key: "medium", Label: "Öğretim dili", Type: "select", Editable: true, Options: mediumOptions},
+			{Key: "guardian", Label: "Veli", Type: "text"}, {Key: "guardian_nic", Label: "Veli T.C. Kimlik No", Type: "text"},
+			{Key: "import", Label: "Aktar", Type: "boolean", Editable: true},
 		}, Rows: rows}},
 	}
 	if withErrors > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s have problems and will be skipped. Fix them in the CSV and run the intake again.", plural(withErrors, "row", "rows")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s sorunlu ve atlanacak. CSV'de düzeltip kaydı yeniden çalıştırın.", plural(withErrors, "satır", "satır")))
 	}
 	return p, "intake:" + year.String() + ":" + grade.String(), nil
 }
@@ -351,7 +351,7 @@ func (w StudentIntake) Apply(ctx context.Context, tx *Store, in Inputs, p Propos
 				continue
 			}
 			if r.Cells["error"] != "" {
-				return "", fmt.Errorf("%w: line %s: %s", ErrInvalidProposal, r.Cells["line"], r.Cells["error"])
+				return "", fmt.Errorf("%w: %s. satır: %s", ErrInvalidProposal, r.Cells["line"], r.Cells["error"])
 			}
 			ticked = append(ticked, r)
 			numbers = append(numbers, r.Cells["index"])
@@ -379,12 +379,12 @@ func (w StudentIntake) Apply(ctx context.Context, tx *Store, in Inputs, p Propos
 				return "", err
 			}
 		}
-		return fmt.Sprintf("%d students, %d new guardians", len(snap.Students), len(snap.Guardians)), nil
+		return fmt.Sprintf("%d öğrenci, %d yeni veli", len(snap.Students), len(snap.Guardians)), nil
 	}); err != nil {
 		return nil, "", err
 	}
 	data, _ := json.Marshal(snap)
-	return data, fmt.Sprintf("Imported %s with %s", plural(len(snap.Students), "student", "students"), plural(len(snap.Guardians), "new guardian", "new guardians")), nil
+	return data, fmt.Sprintf("%s, %s ile aktarıldı", plural(len(snap.Students), "öğrenci", "öğrenci"), plural(len(snap.Guardians), "yeni veli", "yeni veli")), nil
 }
 
 // AfterApply creates sign-in accounts outside the transaction, one student at a time; a failure
@@ -465,13 +465,13 @@ func createStudentRows(ctx context.Context, tx *Store, rows []Row, taken map[str
 	for _, r := range rows {
 		c := r.Cells
 		if taken[c["index"]] {
-			return nil, nil, fmt.Errorf("%w: line %s: index number %s was added since the proposal; run it again", ErrInvalidProposal, c["line"], c["index"])
+			return nil, nil, fmt.Errorf("%w: %s. satır: %s okul numarası öneriden sonra eklendi; yeniden çalıştırın", ErrInvalidProposal, c["line"], c["index"])
 		}
 		st := NewStudent{Name: c["name"], NameWithInitials: c["name_with_initials"], CallingName: c["calling_name"], Index: c["index"], Gender: c["gender"], Address: c["address"], Phone: c["phone"],
 			GuardianName: c["guardian"], Relationship: c["relationship"], GuardianPhone: c["guardian_phone"], GuardianNIC: c["guardian_nic"], GuardianEmail: c["guardian_email"]}
 		id, err := tx.createIntakeStudent(ctx, st)
 		if err != nil {
-			return nil, nil, fmt.Errorf("line %s: %w", c["line"], err)
+			return nil, nil, fmt.Errorf("%s. satır: %w", c["line"], err)
 		}
 		students = append(students, id)
 		if st.GuardianNIC == "" {
@@ -480,7 +480,7 @@ func createStudentRows(ctx context.Context, tx *Store, rows []Row, taken map[str
 		gid, ok := guardianByNIC[st.GuardianNIC]
 		if !ok {
 			if gid, err = tx.createGuardian(ctx, st); err != nil {
-				return nil, nil, fmt.Errorf("line %s guardian: %w", c["line"], err)
+				return nil, nil, fmt.Errorf("%s. satır veli: %w", c["line"], err)
 			}
 			guardianByNIC[st.GuardianNIC] = gid
 			guardians = append(guardians, gid)

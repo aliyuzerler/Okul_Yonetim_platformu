@@ -15,13 +15,13 @@ import (
 )
 
 var (
-	ErrUnknownWorkflow = errors.New("unknown workflow")
-	ErrChecksFailed    = errors.New("some preconditions are not met")
-	ErrNotProposed     = errors.New("this run is no longer an open proposal")
-	ErrNotApplied      = errors.New("only an applied run can be reverted")
-	ErrNotEditable     = errors.New("this cell cannot be edited")
-	ErrInvalidOption   = errors.New("that value is not one of the allowed options")
-	ErrUnknownRow      = errors.New("unknown section or row")
+	ErrUnknownWorkflow = errors.New("bilinmeyen akış")
+	ErrChecksFailed    = errors.New("bazı önkoşullar sağlanmıyor")
+	ErrNotProposed     = errors.New("bu çalıştırma artık açık bir öneri değil")
+	ErrNotApplied      = errors.New("yalnızca uygulanmış bir çalıştırma geri alınabilir")
+	ErrNotEditable     = errors.New("bu hücre düzenlenemez")
+	ErrInvalidOption   = errors.New("bu değer izin verilen seçeneklerden biri değil")
+	ErrUnknownRow      = errors.New("bilinmeyen bölüm veya satır")
 )
 
 // Inputs are the values a person chose in the workflow form, keyed by InputField.Key.

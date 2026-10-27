@@ -17,7 +17,7 @@ type Handler struct{ service *Service }
 func NewHandler(service *Service) *Handler { return &Handler{service: service} }
 
 // startMessage is returned for every accepted start request, matched or not.
-const startMessage = "If the code and details match, we have emailed you a link to finish activating your account."
+const startMessage = "Kod ve bilgiler eşleşiyorsa, hesabınızı etkinleştirmeyi tamamlamak için bağlantı e-posta adresinize gönderildi."
 
 // respond maps known errors to client messages and hides everything else.
 func respond(c *gin.Context, err error) {
@@ -50,7 +50,7 @@ func (h *Handler) Status(c *gin.Context) {
 func (h *Handler) Start(c *gin.Context) {
 	var req StartRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "enter the code, your identifier and a valid email"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Kodu, kimlik numaranızı ve geçerli bir e-posta adresinizi girin."})
 		return
 	}
 	if err := h.service.Start(c.Request.Context(), req); err != nil {
@@ -63,14 +63,14 @@ func (h *Handler) Start(c *gin.Context) {
 func (h *Handler) Complete(c *gin.Context) {
 	var req CompleteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "password must be at least 10 characters"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Şifre en az 10 karakter olmalıdır."})
 		return
 	}
 	if err := h.service.Complete(c.Request.Context(), req); err != nil {
 		respond(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "account activated"})
+	c.JSON(http.StatusOK, gin.H{"message": "Hesabınız etkinleştirildi"})
 }
 
 func (h *Handler) GetSettings(c *gin.Context) {
@@ -85,7 +85,7 @@ func (h *Handler) GetSettings(c *gin.Context) {
 func (h *Handler) UpdateSettings(c *gin.Context) {
 	actor, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 	var req Settings
@@ -104,12 +104,12 @@ func (h *Handler) UpdateSettings(c *gin.Context) {
 func (h *Handler) Generate(c *gin.Context) {
 	actor, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 	var req GenerateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "choose students or guardians"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Öğrenci veya veli seçin."})
 		return
 	}
 	resp, err := h.service.Generate(c.Request.Context(), req, actor)
@@ -134,17 +134,17 @@ func (h *Handler) Batches(c *gin.Context) {
 func (h *Handler) BatchCodes(c *gin.Context) {
 	actor, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 	batchID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid batch id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz kod partisi kimliği."})
 		return
 	}
 	resp, err := h.service.BatchCodes(c.Request.Context(), batchID, actor)
 	if errors.Is(err, pgx.ErrNoRows) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "batch not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Kod partisi bulunamadı."})
 		return
 	}
 	if err != nil {
@@ -158,12 +158,12 @@ func (h *Handler) BatchCodes(c *gin.Context) {
 func (h *Handler) RevokeBatch(c *gin.Context) {
 	actor, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 	batchID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid batch id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Geçersiz kod partisi kimliği."})
 		return
 	}
 	n, err := h.service.RevokeBatch(c.Request.Context(), batchID, actor)

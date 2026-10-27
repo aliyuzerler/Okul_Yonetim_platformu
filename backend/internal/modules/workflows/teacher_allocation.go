@@ -16,27 +16,27 @@ import (
 type TeacherAllocation struct{}
 
 func (TeacherAllocation) Key() string   { return "teacher_allocation" }
-func (TeacherAllocation) Title() string { return "Teacher allocation" }
+func (TeacherAllocation) Title() string { return "Öğretmen görevlendirmesi" }
 func (TeacherAllocation) Description() string {
-	return "Assigns a qualified teacher to every class and subject next year, keeping last year's teacher with the class where possible and no one over the weekly period limit. Also suggests form teachers."
+	return "Gelecek yılın her sınıf ve dersine yetkin bir öğretmen atar; mümkün olduğunca geçen yılın öğretmenini sınıfla korur ve kimseyi haftalık ders saati sınırının üzerine çıkarmaz. Ayrıca sınıf öğretmenleri önerir."
 }
 
 var (
-	ToolReadSubjectHours    = tool("read_subject_hours", "Reads the weekly periods each grade needs per subject.", false)
-	ToolReadTeachers        = tool("read_teachers", "Reads active teachers, the subjects they are qualified for and who taught each class last year.", false)
-	ToolAllocateTeachers    = tool("allocate_teachers", "Deterministic allocation: keeps assignments already made, then fills the scarcest subjects first, preferring continuity and the lightest week.", false)
-	ToolSaveSubjectTeachers = tool("save_subject_teachers", "Writes the teacher for each class subject; the timetable generator uses these.", true)
-	ToolSetFormTeachers     = tool("set_form_teachers", "Sets the form teacher of each ticked class.", true)
+	ToolReadSubjectHours    = tool("read_subject_hours", "Her sınıf seviyesinin ders başına ihtiyaç duyduğu haftalık ders saatlerini okur.", false)
+	ToolReadTeachers        = tool("read_teachers", "Aktif öğretmenleri, yetkin oldukları dersleri ve geçen yıl her sınıfa hangi öğretmenin ders verdiğini okur.", false)
+	ToolAllocateTeachers    = tool("allocate_teachers", "Deterministik görevlendirme: yapılmış atamaları korur, en kıt branşları önce doldurur, sürekliliği ve en hafif haftayı tercih eder.", false)
+	ToolSaveSubjectTeachers = tool("save_subject_teachers", "Her sınıf dersi için öğretmeni kaydeder; ders programı üreticisi bunları kullanır.", true)
+	ToolSetFormTeachers     = tool("set_form_teachers", "İşaretli her sınıfın sınıf öğretmenini atar.", true)
 )
 
 func (TeacherAllocation) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_classes", Title: "Read next year's classes", Tool: ToolReadClasses, Phase: "propose"},
-		{Key: "read_hours", Title: "Read subject hours per grade", Tool: ToolReadSubjectHours, Phase: "propose"},
-		{Key: "read_teachers", Title: "Read teachers, qualifications and last year", Tool: ToolReadTeachers, Phase: "propose"},
-		{Key: "allocate", Title: "Allocate teachers", Tool: ToolAllocateTeachers, Phase: "propose"},
-		{Key: "save_teachers", Title: "Save subject teachers", Tool: ToolSaveSubjectTeachers, Phase: "apply"},
-		{Key: "set_form_teachers", Title: "Set form teachers", Tool: ToolSetFormTeachers, Phase: "apply"},
+		{Key: "read_classes", Title: "Gelecek yılın sınıflarını oku", Tool: ToolReadClasses, Phase: "propose"},
+		{Key: "read_hours", Title: "Seviye başına ders saatlerini oku", Tool: ToolReadSubjectHours, Phase: "propose"},
+		{Key: "read_teachers", Title: "Öğretmenleri, yetkinlikleri ve geçen yılı oku", Tool: ToolReadTeachers, Phase: "propose"},
+		{Key: "allocate", Title: "Öğretmenleri görevlendir", Tool: ToolAllocateTeachers, Phase: "propose"},
+		{Key: "save_teachers", Title: "Branş öğretmenlerini kaydet", Tool: ToolSaveSubjectTeachers, Phase: "apply"},
+		{Key: "set_form_teachers", Title: "Sınıf öğretmenlerini ata", Tool: ToolSetFormTeachers, Phase: "apply"},
 	}
 }
 
@@ -48,10 +48,10 @@ func (TeacherAllocation) Inputs(ctx context.Context, s *Store) ([]InputField, er
 		return nil, err
 	}
 	fields := []InputField{
-		{Key: "source_year", Label: "Last year", Type: "select", Required: true, Options: yearOptions(years), Help: "Used to keep teachers with their classes."},
-		{Key: "target_year", Label: "Allocate for year", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "max_periods", Label: "Most periods a teacher takes each week", Type: "text", Required: true, Default: defaultMaxPeriods},
-		{Key: "form_teachers", Label: "Suggest form teachers for classes without one", Type: "boolean", Default: "true"},
+		{Key: "source_year", Label: "Geçen yıl", Type: "select", Required: true, Options: yearOptions(years), Help: "Öğretmenleri sınıflarıyla korumak için kullanılır."},
+		{Key: "target_year", Label: "Görevlendirme yapılacak yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "max_periods", Label: "Bir öğretmenin haftada alabileceği en fazla ders saati", Type: "text", Required: true, Default: defaultMaxPeriods},
+		{Key: "form_teachers", Label: "Sınıf öğretmeni olmayan sınıflar için sınıf öğretmeni öner", Type: "boolean", Default: "true"},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -78,8 +78,8 @@ func (TeacherAllocation) Check(ctx context.Context, s *Store, in Inputs) ([]Chec
 	}
 	limit, err := strconv.Atoi(in["max_periods"])
 	checks := []Check{
-		{Key: "years", Title: "Two different years are chosen", OK: valid, Blocking: true},
-		{Key: "limit", Title: "The period limit is a positive number", OK: err == nil && limit > 0, Blocking: true},
+		{Key: "years", Title: "İki farklı yıl seçilmiş", OK: valid, Blocking: true},
+		{Key: "limit", Title: "Ders saati sınırı pozitif bir sayı", OK: err == nil && limit > 0, Blocking: true},
 	}
 	if !valid {
 		return checks, nil
@@ -114,13 +114,13 @@ func (TeacherAllocation) Check(ctx context.Context, s *Store, in Inputs) ([]Chec
 		}
 	}
 	checks = append(checks,
-		Check{Key: "classes", Title: "Next year has classes", OK: len(classes) > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(len(classes), "class", "classes")},
-		Check{Key: "hours", Title: "Subject hours are set for next year", OK: len(hours) > 0, Blocking: true, FixPath: "/subject-requirements",
-			Detail: fmt.Sprintf("%s have no subject hours and will get no teachers.", plural(len(gradesWithout), "grade", "grades"))},
-		Check{Key: "qualifications", Title: "Teachers have their subjects recorded", OK: qualified > 0 && qualified == len(teachers), Blocking: qualified == 0, FixPath: "/teacher-subjects",
-			Detail: fmt.Sprintf("%d of %s have subjects.", qualified, plural(len(teachers), "active teacher", "active teachers"))},
-		Check{Key: "promotion", Title: "Students are placed in next year's classes", OK: placed > 0, FixPath: "/year-end/promotion",
-			Detail: "Without placements, last year's teacher is matched by section letter only."},
+		Check{Key: "classes", Title: "Gelecek yılın sınıfları var", OK: len(classes) > 0, Blocking: true, FixPath: "/year-end/year_rollover", Detail: plural(len(classes), "sınıf", "sınıf")},
+		Check{Key: "hours", Title: "Gelecek yılın ders saatleri girilmiş", OK: len(hours) > 0, Blocking: true, FixPath: "/subject-requirements",
+			Detail: fmt.Sprintf("%s için ders saati girilmemiş; bu seviyelere öğretmen atanmayacak.", plural(len(gradesWithout), "sınıf seviyesi", "sınıf seviyesi"))},
+		Check{Key: "qualifications", Title: "Öğretmenlerin branşları kayıtlı", OK: qualified > 0 && qualified == len(teachers), Blocking: qualified == 0, FixPath: "/teacher-subjects",
+			Detail: fmt.Sprintf("%s, %d tanesinin branşı kayıtlı.", plural(len(teachers), "aktif öğretmen", "aktif öğretmen"), qualified)},
+		Check{Key: "promotion", Title: "Öğrenciler gelecek yılın sınıflarına yerleştirilmiş", OK: placed > 0, FixPath: "/year-end/promotion",
+			Detail: "Yerleştirme olmadan, geçen yılın öğretmeni yalnızca şube harfine göre eşleştirilir."},
 	)
 	return checks, nil
 }
@@ -137,7 +137,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 			return "", err
 		}
 		sourceClasses, err = s.yearClasses(ctx, source)
-		return plural(len(classes), "class", "classes"), err
+		return plural(len(classes), "sınıf", "sınıf"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -145,7 +145,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 	if err := trace.Run(stepByKey(w, "read_hours"), func() (string, error) {
 		var err error
 		hours, err = s.subjectHours(ctx, target)
-		return plural(len(hours), "grade subject", "grade subjects"), err
+		return plural(len(hours), "ders saati satırı", "ders saati satırı"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -164,7 +164,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 			return "", err
 		}
 		predecessors, err = s.classPredecessors(ctx, source, target)
-		return plural(len(teachers), "active teacher", "active teachers"), err
+		return plural(len(teachers), "aktif öğretmen", "aktif öğretmen"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -242,7 +242,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 				filled++
 			}
 		}
-		return fmt.Sprintf("%d of %d class subjects filled", filled, len(needs)), nil
+		return fmt.Sprintf("%d / %d sınıf dersi atandı", filled, len(needs)), nil
 	})
 
 	rows := make([]Row, len(needs))
@@ -286,7 +286,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 		}
 		row := Row{ID: t.ID.String(), Cells: map[string]string{"teacher": t.Name, "periods": strconv.Itoa(load[t.ID]), "classes": strconv.Itoa(len(classCount[t.ID]))}}
 		if load[t.ID] > limit {
-			row.Warning = "Over the limit because of assignments already made."
+			row.Warning = "Önceden yapılmış atamalar nedeniyle sınırın üzerinde."
 		}
 		loadRows = append(loadRows, row)
 	}
@@ -309,9 +309,9 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 				continue
 			}
 			var pick uuid.UUID
-			reason := "No teacher is free to suggest; pick one by hand."
+			reason := "Önerilecek müsait öğretmen yok; birini elle seçin."
 			if prev, ok := previousOf(c); ok && prev.FormTeacherID != nil && active[*prev.FormTeacherID] && !taken[*prev.FormTeacherID] {
-				pick, reason = *prev.FormTeacherID, "Form teacher of "+prev.Name+" last year."
+				pick, reason = *prev.FormTeacherID, "Geçen yıl "+prev.Name+" sınıfının sınıf öğretmeniydi."
 			} else {
 				best := 0
 				for t, p := range periodsInClass[c.ID] {
@@ -320,7 +320,7 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 					}
 				}
 				if pick != uuid.Nil {
-					reason = fmt.Sprintf("Teaches this class the most (%d periods a week).", best)
+					reason = fmt.Sprintf("Bu sınıfa en çok ders veriyor (haftada %d ders saati).", best)
 				}
 			}
 			value := ""
@@ -335,28 +335,28 @@ func (w TeacherAllocation) Propose(ctx context.Context, s *Store, in Inputs, tra
 
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "Class subjects", Value: strconv.Itoa(len(needs))},
-			{Label: "Filled", Value: strconv.Itoa(len(needs) - unfilled)},
-			{Label: "Not filled", Value: strconv.Itoa(unfilled)},
-			{Label: "Teachers used", Value: strconv.Itoa(len(loadRows))},
-			{Label: "Period limit", Value: strconv.Itoa(limit)},
+			{Label: "Sınıf dersleri", Value: strconv.Itoa(len(needs))},
+			{Label: "Atanan", Value: strconv.Itoa(len(needs) - unfilled)},
+			{Label: "Atanmayan", Value: strconv.Itoa(unfilled)},
+			{Label: "Görevlendirilen öğretmen", Value: strconv.Itoa(len(loadRows))},
+			{Label: "Ders saati sınırı", Value: strconv.Itoa(limit)},
 		},
 		Sections: []Section{
-			{Key: "allocations", Title: "Subject teachers", Description: "Change any teacher here; the list shows teachers qualified for the subject.", Columns: []Column{
-				{Key: "class", Label: "Class", Type: "text"}, {Key: "subject", Label: "Subject", Type: "text"}, {Key: "periods", Label: "Periods", Type: "number"},
-				{Key: "teacher", Label: "Teacher", Type: "select", Editable: true},
+			{Key: "allocations", Title: "Branş öğretmenleri", Description: "Buradan herhangi bir öğretmeni değiştirebilirsiniz; listede o derste yetkin öğretmenler gösterilir.", Columns: []Column{
+				{Key: "class", Label: "Sınıf", Type: "text"}, {Key: "subject", Label: "Ders", Type: "text"}, {Key: "periods", Label: "Ders saati", Type: "number"},
+				{Key: "teacher", Label: "Öğretmen", Type: "select", Editable: true},
 			}, Rows: rows},
-			{Key: "load", Title: "Teacher load", Description: "As proposed, before any changes you make above.", Columns: []Column{
-				{Key: "teacher", Label: "Teacher", Type: "text"}, {Key: "periods", Label: "Periods a week", Type: "number"}, {Key: "classes", Label: "Classes", Type: "number"},
+			{Key: "load", Title: "Öğretmen yükleri", Description: "Yukarıda yapacağınız değişikliklerden önceki, öneri hâlindeki değerler.", Columns: []Column{
+				{Key: "teacher", Label: "Öğretmen", Type: "text"}, {Key: "periods", Label: "Haftalık ders saati", Type: "number"}, {Key: "classes", Label: "Sınıf", Type: "number"},
 			}, Rows: loadRows},
-			{Key: "form_teachers", Title: "Form teachers", Description: "Classes without a form teacher. Untick to leave a class without one.", Columns: []Column{
-				{Key: "class", Label: "Class", Type: "text"}, {Key: "teacher", Label: "Form teacher", Type: "select", Editable: true, Options: allOptions},
-				{Key: "set", Label: "Set", Type: "boolean", Editable: true},
+			{Key: "form_teachers", Title: "Sınıf öğretmenleri", Description: "Sınıf öğretmeni olmayan sınıflar. Sınıf öğretmensiz kalması için işareti kaldırın.", Columns: []Column{
+				{Key: "class", Label: "Sınıf", Type: "text"}, {Key: "teacher", Label: "Sınıf öğretmeni", Type: "select", Editable: true, Options: allOptions},
+				{Key: "set", Label: "Ata", Type: "boolean", Editable: true},
 			}, Rows: formRows},
 		},
 	}
 	if unfilled > 0 {
-		p.Warnings = append(p.Warnings, fmt.Sprintf("%s have no teacher. The timetable will show them as gaps until you pick one.", plural(unfilled, "class subject", "class subjects")))
+		p.Warnings = append(p.Warnings, fmt.Sprintf("%s öğretmensiz kaldı. Birini seçene kadar ders programında boşluk olarak görünür.", plural(unfilled, "sınıf dersi", "sınıf dersi")))
 	}
 	return p, "teacher_allocation:" + target.String(), nil
 }
@@ -404,7 +404,7 @@ func (w TeacherAllocation) Apply(ctx context.Context, tx *Store, in Inputs, p Pr
 			classSet[class] = true
 			written++
 		}
-		return plural(written, "assignment", "assignments") + " written", nil
+		return plural(written, "atama", "atama") + " yapıldı", nil
 	}); err != nil {
 		return nil, "", err
 	}
@@ -433,7 +433,7 @@ func (w TeacherAllocation) Apply(ctx context.Context, tx *Store, in Inputs, p Pr
 				formSet++
 			}
 		}
-		return plural(formSet, "form teacher", "form teachers") + " set", nil
+		return plural(formSet, "sınıf öğretmeni", "sınıf öğretmeni") + " atandı", nil
 	}); err != nil {
 		return nil, "", err
 	}
@@ -441,7 +441,7 @@ func (w TeacherAllocation) Apply(ctx context.Context, tx *Store, in Inputs, p Pr
 		snap.Classes = append(snap.Classes, id)
 	}
 	data, _ := json.Marshal(snap)
-	return data, fmt.Sprintf("Saved %s and %s", plural(written, "subject teacher", "subject teachers"), plural(formSet, "form teacher", "form teachers")), nil
+	return data, fmt.Sprintf("%s ve %s kaydedildi", plural(written, "branş öğretmeni", "branş öğretmeni"), plural(formSet, "sınıf öğretmeni", "sınıf öğretmeni")), nil
 }
 
 func (TeacherAllocation) Revert(ctx context.Context, tx *Store, snapshot json.RawMessage) error {

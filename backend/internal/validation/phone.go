@@ -6,7 +6,7 @@ import (
 )
 
 // ErrInvalidPhone is returned when a phone number is not a Sri Lankan number in any accepted form.
-var ErrInvalidPhone = errors.New("phone number must be a valid Sri Lankan number (e.g. 0771234567, 0112345678, or +94771234567)")
+var ErrInvalidPhone = errors.New("telefon numarası geçerli bir Sri Lanka numarası olmalıdır (örn. 0771234567, 0112345678 veya +94771234567)")
 
 // NormalizeSriLankanPhone returns the number in the stored form 0XXXXXXXXX. It accepts spaces, dashes,
 // dots and brackets, +94 / 0094 / 94 prefixes, and a 9-digit number whose leading 0 a spreadsheet dropped.

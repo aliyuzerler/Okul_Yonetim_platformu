@@ -80,18 +80,18 @@ func Allocate(needs []AllocNeed, teachers []TeacherInfo, maxPeriods int) (map[in
 		n := needs[i]
 		if n.Existing != uuid.Nil {
 			take(n, n.Existing)
-			out[i] = AllocResult{TeacherID: n.Existing, Reason: "Already assigned for next year."}
+			out[i] = AllocResult{TeacherID: n.Existing, Reason: "Gelecek yıl için zaten görevlendirilmiş."}
 			continue
 		}
 		fits := func(t uuid.UUID) bool { return load[t]+n.Periods <= maxPeriods }
 		if c, ok := byID[n.Continuity]; ok && c.Subjects[n.SubjectID] && fits(c.ID) {
 			take(n, c.ID)
-			out[i] = AllocResult{TeacherID: c.ID, Reason: fmt.Sprintf("Taught this class in %s last year.", n.PreviousClass)}
+			out[i] = AllocResult{TeacherID: c.ID, Reason: fmt.Sprintf("Geçen yıl %s sınıfına bu dersi verdi.", n.PreviousClass)}
 			continue
 		}
 		candidates := qualified[n.SubjectID]
 		if len(candidates) == 0 {
-			out[i] = AllocResult{Warning: "No teacher is qualified for " + n.SubjectName + ". Add it under Teacher subjects."}
+			out[i] = AllocResult{Warning: n.SubjectName + " için yetkin öğretmen yok. Öğretmen branşları altından ekleyin."}
 			continue
 		}
 		var best *TeacherInfo
@@ -106,13 +106,13 @@ func Allocate(needs []AllocNeed, teachers []TeacherInfo, maxPeriods int) (map[in
 			}
 		}
 		if best == nil {
-			out[i] = AllocResult{Warning: fmt.Sprintf("Every teacher qualified for %s already has %d periods or more. Raise the limit or pick one by hand.", n.SubjectName, maxPeriods-n.Periods+1)}
+			out[i] = AllocResult{Warning: fmt.Sprintf("%s için yetkin tüm öğretmenlerin haftalık yükü zaten en az %d ders saati. Sınırı yükseltin veya birini elle seçin.", n.SubjectName, maxPeriods-n.Periods+1)}
 			continue
 		}
 		take(n, best.ID)
-		reason := fmt.Sprintf("Qualified, with the lightest week (%d periods).", load[best.ID])
+		reason := fmt.Sprintf("Branşı yetkin ve haftalık programı en hafif olan (%d ders saati).", load[best.ID])
 		if n.Continuity != uuid.Nil && n.Continuity != best.ID {
-			reason = "Last year's teacher is not available; " + reason
+			reason = "Geçen yılın öğretmeni uygun değil; " + reason
 		}
 		out[i] = AllocResult{TeacherID: best.ID, Reason: reason}
 	}

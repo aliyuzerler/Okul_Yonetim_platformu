@@ -17,12 +17,12 @@ func UserIDFromContext(c *gin.Context) (uuid.UUID, error) {
 func rolesFromContext(c *gin.Context) ([]string, bool) {
 	userRoles, exists := c.Get("roles")
 	if !exists {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "no roles found"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Rol bilgisi bulunamadı."})
 		return nil, false
 	}
 	roleList, ok := userRoles.([]string)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "invalid roles format"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Rol bilgisi biçimi geçersiz."})
 		return nil, false
 	}
 	return roleList, true

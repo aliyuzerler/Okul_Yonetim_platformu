@@ -34,7 +34,7 @@ func RespondInternal(c *gin.Context, err error) {
 	)
 
 	c.JSON(http.StatusInternalServerError, gin.H{
-		"error":      "Something went wrong. Please try again.",
+		"error":      "Bir sorun oluştu. Lütfen yeniden deneyin.",
 		"request_id": requestID,
 	})
 }

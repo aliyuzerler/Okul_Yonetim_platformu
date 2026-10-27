@@ -11,7 +11,7 @@ import (
 
 // ErrOrphanNoLongerOrphaned prevents deletion when a provider account has
 // gained a matching local user since the reconciliation list was loaded.
-var ErrOrphanNoLongerOrphaned = errors.New("this identity provider account now has a matching local user — refusing to delete")
+var ErrOrphanNoLongerOrphaned = errors.New("bu kimlik sağlayıcı hesabının artık eşleşen bir yerel kullanıcısı var — silme işlemi reddedildi")
 
 // OrphanedIdentity is an identity-provider account without a local user row.
 type OrphanedIdentity struct {

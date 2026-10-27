@@ -43,7 +43,7 @@ func (h *handler) respond(c *gin.Context, err error, checks []Check) bool {
 	}
 	switch {
 	case errors.Is(err, ErrUnknownWorkflow), errors.Is(err, pgx.ErrNoRows):
-		c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "bulunamadı"})
 	case errors.Is(err, ErrChecksFailed):
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error(), "checks": checks})
 	case errors.Is(err, ErrNotProposed), errors.Is(err, ErrNotApplied), errors.Is(err, errYearInUse), errors.Is(err, errClassesInUse),
@@ -60,7 +60,7 @@ func (h *handler) respond(c *gin.Context, err error, checks []Check) bool {
 func runID(c *gin.Context) (uuid.UUID, bool) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "geçersiz kimlik"})
 		return uuid.Nil, false
 	}
 	return id, true
@@ -69,7 +69,7 @@ func runID(c *gin.Context) (uuid.UUID, bool) {
 func actorID(c *gin.Context) (uuid.UUID, bool) {
 	id, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "çağıran kimliği doğrulanamadı"})
 		return uuid.Nil, false
 	}
 	return id, true
@@ -86,7 +86,7 @@ func (h *handler) catalog(c *gin.Context) {
 func (h *handler) check(c *gin.Context) {
 	var req inputsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "inputs are required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "form değerleri zorunludur"})
 		return
 	}
 	checks, err := h.engine.Check(c.Request.Context(), c.Param("key"), req.Inputs)
@@ -103,7 +103,7 @@ func (h *handler) propose(c *gin.Context) {
 	}
 	var req inputsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "inputs are required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "form değerleri zorunludur"})
 		return
 	}
 	run, checks, err := h.engine.Propose(c.Request.Context(), c.Param("key"), req.Inputs, actor)
@@ -140,7 +140,7 @@ func (h *handler) edit(c *gin.Context) {
 	}
 	var req editRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "section, row_id and cells are required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bölüm, satır kimliği ve hücre değerleri zorunludur"})
 		return
 	}
 	run, err := h.engine.Edit(c.Request.Context(), id, req.Section, req.RowID, req.Cells)

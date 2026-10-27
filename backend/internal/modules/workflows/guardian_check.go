@@ -43,9 +43,9 @@ func (g *guardianChecker) seed(people, emailOwners []guardianSeen) {
 
 func (other guardianSeen) where() string {
 	if other.line == 0 {
-		return "on record"
+		return "kayıtlarda"
 	}
-	return fmt.Sprintf("on line %d", other.line)
+	return fmt.Sprintf("%d. satırında", other.line)
 }
 
 // check returns a blocking problem (or "") and non-blocking notes for one row's guardian.
@@ -56,22 +56,22 @@ func (g *guardianChecker) check(row guardianSeen, onRecord *guardianSeen) (strin
 
 	if onRecord != nil {
 		if !names.SamePerson(onRecord.name, row.name) {
-			return fmt.Sprintf("Guardian NIC %s belongs to %s on record, not %s. Check the NIC or the name.", row.nic, onRecord.name, row.name), nil
+			return fmt.Sprintf("%s T.C. Kimlik No'lu veli kayıtlarda %s, %s değil. T.C. Kimlik No'yu veya adı kontrol edin.", row.nic, onRecord.name, row.name), nil
 		}
 		if onRecord.email != "" && email != "" && !strings.EqualFold(onRecord.email, email) {
-			return fmt.Sprintf("Guardian NIC %s has the email %s on record, not %s. Check the NIC or the email.", row.nic, onRecord.email, row.email), nil
+			return fmt.Sprintf("%s T.C. Kimlik No'lu velinin kayıtlardaki e-postası %s, %s değil. T.C. Kimlik No'yu veya e-postayı kontrol edin.", row.nic, onRecord.email, row.email), nil
 		}
 	}
 
 	if first, seen := g.byNIC[row.nic]; seen {
 		if !names.SamePerson(first.name, row.name) {
-			return fmt.Sprintf("Guardian NIC %s is %s on line %d but %s here. One NIC must be one person: fix the name or the NIC.", row.nic, first.name, first.line, row.name), nil
+			return fmt.Sprintf("%s T.C. Kimlik No %d. satırında %s, burada %s. Bir T.C. Kimlik No tek kişiye ait olmalı: adı veya T.C. Kimlik No'yu düzeltin.", row.nic, first.line, first.name, row.name), nil
 		}
 		if first.email != "" && email != "" && first.email != email {
-			return fmt.Sprintf("Guardian NIC %s has the email %s on line %d but %s here. Use one email per guardian.", row.nic, first.email, first.line, row.email), nil
+			return fmt.Sprintf("%s T.C. Kimlik No'nun %d. satırındaki e-postası %s, burada %s. Her veli için tek e-posta kullanın.", row.nic, first.line, first.email, row.email), nil
 		}
 		if first.phone != "" && row.phone != "" && first.phone != row.phone {
-			notes = append(notes, fmt.Sprintf("Guardian phone differs from line %d; the first one (%s) is kept.", first.line, first.phone))
+			notes = append(notes, fmt.Sprintf("Veli telefonu %d. satırdan farklı; ilki (%s) korunacak.", first.line, first.phone))
 		}
 		return "", notes
 	}
@@ -84,9 +84,9 @@ func (g *guardianChecker) check(row guardianSeen, onRecord *guardianSeen) (strin
 			if other.nic != row.nic && names.SamePerson(other.name, row.name) {
 				nic := other.nic
 				if nic == "" {
-					nic = "no NIC"
+					nic = "T.C. Kimlik No yok"
 				}
-				notes = append(notes, fmt.Sprintf("%s with phone %s is already %s with %s. If this is the same person, use that NIC so the children share one guardian.", row.name, row.phone, other.where(), nic))
+				notes = append(notes, fmt.Sprintf("%s (%s telefonu) zaten %s var: %s. Aynı kişi ise o T.C. Kimlik No'yu kullanın; böylece çocuklar tek veliye bağlanır.", row.name, row.phone, other.where(), nic))
 				break
 			}
 		}
@@ -97,9 +97,9 @@ func (g *guardianChecker) check(row guardianSeen, onRecord *guardianSeen) (strin
 	if email != "" && !ownEmail {
 		if other, seen := g.byEmail[email]; seen && (other.account || other.nic != row.nic) {
 			if other.account {
-				notes = append(notes, fmt.Sprintf("Email %s already belongs to an OpenSchool login (%s). This parent will need a different email to activate.", row.email, other.name))
+				notes = append(notes, fmt.Sprintf("%s e-postası zaten bir OpenSchool hesabına ait (%s). Bu velinin etkinleştirme için farklı bir e-postası gerekecek.", row.email, other.name))
 			} else {
-				notes = append(notes, fmt.Sprintf("Email %s is already used by %s %s. Each parent needs their own email to activate a login.", row.email, other.name, other.where()))
+				notes = append(notes, fmt.Sprintf("%s e-postası zaten %s (%s) tarafından kullanılıyor. Her velinin hesabını etkinleştirmek için kendi e-postasına ihtiyacı var.", row.email, other.name, other.where()))
 			}
 		} else if !seen {
 			g.byEmail[email] = row

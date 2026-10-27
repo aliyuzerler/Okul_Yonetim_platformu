@@ -10,11 +10,11 @@ import (
 // password IS the NIC or index number, and both are printed on documents
 // other students see, so accepting them back as a "new" password would
 // leave the account exactly as guessable as before.
-var ErrWeakPassword = errors.New("that password is too common or matches information printed on your ID card — choose a different one")
+var ErrWeakPassword = errors.New("bu şifre çok yaygın veya kimlik kartınızda yazan bilgiyle aynı — lütfen farklı bir şifre seçin")
 
 // ErrPasswordTooShort is returned when a new password is under
 // MinPasswordLength.
-var ErrPasswordTooShort = errors.New("password must be at least 10 characters")
+var ErrPasswordTooShort = errors.New("şifre en az 10 karakter olmalıdır")
 
 // MinPasswordLength mirrors the `min=10` request-binding tags on
 // ResetPasswordRequest/ChangePasswordRequest (models.go). setPassword

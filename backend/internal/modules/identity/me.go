@@ -61,7 +61,7 @@ func (s *meService) setLanguage(ctx context.Context, id uuid.UUID, language stri
 	return s.users.setLanguage(ctx, id, language)
 }
 
-var errUnsupportedLanguage = errors.New("language must be one of en, si, ta")
+var errUnsupportedLanguage = errors.New("dil tercihi en, si veya ta değerlerinden biri olmalıdır")
 
 type meHandler struct{ service *meService }
 
@@ -113,12 +113,12 @@ type setLanguageRequest struct {
 func (h *meHandler) setLanguage(c *gin.Context) {
 	id, err := uuid.Parse(c.GetString("userID"))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 	var req setLanguageRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "language is required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dil alanı zorunludur."})
 		return
 	}
 	if err := h.service.setLanguage(c.Request.Context(), id, req.Language); err != nil {
@@ -127,7 +127,7 @@ func (h *meHandler) setLanguage(c *gin.Context) {
 			return
 		}
 		log.Printf("/me/language: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "could not save language"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Dil tercihi kaydedilemedi."})
 		return
 	}
 	c.Status(http.StatusNoContent)

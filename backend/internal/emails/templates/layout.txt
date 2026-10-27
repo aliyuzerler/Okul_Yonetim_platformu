@@ -1,6 +1,6 @@
 {{.Brand.SchoolName}} - OpenSchool
 {{if .TestRecipient}}
-[Test mode: this email was meant for {{.TestRecipient}}]
+[Test modu: bu e-posta aslında {{.TestRecipient}} adresine gönderilecekti.]
 {{end}}
 {{.Title}}
 
@@ -18,4 +18,4 @@
 
 {{end}}--
 {{.Brand.SchoolName}}{{if .Brand.Phone}} | {{.Brand.Phone}}{{end}}{{if .Brand.Email}} | {{.Brand.Email}}{{end}}
-Sent by OpenSchool. This is an automatic message about your account.
+OpenSchool tarafından gönderilmiştir. Bu, hesabınızla ilgili otomatik bir iletidir.

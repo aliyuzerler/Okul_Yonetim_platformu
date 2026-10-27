@@ -56,7 +56,7 @@ func (e *Engine) Catalog(ctx context.Context) ([]CatalogEntry, error) {
 	for _, d := range e.definitions {
 		inputs, err := d.Inputs(ctx, e.store)
 		if err != nil {
-			return nil, fmt.Errorf("%s inputs: %w", d.Key(), err)
+			return nil, fmt.Errorf("%s girdileri: %w", d.Key(), err)
 		}
 		entry := CatalogEntry{Key: d.Key(), Group: groupOf(d), Title: d.Title(), Description: d.Description(), Steps: d.Steps(), Inputs: inputs}
 		// Only pipeline steps are numbered.
@@ -177,7 +177,7 @@ func (e *Engine) Edit(ctx context.Context, id uuid.UUID, sectionKey, rowID strin
 				return err
 			}
 			row.Cells[key] = value
-			row.Reason = "Changed by hand"
+			row.Reason = "Elle değiştirildi"
 			row.Warning = ""
 		}
 		if err := tx.saveProposal(ctx, id, run.Proposal); err != nil {

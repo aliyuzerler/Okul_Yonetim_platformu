@@ -17,7 +17,7 @@ func RequireStudentAccess(access ports.StudentAccessAuthorizer) gin.HandlerFunc 
 	return func(c *gin.Context) {
 		userID, err := UserIDFromContext(c)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid user id"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Geçersiz kullanıcı kimliği."})
 			return
 		}
 
@@ -33,12 +33,12 @@ func RequireStudentAccess(access ports.StudentAccessAuthorizer) gin.HandlerFunc 
 
 		studentIDStr := c.Param("id")
 		if studentIDStr == "" {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "missing student id"})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Öğrenci kimliği eksik."})
 			return
 		}
 		studentID, err := uuid.Parse(studentIDStr)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid student id"})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Geçersiz öğrenci kimliği."})
 			return
 		}
 
@@ -58,6 +58,6 @@ func RequireStudentAccess(access ports.StudentAccessAuthorizer) gin.HandlerFunc 
 			}
 		}
 
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "access denied for this student resource"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Bu öğrenci kaydına erişim yetkiniz yok."})
 	}
 }

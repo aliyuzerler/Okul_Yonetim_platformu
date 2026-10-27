@@ -40,12 +40,12 @@ func TestActivationLinkIsBrandedWithInlineLogo(t *testing.T) {
 		t.Fatal(err)
 	}
 	msg := capture.msgs[0]
-	for _, want := range []string{"Royal College", "Dear H.A.N. Perera,", "Choose your password", "https://school.example/activate#token=abc", "30 minutes", "cid:openschool-logo", "011 234 5678"} {
+	for _, want := range []string{"Royal College", "Sayın H.A.N. Perera,", "Şifrenizi belirleyin", "https://school.example/activate#token=abc", "30 dakika", "cid:openschool-logo", "011 234 5678"} {
 		if !strings.Contains(msg.HTML, want) {
 			t.Errorf("HTML missing %q", want)
 		}
 	}
-	if !strings.Contains(msg.Text, "Choose your password: https://school.example/activate#token=abc") {
+	if !strings.Contains(msg.Text, "Şifrenizi belirleyin: https://school.example/activate#token=abc") {
 		t.Errorf("text version missing the link:\n%s", msg.Text)
 	}
 	if msg.To != "nimali@example.com" || msg.ReplyTo != "office@royal.example" || msg.IdempotencyKey == "" {
@@ -54,7 +54,7 @@ func TestActivationLinkIsBrandedWithInlineLogo(t *testing.T) {
 	if len(msg.Inline) != 1 || msg.Inline[0].ContentType != "image/png" || len(msg.Inline[0].Data) == 0 {
 		t.Fatal("logo not attached inline")
 	}
-	if strings.Contains(msg.HTML, "Test mode") {
+	if strings.Contains(msg.HTML, "Test modu") {
 		t.Fatal("test banner shown outside test mode")
 	}
 }
@@ -68,7 +68,7 @@ func TestRedirectSendsToTestInboxWithBanner(t *testing.T) {
 	if msg.To != "me@example.com" || msg.ReplyTo != "help@example.com" {
 		t.Fatalf("to %q reply-to %q", msg.To, msg.ReplyTo)
 	}
-	if !strings.Contains(msg.HTML, "this email was meant for teacher@example.com") || !strings.Contains(msg.Text, "meant for teacher@example.com") {
+	if !strings.Contains(msg.HTML, "bu e-posta aslında teacher@example.com") || !strings.Contains(msg.Text, "Test modu: bu e-posta aslında teacher@example.com") {
 		t.Fatal("test banner missing")
 	}
 }
@@ -114,7 +114,7 @@ func TestGreetingFallsBackToAFormalSalutation(t *testing.T) {
 	if err := s.AccountActivated(context.Background(), "a@example.com", "", "2026/0001"); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(capture.msgs[0].HTML, "Dear student or guardian,") {
+	if !strings.Contains(capture.msgs[0].HTML, "Sayın veli ve öğrencimiz,") {
 		t.Fatal("without a name the greeting must stay formal")
 	}
 }

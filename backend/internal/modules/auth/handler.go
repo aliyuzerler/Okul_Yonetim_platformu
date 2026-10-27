@@ -52,14 +52,14 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "password updated"})
+	c.JSON(http.StatusOK, gin.H{"message": "Şifre güncellendi"})
 }
 
 // ChangePassword sets a new password for the signed-in user — also used by the first-login "set a new password" choice.
 func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	actorID, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 
@@ -74,14 +74,14 @@ func (h *AuthHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "password updated"})
+	c.JSON(http.StatusOK, gin.H{"message": "Şifre güncellendi"})
 }
 
 // KeepDefaultPassword clears the must-change-password flag without changing the password.
 func (h *AuthHandler) KeepDefaultPassword(c *gin.Context) {
 	actorID, err := middleware.UserIDFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid caller identity"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Oturum kimliği geçersiz."})
 		return
 	}
 
@@ -90,5 +90,5 @@ func (h *AuthHandler) KeepDefaultPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "password kept"})
+	c.JSON(http.StatusOK, gin.H{"message": "Şifre korundu"})
 }

@@ -15,20 +15,20 @@ import (
 type YearRollover struct{}
 
 func (YearRollover) Key() string   { return "year_rollover" }
-func (YearRollover) Title() string { return "Year rollover" }
+func (YearRollover) Title() string { return "Yıl devri" }
 func (YearRollover) Description() string {
-	return "Creates next academic year with the same terms, classes, homerooms, capacities and timetable setup as this year. Students are not moved here; that is Promotion."
+	return "Bu yılın dönemi, sınıfları, sınıf öğretmenleri, kontenjanları ve ders programı ayarlarıyla gelecek eğitim-öğretim yılını oluşturur. Öğrenciler burada taşınmaz; o işlem Sınıf geçme ve sınıf oluşturma akışındadır."
 }
 
 func (YearRollover) Steps() []StepInfo {
 	return []StepInfo{
-		{Key: "read_source", Title: "Read this year", Tool: ToolReadYears, Phase: "propose"},
-		{Key: "read_classes", Title: "Read this year's classes", Tool: ToolReadClasses, Phase: "propose"},
-		{Key: "read_terms", Title: "Read this year's terms", Tool: ToolReadTerms, Phase: "propose"},
-		{Key: "create_year", Title: "Create the new year", Tool: ToolCreateYear, Phase: "apply"},
-		{Key: "copy_terms", Title: "Copy terms", Tool: ToolCopyTerms, Phase: "apply"},
-		{Key: "copy_classes", Title: "Copy classes with homerooms", Tool: ToolCopyClasses, Phase: "apply"},
-		{Key: "copy_timetable_setup", Title: "Copy timetable setup", Tool: ToolCopyTimetableSetup, Phase: "apply"},
+		{Key: "read_source", Title: "Bu yılı oku", Tool: ToolReadYears, Phase: "propose"},
+		{Key: "read_classes", Title: "Bu yılın sınıflarını oku", Tool: ToolReadClasses, Phase: "propose"},
+		{Key: "read_terms", Title: "Bu yılın dönemlerini oku", Tool: ToolReadTerms, Phase: "propose"},
+		{Key: "create_year", Title: "Yeni yılı oluştur", Tool: ToolCreateYear, Phase: "apply"},
+		{Key: "copy_terms", Title: "Dönemleri kopyala", Tool: ToolCopyTerms, Phase: "apply"},
+		{Key: "copy_classes", Title: "Sınıfları sınıf öğretmenleriyle kopyala", Tool: ToolCopyClasses, Phase: "apply"},
+		{Key: "copy_timetable_setup", Title: "Ders programı ayarlarını kopyala", Tool: ToolCopyTimetableSetup, Phase: "apply"},
 	}
 }
 
@@ -38,12 +38,12 @@ func (YearRollover) Inputs(ctx context.Context, s *Store) ([]InputField, error) 
 		return nil, err
 	}
 	fields := []InputField{
-		{Key: "source_year", Label: "Copy from", Type: "select", Required: true, Options: yearOptions(years)},
-		{Key: "label", Label: "New year name", Type: "text", Required: true, Help: "Usually the calendar year, for example 2027."},
-		{Key: "start_date", Label: "Starts", Type: "date", Required: true},
-		{Key: "end_date", Label: "Ends", Type: "date", Required: true},
-		{Key: "copy_form_teachers", Label: "Keep the same form teachers", Type: "boolean", Default: "false", Help: "Off by default; form teachers usually change."},
-		{Key: "copy_timetable_setup", Label: "Copy timetable setup", Type: "boolean", Default: "true", Help: "Grade sections, period grids, subject hours and section heads."},
+		{Key: "source_year", Label: "Kopyalanacak yıl", Type: "select", Required: true, Options: yearOptions(years)},
+		{Key: "label", Label: "Yeni yıl adı", Type: "text", Required: true, Help: "Genellikle takvim yılı, örneğin 2027."},
+		{Key: "start_date", Label: "Başlangıç", Type: "date", Required: true},
+		{Key: "end_date", Label: "Bitiş", Type: "date", Required: true},
+		{Key: "copy_form_teachers", Label: "Sınıf öğretmenlerini koru", Type: "boolean", Default: "false", Help: "Varsayılan olarak kapalıdır; sınıf öğretmenleri genellikle değişir."},
+		{Key: "copy_timetable_setup", Label: "Ders programı ayarlarını kopyala", Type: "boolean", Default: "true", Help: "Seviye şubeleri, ders saati çizelgeleri, ders saatleri ve şube rehber öğretmenleri."},
 	}
 	if cur := currentYear(years); cur != nil {
 		fields[0].Default = cur.ID.String()
@@ -73,8 +73,8 @@ func (w YearRollover) Check(ctx context.Context, s *Store, in Inputs) ([]Check, 
 			return nil, err
 		}
 	}
-	checks = append(checks, Check{Key: "source_classes", Title: "This year has classes to copy", OK: ok && len(classes) > 0, Blocking: true, FixPath: "/classes",
-		Detail: map[bool]string{true: plural(len(classes), "class", "classes") + " found.", false: "Pick a year that has classes."}[ok && len(classes) > 0]})
+	checks = append(checks, Check{Key: "source_classes", Title: "Bu yılın kopyalanacak sınıfları var", OK: ok && len(classes) > 0, Blocking: true, FixPath: "/classes",
+		Detail: map[bool]string{true: plural(len(classes), "sınıf", "sınıf") + " bulundu.", false: "Sınıfı olan bir yıl seçin."}[ok && len(classes) > 0]})
 
 	label := strings.TrimSpace(in["label"])
 	exists := false
@@ -84,16 +84,16 @@ func (w YearRollover) Check(ctx context.Context, s *Store, in Inputs) ([]Check, 
 			return nil, err
 		}
 	}
-	checks = append(checks, Check{Key: "label_free", Title: "The new year name is not used yet", OK: label != "" && !exists, Blocking: true, FixPath: "/academic-years",
-		Detail: map[bool]string{true: "An academic year with this name already exists.", false: ""}[exists]})
+	checks = append(checks, Check{Key: "label_free", Title: "Yeni yıl adı henüz kullanılmamış", OK: label != "" && !exists, Blocking: true, FixPath: "/academic-years",
+		Detail: map[bool]string{true: "Bu adda bir eğitim-öğretim yılı zaten var.", false: ""}[exists]})
 
 	start, okStart := parseDate(in["start_date"])
 	end, okEnd := parseDate(in["end_date"])
-	checks = append(checks, Check{Key: "dates", Title: "Start and end dates are valid", OK: okStart && okEnd && start.Before(end), Blocking: true})
+	checks = append(checks, Check{Key: "dates", Title: "Başlangıç ve bitiş tarihleri geçerli", OK: okStart && okEnd && start.Before(end), Blocking: true})
 	if ok && okStart {
-		checks = append(checks, Check{Key: "after_source", Title: "The new year starts after this one ends", OK: start.After(sourceYear.End), Detail: "Overlapping years are allowed but unusual."})
+		checks = append(checks, Check{Key: "after_source", Title: "Yeni yıl, bu yıl bittikten sonra başlıyor", OK: start.After(sourceYear.End), Detail: "Üst üste binen yıllara izin verilir ama olağan dışıdır."})
 	}
-	checks = append(checks, Check{Key: "source_terms", Title: "This year has terms to copy", OK: len(terms) > 0, FixPath: "/academic-years", Detail: map[bool]string{true: "", false: "Without terms the new year starts with none; add them later."}[len(terms) > 0]})
+	checks = append(checks, Check{Key: "source_terms", Title: "Bu yılın kopyalanacak dönemleri var", OK: len(terms) > 0, FixPath: "/academic-years", Detail: map[bool]string{true: "", false: "Dönemler olmadan yeni yıl dönemleri olmadan başlar; bunları sonra ekleyin."}[len(terms) > 0]})
 	return checks, nil
 }
 
@@ -112,21 +112,21 @@ func (w YearRollover) Propose(ctx context.Context, s *Store, in Inputs, trace *T
 		if err == nil {
 			sections, err = s.sectionCount(ctx, source)
 		}
-		return "Copying from " + src.Label, err
+		return "Kopyalanıyor: " + src.Label, err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
 	if err := trace.Run(stepByKey(w, "read_classes"), func() (string, error) {
 		var err error
 		classes, err = s.yearClasses(ctx, source)
-		return plural(len(classes), "class", "classes"), err
+		return plural(len(classes), "sınıf", "sınıf"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
 	if err := trace.Run(stepByKey(w, "read_terms"), func() (string, error) {
 		var err error
 		terms, err = s.terms(ctx, source)
-		return plural(len(terms), "term", "terms"), err
+		return plural(len(terms), "dönem", "dönem"), err
 	}); err != nil {
 		return Proposal{}, "", err
 	}
@@ -141,15 +141,15 @@ func (w YearRollover) Propose(ctx context.Context, s *Store, in Inputs, trace *T
 	for i, c := range classes {
 		homeroom := c.Homeroom
 		if homeroom == "" {
-			homeroom = c.Name + " (new)"
+			homeroom = c.Name + " (yeni)"
 		}
 		stream := c.StreamName
 		if c.StreamGroupName != "" {
 			stream += " / " + c.StreamGroupName
 		}
-		teacher := "No"
+		teacher := "Hayır"
 		if copyTeachers && c.FormTeacherID != nil {
-			teacher = "Yes"
+			teacher = "Evet"
 		}
 		classRows[i] = Row{ID: c.ID.String(), Group: c.GradeName, Cells: map[string]string{
 			"grade": c.GradeName, "class": c.Name, "stream": stream, "medium": c.MediumName, "homeroom": homeroom,
@@ -159,24 +159,24 @@ func (w YearRollover) Propose(ctx context.Context, s *Store, in Inputs, trace *T
 
 	p := Proposal{
 		Summary: []Stat{
-			{Label: "New year", Value: label},
-			{Label: "Classes", Value: strconv.Itoa(len(classes))},
-			{Label: "Terms", Value: strconv.Itoa(len(terms))},
-			{Label: "Grade sections", Value: map[bool]string{true: strconv.Itoa(sections), false: "Not copied"}[in["copy_timetable_setup"] == "true"]},
+			{Label: "Yeni yıl", Value: label},
+			{Label: "Sınıf", Value: strconv.Itoa(len(classes))},
+			{Label: "Dönem", Value: strconv.Itoa(len(terms))},
+			{Label: "Seviye şubeleri", Value: map[bool]string{true: strconv.Itoa(sections), false: "Kopyalanmadı"}[in["copy_timetable_setup"] == "true"]},
 		},
 		Sections: []Section{
-			{Key: "year", Title: "Academic year", Columns: []Column{{Key: "label", Label: "Name", Type: "text"}, {Key: "start", Label: "Starts", Type: "text"}, {Key: "end", Label: "Ends", Type: "text"}},
+			{Key: "year", Title: "Eğitim-öğretim yılı", Columns: []Column{{Key: "label", Label: "Ad", Type: "text"}, {Key: "start", Label: "Başlangıç", Type: "text"}, {Key: "end", Label: "Bitiş", Type: "text"}},
 				Rows: []Row{{ID: "year", Cells: map[string]string{"label": label, "start": fmtDate(start), "end": fmtDate(end)}}}},
-			{Key: "terms", Title: "Terms", Description: "Dates move forward by whole years; check them against the Ministry calendar.", Columns: []Column{{Key: "name", Label: "Term", Type: "text"}, {Key: "start", Label: "Starts", Type: "text"}, {Key: "end", Label: "Ends", Type: "text"}}, Rows: termRows},
-			{Key: "classes", Title: "Classes", Description: "Untick a class to leave it out of the new year.", Columns: []Column{
-				{Key: "grade", Label: "Grade", Type: "text"}, {Key: "class", Label: "Class", Type: "text"}, {Key: "stream", Label: "Stream", Type: "text"},
-				{Key: "medium", Label: "Medium", Type: "text"}, {Key: "homeroom", Label: "Homeroom", Type: "text"}, {Key: "capacity", Label: "Capacity", Type: "number"},
-				{Key: "form_teacher", Label: "Form teacher kept", Type: "text"}, {Key: "include", Label: "Create", Type: "boolean", Editable: true},
+			{Key: "terms", Title: "Dönemler", Description: "Tarihler tam yıl kadar ileri alınır; Millî Eğitim takvimiyle karşılaştırın.", Columns: []Column{{Key: "name", Label: "Dönem", Type: "text"}, {Key: "start", Label: "Başlangıç", Type: "text"}, {Key: "end", Label: "Bitiş", Type: "text"}}, Rows: termRows},
+			{Key: "classes", Title: "Sınıflar", Description: "Yeni yıla alınmasını istemediğiniz sınıfın işaretini kaldırın.", Columns: []Column{
+				{Key: "grade", Label: "Sınıf seviyesi", Type: "text"}, {Key: "class", Label: "Sınıf", Type: "text"}, {Key: "stream", Label: "Alan", Type: "text"},
+				{Key: "medium", Label: "Öğretim dili", Type: "text"}, {Key: "homeroom", Label: "Sınıf öğretmeni", Type: "text"}, {Key: "capacity", Label: "Kontenjan", Type: "number"},
+				{Key: "form_teacher", Label: "Sınıf öğretmeni korundu", Type: "text"}, {Key: "include", Label: "Oluştur", Type: "boolean", Editable: true},
 			}, Rows: classRows},
 		},
 	}
 	if len(terms) == 0 {
-		p.Warnings = append(p.Warnings, "This year has no terms, so the new year will start with none.")
+		p.Warnings = append(p.Warnings, "Bu yılın dönemi yok, bu yüzden yeni yıl dönemleri olmadan başlayacak.")
 	}
 	return p, "label:" + strings.ToLower(label), nil
 }
@@ -195,7 +195,7 @@ func (w YearRollover) Apply(ctx context.Context, tx *Store, in Inputs, p Proposa
 	if err := trace.Run(stepByKey(w, "create_year"), func() (string, error) {
 		var err error
 		year, err = tx.createYear(ctx, label, start, end)
-		return "Created " + label, err
+		return label + " oluşturuldu", err
 	}); err != nil {
 		return nil, "", err
 	}
@@ -208,7 +208,7 @@ func (w YearRollover) Apply(ctx context.Context, tx *Store, in Inputs, p Proposa
 				return "", err
 			}
 		}
-		return plural(len(rows), "term", "terms"), nil
+		return plural(len(rows), "dönem", "dönem"), nil
 	}); err != nil {
 		return nil, "", err
 	}
@@ -230,27 +230,27 @@ func (w YearRollover) Apply(ctx context.Context, tx *Store, in Inputs, p Proposa
 				c.FormTeacherID = nil
 			}
 			if _, err := tx.createClass(ctx, year, c); err != nil {
-				return "", fmt.Errorf("class %s: %w", c.Name, err)
+				return "", fmt.Errorf("sınıf %s: %w", c.Name, err)
 			}
 			created++
 		}
-		return plural(created, "class", "classes"), nil
+		return plural(created, "sınıf", "sınıf"), nil
 	}); err != nil {
 		return nil, "", err
 	}
 	if in["copy_timetable_setup"] == "true" {
 		if err := trace.Run(stepByKey(w, "copy_timetable_setup"), func() (string, error) {
 			n, err := tx.copyTimetableSetup(ctx, source, year)
-			return fmt.Sprintf("%d grade sections, %d subject hour rows, %d section heads", n.Sections, n.SubjectHours, n.SectionHeads), err
+			return fmt.Sprintf("%d seviye şubesi, %d ders saati satırı, %d şube rehber öğretmeni", n.Sections, n.SubjectHours, n.SectionHeads), err
 		}); err != nil {
 			return nil, "", err
 		}
 	}
 	snapshot, _ := json.Marshal(rolloverSnapshot{YearID: year})
-	return snapshot, fmt.Sprintf("Created %s with %s", label, plural(created, "class", "classes")), nil
+	return snapshot, fmt.Sprintf("%s, %s ile oluşturuldu", label, plural(created, "sınıf", "sınıf")), nil
 }
 
-var errYearInUse = errors.New("the new year already has students, attendance, subject choices or timetables, so it can no longer be reverted")
+var errYearInUse = errors.New("yeni yılda zaten öğrenci, yoklama, ders seçimi veya ders programı var, bu yüzden artık geri alınamaz")
 
 func (YearRollover) Revert(ctx context.Context, tx *Store, snapshot json.RawMessage) error {
 	var snap rolloverSnapshot

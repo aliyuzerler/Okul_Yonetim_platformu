@@ -83,7 +83,7 @@ func TestTeacherAllocationWithPostgres(t *testing.T) {
 	// A second proposal keeps what is already assigned.
 	again := proposeRun(t, router, "teacher_allocation", Inputs{})
 	for _, r := range again.Proposal.Section("allocations").Rows {
-		if r.Reason != "Already assigned for next year." {
+		if r.Reason != "Gelecek yıl için zaten görevlendirilmiş." {
 			t.Fatalf("existing assignment should be kept: %+v", r)
 		}
 	}
