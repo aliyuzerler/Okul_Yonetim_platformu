@@ -18,18 +18,18 @@ export type StudentAttendanceStatus = "present" | "absent" | "late" | "excused";
 export type StaffAttendanceStatusKey = "present" | "absent" | "late" | "leave";
 
 export const STUDENT_ATTENDANCE_STYLES: Record<StudentAttendanceStatus, StatusStyle> = {
-  present: tone("present", "Present"),
-  absent: tone("absent", "Absent"),
-  late: tone("late", "Late"),
-  excused: tone("excused", "Excused"),
+  present: tone("present", "Mevcut"),
+  absent: tone("absent", "Devamsız"),
+  late: tone("late", "Geç"),
+  excused: tone("excused", "İzinli"),
 };
 
 // Staff "leave" reuses the excused palette.
 export const STAFF_ATTENDANCE_STYLES: Record<StaffAttendanceStatusKey, StatusStyle> = {
-  present: tone("present", "Present"),
-  absent: tone("absent", "Absent"),
-  late: tone("late", "Late"),
-  leave: tone("excused", "Leave"),
+  present: tone("present", "Mevcut"),
+  absent: tone("absent", "Devamsız"),
+  late: tone("late", "Geç"),
+  leave: tone("excused", "İzin"),
 };
 
 export const STAFF_STATUSES = ["present", "late", "absent", "leave"] as const;

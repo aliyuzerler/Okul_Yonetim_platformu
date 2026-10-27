@@ -31,19 +31,19 @@ function ClassAttendanceBox({ cls, session }: { cls: ClassWithDetails; session: 
           </div>
         </div>
         {hasSession ? (
-          isMarked ? <CheckmarkFilled size={18} className="os-fill-success os-shrink-0" aria-label="Attendance marked" /> : <WarningFilled size={18} className="os-fill-warning os-shrink-0" aria-label="Attendance pending" />
-        ) : <EventSchedule size={18} className="os-fill-disabled os-shrink-0" aria-label="No session" />}
+          isMarked ? <CheckmarkFilled size={18} className="os-fill-success os-shrink-0" aria-label="Yoklama işaretlendi" /> : <WarningFilled size={18} className="os-fill-warning os-shrink-0" aria-label="Yoklama bekliyor" />
+        ) : <EventSchedule size={18} className="os-fill-disabled os-shrink-0" aria-label="Oturum yok" />}
       </div>
 
       {hasSession ? (
         <>
           <div className="os-flex os-justify-between os-text-xs os-mb-1h">
-            <span className="os-c-secondary">{isMarked ? "Marked today" : "Pending today"}</span>
+            <span className="os-c-secondary">{isMarked ? "Bugün işaretlendi" : "Bugün bekliyor"}</span>
             <span className="os-fw-600 os-c-primary">{session.marked_count} / {session.enrolled_count}</span>
           </div>
-          <ProgressBar size="sm" value={session.marked_count} max={session.enrolled_count} tone={isMarked ? "success" : "warning"} label={`${cls.name} students marked`} />
+          <ProgressBar size="sm" value={session.marked_count} max={session.enrolled_count} tone={isMarked ? "success" : "warning"} label={`${cls.name}: işaretlenen öğrenci`} />
         </>
-      ) : <p className="os-m-0 os-text-xs os-c-tertiary">No session today</p>}
+      ) : <p className="os-m-0 os-text-xs os-c-tertiary">Bugün oturum yok</p>}
     </Link>
   );
 }
@@ -76,11 +76,11 @@ export default function AttendanceByClassSection({
   return (
     <div className="os-section">
       <SectionHeader
-        title="Attendance by grade"
-        meta={<Link to="/attendance" className="os-text-xs os-no-underline os-c-accent">Manage →</Link>}
+        title="Sınıf seviyesine göre yoklama"
+        meta={<Link to="/attendance" className="os-text-xs os-no-underline os-c-accent">Yönet →</Link>}
       />
       {loading ? <GradeGridSkeleton /> : !classes || classes.length === 0 ? (
-        <EmptyState title="No classes yet" description="Add a class to start taking attendance." action={<Link to="/classes/new" className="os-text-sm os-fw-500 os-c-accent">Add a class →</Link>} />
+        <EmptyState title="Henüz sınıf yok" description="Yoklama almaya başlamak için bir sınıf ekleyin." action={<Link to="/classes/new" className="os-text-sm os-fw-500 os-c-accent">Sınıf ekle →</Link>} />
       ) : (
         <div className="os-attendance-grade-grid os-py-5 os-px-6">
           {grades.map((grade) => {
@@ -90,15 +90,15 @@ export default function AttendanceByClassSection({
               return !!session && session.marked_count === 0;
             }).length;
             return (
-              <button key={grade.name} type="button" className={`os-attendance-grade-card os-grade-band--${gradeBand(grade.name)}`} onClick={() => setSelectedGradeName(grade.name)} aria-label={`View attendance for ${grade.name}`}>
+              <button key={grade.name} type="button" className={`os-attendance-grade-card os-grade-band--${gradeBand(grade.name)}`} onClick={() => setSelectedGradeName(grade.name)} aria-label={`${grade.name} yoklamasını görüntüle`}>
                 <div className="os-flex os-items-start os-justify-between os-gap-3">
                   <GradeAvatar gradeName={grade.name} size="lg" />
                   <ChevronRight size={20} className="os-fill-accent os-shrink-0" />
                 </div>
-                <p className="os-attendance-grade-card__classes">{grade.classes.length} class{grade.classes.length === 1 ? "" : "es"}</p>
+                <p className="os-attendance-grade-card__classes">{grade.classes.length} sınıf</p>
                 <div className="os-attendance-grade-card__summary">
-                  <span><strong>{marked}</strong> marked</span>
-                  <span><strong>{pending}</strong> pending</span>
+                  <span><strong>{marked}</strong> işaretlendi</span>
+                  <span><strong>{pending}</strong> bekliyor</span>
                 </div>
               </button>
             );
@@ -106,13 +106,13 @@ export default function AttendanceByClassSection({
         </div>
       )}
 
-      <ComposedModal open={!!selectedGrade} size="lg" onClose={() => setSelectedGradeName(null)} aria-label={selectedGrade ? `${selectedGrade.name} attendance` : "Grade attendance"}>
-        <ModalHeader title={selectedGrade ? `${selectedGrade.name} attendance` : "Grade attendance"} />
+      <ComposedModal open={!!selectedGrade} size="lg" onClose={() => setSelectedGradeName(null)} aria-label={selectedGrade ? `${selectedGrade.name} yoklaması` : "Sınıf seviyesi yoklaması"}>
+        <ModalHeader title={selectedGrade ? `${selectedGrade.name} yoklaması` : "Sınıf seviyesi yoklaması"} />
         <ModalBody>
-          <p className="os-mt-0 os-mb-4 os-text-sm os-c-secondary">Today’s attendance by class. Select a class to view or manage its attendance.</p>
+          <p className="os-mt-0 os-mb-4 os-text-sm os-c-secondary">Bugünün sınıf bazında yoklaması. Yoklamayı görüntülemek veya yönetmek için bir sınıf seçin.</p>
           {selectedGrade && <div className="os-attendance-class-grid">{selectedGrade.classes.map((cls) => <ClassAttendanceBox key={cls.id} cls={cls} session={sessionByClassId.get(cls.id)} />)}</div>}
         </ModalBody>
-        <ModalFooter><Button kind="secondary" onClick={() => setSelectedGradeName(null)}>Close</Button></ModalFooter>
+        <ModalFooter><Button kind="secondary" onClick={() => setSelectedGradeName(null)}>Kapat</Button></ModalFooter>
       </ComposedModal>
     </div>
   );

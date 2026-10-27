@@ -19,15 +19,15 @@ function StaffAttendanceBlock({ label, rows, Icon, loading }: { label: string; r
     <div className="os-snapshot-block">
       <div className="os-snapshot-heading">
         <div className="os-snapshot-icon"><Icon size={18} /></div>
-        <div><strong>{label}</strong><span>Attendance marked today</span></div>
+        <div><strong>{label}</strong><span>Bugün işaretlenen yoklama</span></div>
       </div>
       {loading ? <SkeletonText width="70%" /> : (
         <>
           <div className="os-flex os-justify-between os-text-xs os-mb-1h">
-            <span className="os-c-secondary">Marked today</span>
+            <span className="os-c-secondary">Bugün işaretlenen</span>
             <strong>{marked} / {total}</strong>
           </div>
-          <ProgressBar value={marked} max={total} label={`${label} marked today`} />
+          <ProgressBar value={marked} max={total} label={`${label}: bugün işaretlenen`} />
         </>
       )}
     </div>
@@ -38,12 +38,12 @@ export default function DashboardSnapshotSection({ teachers, nonAcademicStaff, s
   return (
     <div className="os-section os-dashboard-snapshot">
       <SectionHeader
-        title="Staff attendance"
-        meta={<Link to="/staff-attendance" className="os-text-xs os-no-underline os-c-accent">Manage →</Link>}
+        title="Personel yoklaması"
+        meta={<Link to="/staff-attendance" className="os-text-xs os-no-underline os-c-accent">Yönet →</Link>}
       />
       <div className="os-snapshot-grid">
-        <StaffAttendanceBlock label="Teachers" rows={teachers} Icon={Education} loading={staffLoading} />
-        <StaffAttendanceBlock label="Non-academic staff" rows={nonAcademicStaff} Icon={UserMultiple} loading={staffLoading} />
+        <StaffAttendanceBlock label="Öğretmenler" rows={teachers} Icon={Education} loading={staffLoading} />
+        <StaffAttendanceBlock label="İdari personel" rows={nonAcademicStaff} Icon={UserMultiple} loading={staffLoading} />
       </div>
     </div>
   );

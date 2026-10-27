@@ -57,7 +57,7 @@ export default function Reports() {
         });
       }
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to generate report"));
+      setError(getErrorMessage(err, "Rapor oluşturulamadı"));
     } finally {
       setExporting(false);
     }
@@ -67,15 +67,15 @@ export default function Reports() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Reports</h1>
-          <p className="os-page__subtitle">Export attendance and marks reports to PDF.</p>
+          <h1 className="os-page__title">Raporlar</h1>
+          <p className="os-page__subtitle">Yoklama ve not raporlarını PDF olarak dışa aktarın.</p>
         </div>
       </div>
 
       {error && (
         <InlineNotification
           kind="error"
-          title="Error"
+          title="Hata"
           subtitle={error}
           lowContrast
           onClose={() => setError(null)} className="os-mb-6 os-max-w-full"
@@ -84,7 +84,7 @@ export default function Reports() {
 
       <div className="os-section">
         <div className="os-section__header">
-          <h2 className="os-section__title">Report template</h2>
+          <h2 className="os-section__title">Rapor şablonu</h2>
         </div>
         <div className="os-section__body">
           <div className="os-flex os-gap-4 os-mb-6">
@@ -96,7 +96,7 @@ export default function Reports() {
                 <div className="os-flex os-items-center os-gap-2">
                   <DocumentPdf size={18} className="os-fill-accent-dark" />
                   <span className="os-fw-600 os-text-md">
-                    {t === "attendance" ? "Attendance report" : "Marks report"}
+                    {t === "attendance" ? "Yoklama raporu" : "Not raporu"}
                   </span>
                 </div>
               </Tile>
@@ -104,8 +104,8 @@ export default function Reports() {
           </div>
 
           <div className="os-grid os-grid-cols-3 os-gap-4 os-mb-6">
-            <Select id="report-class" labelText="Class" value={classId} onChange={(e) => setClassId(e.target.value)}>
-              <SelectItem value="" text="Select class…" />
+            <Select id="report-class" labelText="Sınıf" value={classId} onChange={(e) => setClassId(e.target.value)}>
+              <SelectItem value="" text="Sınıf seçin…" />
               {classes?.map((c) => (
                 <SelectItem key={c.id} value={c.id} text={`${c.grade_name} ${c.name}`} />
               ))}
@@ -115,28 +115,28 @@ export default function Reports() {
               <>
                 <DateField value={from} onChange={(ymd) => {
                   if (ymd) setFrom(ymd);
-                }} id="report-from" labelText="From" />
+                }} id="report-from" labelText="Başlangıç" />
                 <DateField value={to} onChange={(ymd) => {
                   if (ymd) setTo(ymd);
-                }} id="report-to" labelText="To" />
+                }} id="report-to" labelText="Bitiş" />
               </>
             ) : (
               <>
-                <Select id="report-term" labelText="Term" value={termId} onChange={(e) => setTermId(e.target.value)}>
-                  <SelectItem value="" text="Select term…" />
+                <Select id="report-term" labelText="Dönem" value={termId} onChange={(e) => setTermId(e.target.value)}>
+                  <SelectItem value="" text="Dönem seçin…" />
                   {terms?.map((t) => (
                     <SelectItem key={t.id} value={t.id} text={t.name} />
                   ))}
                 </Select>
                 <EntityCombobox
                   id="report-subject"
-                  labelText="Subject"
+                  labelText="Ders"
                   items={subjects ?? []}
                   selectedId={subjectId}
                   onSelect={setSubjectId}
                   getId={(s) => s.id}
                   itemToString={(s) => s.name}
-                  placeholder="Search subjects by name…"
+                  placeholder="Ders adına göre arayın…"
                 />
               </>
             )}
@@ -144,7 +144,7 @@ export default function Reports() {
 
           <div className="os-mb-6">
             <p className="os-text-xs os-fw-600 os-c-secondary os-mb-2">
-              Columns (leave all unchecked to include every column)
+              Sütunlar (tüm sütunlar dâhil olsun diye hiçbirini işaretlemeyin)
             </p>
             <div className="os-flex os-gap-6 os-wrap">
               {availableColumns.map((c) => (
@@ -160,7 +160,7 @@ export default function Reports() {
           </div>
 
           <Button renderIcon={DocumentPdf} kind="primary" onClick={handleExport} disabled={!isValid || exporting}>
-            {exporting ? "Generating…" : "Export PDF"}
+            {exporting ? "Oluşturuluyor…" : "PDF dışa aktar"}
           </Button>
         </div>
       </div>

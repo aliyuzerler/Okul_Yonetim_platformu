@@ -46,7 +46,7 @@ export function BarList({
           </div>
         </div>
       ))}
-      {rows.length === 0 && <p className="os-text-sm os-c-tertiary os-m-0">No data yet.</p>}
+      {rows.length === 0 && <p className="os-text-sm os-c-tertiary os-m-0">Henüz veri yok.</p>}
     </div>
   );
 }
@@ -57,7 +57,7 @@ export function Sparkline({
   min,
   max,
   formatValue,
-  emptyMessage = "No data yet.",
+  emptyMessage = "Henüz veri yok.",
 }: {
   points: { label: string; value: number }[];
   color?: string;
@@ -102,11 +102,11 @@ export function TrendSummary({ title, points, color }: { title: string; points: 
         <>
           <div className="os-flex os-items-baseline os-gap-2h os-mb-3 os-wrap">
             <span className="os-text-4xl os-fw-300 os-c-primary os-lh-1">{latest.count}</span>
-            <span className="os-text-xs os-c-tertiary">as of {latest.label}</span>
+            <span className="os-text-xs os-c-tertiary">{latest.label} itibarıyla</span>
             {delta !== null && (
               <span className="os-text-xs os-fw-600 os-ml-auto" style={{ color: deltaColor }}>
                 {delta > 0 ? "+" : ""}
-                {delta} vs {prior!.label}
+                {delta} (önceki: {prior!.label})
               </span>
             )}
           </div>
@@ -117,7 +117,7 @@ export function TrendSummary({ title, points, color }: { title: string; points: 
           />
         </>
       ) : (
-        <p className="os-text-sm os-c-tertiary os-m-0">No data yet.</p>
+        <p className="os-text-sm os-c-tertiary os-m-0">Henüz veri yok.</p>
       )}
     </Section>
   );
@@ -185,7 +185,7 @@ export function DonutChart({
             </span>
           </div>
         ))}
-        {slices.length === 0 && <p className="os-text-sm os-c-tertiary os-m-0">No data yet.</p>}
+        {slices.length === 0 && <p className="os-text-sm os-c-tertiary os-m-0">Henüz veri yok.</p>}
       </div>
     </div>
   );

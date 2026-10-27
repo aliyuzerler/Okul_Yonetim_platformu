@@ -43,24 +43,24 @@ export type NotificationCategory =
 export type NotificationPriority = "normal" | "important" | "urgent";
 
 export const CATEGORIES: { value: NotificationCategory; label: string }[] = [
-  { value: "general", label: "General announcement" },
-  { value: "academic", label: "Academic" },
-  { value: "examination", label: "Examination" },
-  { value: "attendance", label: "Attendance" },
-  { value: "timetable", label: "Timetable" },
-  { value: "events", label: "Events" },
-  { value: "sports", label: "Sports" },
-  { value: "meetings", label: "Meetings" },
-  { value: "fee_reminder", label: "Fee reminder" },
-  { value: "emergency", label: "Emergency" },
-  { value: "discipline", label: "Discipline" },
-  { value: "holidays", label: "Holidays" },
+  { value: "general", label: "Genel duyuru" },
+  { value: "academic", label: "Akademik" },
+  { value: "examination", label: "Sınav" },
+  { value: "attendance", label: "Yoklama" },
+  { value: "timetable", label: "Ders programı" },
+  { value: "events", label: "Etkinlikler" },
+  { value: "sports", label: "Spor" },
+  { value: "meetings", label: "Toplantılar" },
+  { value: "fee_reminder", label: "Ücret hatırlatması" },
+  { value: "emergency", label: "Acil durum" },
+  { value: "discipline", label: "Disiplin" },
+  { value: "holidays", label: "Tatiller" },
 ];
 
 export const PRIORITIES: { value: NotificationPriority; label: string }[] = [
   { value: "normal", label: "Normal" },
-  { value: "important", label: "Important" },
-  { value: "urgent", label: "Urgent" },
+  { value: "important", label: "Önemli" },
+  { value: "urgent", label: "Acil" },
 ];
 
 export interface CreateNotificationRequest {

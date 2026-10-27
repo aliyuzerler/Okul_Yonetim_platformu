@@ -18,7 +18,7 @@ describe("groupByClass", () => {
       code("Kasun", "Grade 6", 6, "6-A", { form_teacher: "Mrs. Silva" }),
       code("Loose", "", 0, ""),
     ]));
-    expect(groups.map((g) => g.title)).toEqual(["6-A", "6-B", "10-A", "Not in a class"]);
+    expect(groups.map((g) => g.title)).toEqual(["6-A", "6-B", "10-A", "Sınıfa atanmamış"]);
     expect(groups[0].codes.map((c) => c.name)).toEqual(["Amal", "Kasun"]);
   });
 });
@@ -27,7 +27,7 @@ describe("batchToCsv", () => {
   it("lists class columns and defuses formula prefixes", () => {
     const csv = batchToCsv(batch([code('=HYPERLINK("x")', "Grade 6", 6, "6-A", { index_number: "2026/0001", form_teacher: "Mrs. Silva" })]));
     const [header, row] = csv.trim().split("\r\n");
-    expect(header).toBe('"Grade","Class","Form teacher","Name","Index number","Activation code","Expires"');
+    expect(header).toBe('"Sınıf seviyesi","Sınıf","Sınıf öğretmeni","Ad","Okul numarası","Etkinleştirme kodu","Son geçerlilik"');
     expect(row.startsWith(`"Grade 6","6-A","Mrs. Silva","'=HYPERLINK(""x"")","2026/0001"`)).toBe(true);
   });
 });

@@ -46,11 +46,11 @@ export default function AuditLog() {
       <div className="os-page__header">
         <div>
           <h2 className="os-section__title os-m-0">
-            Audit log
+            Denetim günlüğü
           </h2>
           <p className="os-page__subtitle os-mt-1">
-            Manual house re-assignments and admin edits made to attendance
-            after its 24-hour lock - most recent first.
+            24 saatlik kilidin ardından yoklamada yapılan elle kol atamaları ve
+            yönetici düzenlemeleri - en yeniden başlayarak.
           </p>
         </div>
       </div>
@@ -58,23 +58,23 @@ export default function AuditLog() {
       <AgentFindingsBanner />
 
       <FilterBar
-        search={{ value: filters.auditQuery, onChange: (v) => update("auditQuery", v), placeholder: "Search by person, action or reason" }}
+        search={{ value: filters.auditQuery, onChange: (v) => update("auditQuery", v), placeholder: "Kişi, işlem veya gerekçeye göre arayın" }}
         controls={[
           {
-            label: "Record type",
+            label: "Kayıt türü",
             node: (
-              <Select id="audit-entity" labelText="Record type" hideLabel size="md" value={filters.auditEntity} onChange={(e) => update("auditEntity", e.target.value)}>
-                <SelectItem value="" text="All record types" />
+              <Select id="audit-entity" labelText="Kayıt türü" hideLabel size="md" value={filters.auditEntity} onChange={(e) => update("auditEntity", e.target.value)}>
+                <SelectItem value="" text="Tüm kayıt türleri" />
                 {entityTypes?.map((t) => <SelectItem key={t} value={t} text={formatEntity(t)} />)}
               </Select>
             ),
           },
-          { label: "From", node: <DateField id="audit-from" labelText="From" hideLabel placeholder="From" value={filters.auditFrom} onChange={(v) => update("auditFrom", v)} maxDate={filters.auditTo || undefined} /> },
-          { label: "To", node: <DateField id="audit-to" labelText="To" hideLabel placeholder="To" value={filters.auditTo} onChange={(v) => update("auditTo", v)} minDate={filters.auditFrom || undefined} /> },
+          { label: "Başlangıç", node: <DateField id="audit-from" labelText="Başlangıç" hideLabel placeholder="Başlangıç" value={filters.auditFrom} onChange={(v) => update("auditFrom", v)} maxDate={filters.auditTo || undefined} /> },
+          { label: "Bitiş", node: <DateField id="audit-to" labelText="Bitiş" hideLabel placeholder="Bitiş" value={filters.auditTo} onChange={(v) => update("auditTo", v)} minDate={filters.auditFrom || undefined} /> },
         ]}
       />
 
-      {isError && <ErrorMessage message="Could not load the audit log." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Denetim günlüğü yüklenemedi." onRetry={refetch} />}
 
       <div className="os-section">
         {isLoading && (
@@ -92,11 +92,11 @@ export default function AuditLog() {
 
         {!isLoading && !isError && (logs?.length ?? 0) === 0 && (
           filters.auditQuery || filters.auditEntity || filters.auditFrom || filters.auditTo ? (
-            <EmptyState title="No entries match these filters" description="Try a wider date range or a different search." />
+            <EmptyState title="Bu filtrelerle eşleşen kayıt yok" description="Daha geniş bir tarih aralığı veya farklı bir arama deneyin." />
           ) : (
             <EmptyState
-              title="No audit entries yet"
-              description="Manual house changes and attendance edits made after the 24-hour lock will show up here."
+              title="Henüz denetim kaydı yok"
+              description="24 saatlik kilit sonrasında yapılan elle kol değişiklikleri ve yoklama düzenlemeleri burada görünecek."
             />
           )
         )}
@@ -120,7 +120,7 @@ export default function AuditLog() {
                   </span>
                 </div>
                 <p className="os-mt-1h os-mx-0 os-mb-0 os-text-sm os-c-secondary">
-                  By {entry.actor_name ?? "unknown"}
+                  {entry.actor_name ?? "bilinmiyor"} tarafından
                   {entry.reason ? ` - "${entry.reason}"` : ""}
                 </p>
               </div>

@@ -15,6 +15,13 @@ import {
 import { ACCENT, STATUS_COLORS, CHART_BLUE, CHART_PURPLE, CATEGORICAL_PALETTE, GENDER_COLORS } from "@/features/reports/components/chartColors";
 import type { CountRow, AttendanceTrendPoint } from "@/features/reports/api/dashboardAnalytics";
 
+// Backend cinsiyet kodu değerlerini ("male"/"female"/"unspecified") Türkçe etiketlere map'ler; kod değerleri renk eşlemesi için korunur.
+const GENDER_LABELS: Record<string, string> = {
+  male: "Erkek",
+  female: "Kız",
+  unspecified: "Belirtilmemiş",
+};
+
 // scope picks the endpoint: admin analytics, or the Principal / Vice Principal scoped view with the same shape (ADR 0002).
 export default function Analytics({ scope = "admin" }: { scope?: "admin" | "leadership" }) {
   const adminQuery = useDashboardAnalytics(scope === "admin");
@@ -25,8 +32,8 @@ export default function Analytics({ scope = "admin" }: { scope?: "admin" | "lead
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Analytics</h1>
-          <p className="os-page__subtitle">Marks, attendance, houses and growth across the school.</p>
+          <h1 className="os-page__title">Analitik</h1>
+          <p className="os-page__subtitle">Okul genelinde notlar, yoklama, kollar ve büyüme.</p>
         </div>
       </div>
 
@@ -43,18 +50,18 @@ export default function Analytics({ scope = "admin" }: { scope?: "admin" | "lead
       {!isLoading && (isError || !data) && (
         <div className="os-section">
           <div className="os-section__body">
-            <ErrorMessage message="Could not load analytics." onRetry={refetch} />
+            <ErrorMessage message="Analitik verileri yüklenemedi." onRetry={refetch} />
           </div>
         </div>
       )}
 
       {!isLoading && data && (
         <Tabs>
-          <TabList aria-label="Analytics sections">
-            <Tab>Students</Tab>
-            <Tab>Academics</Tab>
-            <Tab>Staff</Tab>
-            <Tab>School</Tab>
+          <TabList aria-label="Analitik bölümleri">
+            <Tab>Öğrenciler</Tab>
+            <Tab>Akademik</Tab>
+            <Tab>Personel</Tab>
+            <Tab>Okul</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="os-p-0">
@@ -79,11 +86,6 @@ export default function Analytics({ scope = "admin" }: { scope?: "admin" | "lead
 type AnalyticsData = NonNullable<ReturnType<typeof useDashboardAnalytics>["data"]>;
 
 function StudentsPanel({ data }: { data: AnalyticsData }) {
-  const genderRows: CountRow[] = data.student.gender_distribution.map((g) => ({
-    label: g.label ? g.label[0].toUpperCase() + g.label.slice(1) : "Unspecified",
-    count: g.count,
-  }));
-
   const trendPoints = data.student.attendance_trend.map((t: AttendanceTrendPoint) => ({
     label: formatShortDayMonth(t.date),
     pct: t.total_count > 0 ? Math.round((t.present_count / t.total_count) * 100) : 0,
@@ -92,22 +94,22 @@ function StudentsPanel({ data }: { data: AnalyticsData }) {
   return (
     <div className="os-my-4 os-mx-0">
       <div className="os-stat-grid">
-        <StatTile label="Total students" value={data.student.total} color={ACCENT} />
-        <StatTile label="Grades with students" value={data.student.by_grade.filter((row) => row.count > 0).length} color={CHART_BLUE} />
-        <StatTile label="Active classes" value={data.student.by_class.length} color={CHART_PURPLE} />
+        <StatTile label="Toplam öğrenci" value={data.student.total} color={ACCENT} />
+        <StatTile label="Öğrencili sınıf seviyesi" value={data.student.by_grade.filter((row) => row.count > 0).length} color={CHART_BLUE} />
+        <StatTile label="Aktif sınıf" value={data.student.by_class.length} color={CHART_PURPLE} />
       </div>
 
       <div className="os-grid os-grid-cols-2 os-gap-6 os-mt-6">
-        <Section title="Gender distribution">
+        <Section title="Cinsiyet dağılımı">
           <DonutChart
-            slices={genderRows.map((r) => ({
-              label: r.label,
-              value: r.count,
-              color: GENDER_COLORS[r.label] ?? "var(--os-text-tertiary)",
+            slices={data.student.gender_distribution.map((g) => ({
+              label: GENDER_LABELS[g.label] ?? g.label,
+              value: g.count,
+              color: GENDER_COLORS[g.label] ?? "var(--os-text-tertiary)",
             }))}
           />
         </Section>
-        <Section title="House distribution">
+        <Section title="Kol dağılımı">
           <DonutChart
             slices={data.student.house_distribution.map((h, i) => ({
               label: h.name,
@@ -121,16 +123,16 @@ function StudentsPanel({ data }: { data: AnalyticsData }) {
       <StudentEnrollmentSection byGrade={data.student.by_grade} byClass={data.student.by_class} />
 
       <div className="os-grid os-grid-cols-2 os-gap-6 os-mt-6">
-        <Section title="Attendance trend (last 14 days)">
+        <Section title="Yoklama eğilimi (son 14 gün)">
           <Sparkline
             points={trendPoints.map((p) => ({ label: p.label, value: p.pct }))}
             min={0}
             max={100}
-            formatValue={(v) => `${v}% present`}
-            emptyMessage="No attendance sessions in the last 14 days."
+            formatValue={(v) => `${v}% mevcut`}
+            emptyMessage="Son 14 günde yoklama oturumu yok."
           />
         </Section>
-        <Section title="Enrolment insight">
+        <Section title="Kayıt öngörüsü">
           <EnrollmentInsight byGrade={data.student.by_grade} byClass={data.student.by_class} />
         </Section>
       </div>
@@ -152,14 +154,14 @@ function StudentEnrollmentSection({ byGrade, byClass }: { byGrade: CountRow[]; b
   const selectedCount = byGrade.find((row) => row.label === effectiveSelectedGrade)?.count ?? 0;
 
   return (
-    <Section title="Student enrolment by grade and class">
+    <Section title="Sınıf seviyesine ve sınıfa göre öğrenci kaydı">
       <div className="os-grid os-grid-cols-2 os-gap-6">
         <div>
           <div className="os-flex os-items-center os-justify-between os-mb-3">
-            <p className="os-m-0 os-text-xs os-fw-600 os-uppercase os-tracking-wide os-c-secondary">Grades</p>
-            <span className="os-text-xs os-c-tertiary">Select a grade</span>
+            <p className="os-m-0 os-text-xs os-fw-600 os-uppercase os-tracking-wide os-c-secondary">Sınıf seviyeleri</p>
+            <span className="os-text-xs os-c-tertiary">Bir sınıf seviyesi seçin</span>
           </div>
-          <div className="os-flex os-col os-gap-1h" aria-label="Student counts by grade">
+          <div className="os-flex os-col os-gap-1h" aria-label="Sınıf seviyesine göre öğrenci sayıları">
             {gradeRows.map((row) => (
               <Button
                 key={row.label}
@@ -179,8 +181,8 @@ function StudentEnrollmentSection({ byGrade, byClass }: { byGrade: CountRow[]; b
         </div>
         <div>
           <div className="os-flex os-items-center os-justify-between os-mb-3">
-            <p className="os-m-0 os-text-xs os-fw-600 os-uppercase os-tracking-wide os-c-secondary">Classes in {effectiveSelectedGrade || "selected grade"}</p>
-            <Tag type="blue" size="sm">{selectedCount} students</Tag>
+            <p className="os-m-0 os-text-xs os-fw-600 os-uppercase os-tracking-wide os-c-secondary">{effectiveSelectedGrade || "seçili sınıf seviyesi"} sınıfları</p>
+            <Tag type="blue" size="sm">{selectedCount} öğrenci</Tag>
           </div>
           <BarList rows={classRows} color={CHART_BLUE} />
         </div>
@@ -192,11 +194,11 @@ function StudentEnrollmentSection({ byGrade, byClass }: { byGrade: CountRow[]; b
 function EnrollmentInsight({ byGrade, byClass }: { byGrade: CountRow[]; byClass: CountRow[] }) {
   const largestGrade = byGrade.reduce<CountRow | null>((largest, row) => (!largest || row.count > largest.count ? row : largest), null);
   const largestClass = byClass.reduce<CountRow | null>((largest, row) => (!largest || row.count > largest.count ? row : largest), null);
-  if (!largestGrade && !largestClass) return <p className="os-m-0 os-text-sm os-c-tertiary">No enrolment data yet.</p>;
+  if (!largestGrade && !largestClass) return <p className="os-m-0 os-text-sm os-c-tertiary">Henüz kayıt verisi yok.</p>;
   return (
     <div className="os-flex os-col os-gap-4">
-      {largestGrade && <div><p className="os-m-0 os-text-xs os-c-secondary">Largest grade</p><p className="os-m-0 os-text-lg os-fw-600">{largestGrade.label} · {largestGrade.count} students</p></div>}
-      {largestClass && <div><p className="os-m-0 os-text-xs os-c-secondary">Largest class</p><p className="os-m-0 os-text-lg os-fw-600">{largestClass.label} · {largestClass.count} students</p></div>}
+      {largestGrade && <div><p className="os-m-0 os-text-xs os-c-secondary">En kalabalık sınıf seviyesi</p><p className="os-m-0 os-text-lg os-fw-600">{largestGrade.label} · {largestGrade.count} öğrenci</p></div>}
+      {largestClass && <div><p className="os-m-0 os-text-xs os-c-secondary">En kalabalık sınıf</p><p className="os-m-0 os-text-lg os-fw-600">{largestClass.label} · {largestClass.count} öğrenci</p></div>}
     </div>
   );
 }
@@ -205,20 +207,20 @@ function AcademicsPanel({ data }: { data: AnalyticsData }) {
   return (
     <div className="os-my-4 os-mx-0">
       <div className="os-stat-grid">
-        <StatTile label="Examination average" value={`${data.academic.examination_average}%`} color={ACCENT} />
-        <StatTile label="Students with marks" value={data.academic.students_with_marks} color={CHART_BLUE} />
-        <StatTile label="Overall attendance %" value={`${Math.round(data.academic.attendance_percentage)}%`} color={STATUS_COLORS.present} />
-        <StatTile label="Mark entries this term" value={data.academic.examination_entries} color={CHART_PURPLE} />
+        <StatTile label="Sınav ortalaması" value={`${data.academic.examination_average}%`} color={ACCENT} />
+        <StatTile label="Notu girilen öğrenci" value={data.academic.students_with_marks} color={CHART_BLUE} />
+        <StatTile label="Genel yoklama %" value={`${Math.round(data.academic.attendance_percentage)}%`} color={STATUS_COLORS.present} />
+        <StatTile label="Bu dönemin not girişleri" value={data.academic.examination_entries} color={CHART_PURPLE} />
       </div>
 
       <div className="os-grid os-grid-cols-2 os-gap-6 os-mt-6">
-        <Section title="Marks by subject (avg %, current term)">
+        <Section title="Derslere göre notlar (ort. %, güncel dönem)">
           <BarList
             rows={data.academic.subject_performance.map((r) => ({ label: r.label, value: r.average_percentage }))}
             formatValue={(v) => `${v}%`}
           />
         </Section>
-        <Section title="Marks by grade (avg %, current term)">
+        <Section title="Sınıf seviyelerine göre notlar (ort. %, güncel dönem)">
           <BarList
             rows={data.academic.grade_wise_performance.map((r) => ({ label: r.label, value: r.average_percentage }))}
             color={CHART_BLUE}
@@ -228,7 +230,7 @@ function AcademicsPanel({ data }: { data: AnalyticsData }) {
       </div>
 
       <div className="os-mt-6">
-        <Section title="Marks by class (avg %, current term)">
+        <Section title="Sınıflara göre notlar (ort. %, güncel dönem)">
           <BarList
             rows={data.academic.class_wise_performance.map((r) => ({ label: r.label, value: r.average_percentage }))}
             color={STATUS_COLORS.present}
@@ -244,22 +246,22 @@ function StaffPanel({ data }: { data: AnalyticsData }) {
   return (
     <div className="os-my-4 os-mx-0">
       <div className="os-stat-grid">
-        <StatTile label="Academic staff" value={data.staff.academic_staff_count} color={ACCENT} />
-        <StatTile label="Non-academic staff" value={data.staff.non_academic_staff_count} color={CHART_PURPLE} />
+        <StatTile label="Öğretmen kadrosu" value={data.staff.academic_staff_count} color={ACCENT} />
+        <StatTile label="İdari personel" value={data.staff.non_academic_staff_count} color={CHART_PURPLE} />
       </div>
 
       <div className="os-grid os-grid-cols-2 os-gap-6 os-mt-6">
-        <Section title="Staff attendance this month">
+        <Section title="Bu ayın personel yoklaması">
           <DonutChart
             slices={[
-              { label: "Present", value: data.staff.attendance_this_month.present_count, color: STATUS_COLORS.present },
-              { label: "Late", value: data.staff.attendance_this_month.late_count, color: STATUS_COLORS.late },
-              { label: "Absent", value: data.staff.attendance_this_month.absent_count, color: STATUS_COLORS.absent },
-              { label: "Leave", value: data.staff.attendance_this_month.leave_count, color: STATUS_COLORS.leave },
+              { label: "Mevcut", value: data.staff.attendance_this_month.present_count, color: STATUS_COLORS.present },
+              { label: "Geç", value: data.staff.attendance_this_month.late_count, color: STATUS_COLORS.late },
+              { label: "Devamsız", value: data.staff.attendance_this_month.absent_count, color: STATUS_COLORS.absent },
+              { label: "İzin", value: data.staff.attendance_this_month.leave_count, color: STATUS_COLORS.leave },
             ]}
           />
         </Section>
-        <TrendSummary title="Staff growth by joining year" points={data.school.staff_growth} color={CHART_PURPLE} />
+        <TrendSummary title="Katılım yılına göre personel artışı" points={data.school.staff_growth} color={CHART_PURPLE} />
       </div>
     </div>
   );
@@ -269,14 +271,14 @@ function SchoolPanel({ data }: { data: AnalyticsData }) {
   return (
     <div className="os-my-4 os-mx-0">
       <div className="os-stat-grid">
-        <StatTile label="Notifications sent" value={data.school.notifications_sent_count} color={CHART_BLUE} />
-        <StatTile label="Timetable completion" value={`${Math.round(data.school.timetable_completion_pct)}%`} color={STATUS_COLORS.present} />
-        <StatTile label="Total classes" value={data.school.total_classes} color={ACCENT} />
-        <StatTile label="Published timetables" value={data.school.published_classes} color={CHART_PURPLE} />
+        <StatTile label="Gönderilen bildirimler" value={data.school.notifications_sent_count} color={CHART_BLUE} />
+        <StatTile label="Ders programı tamamlanma" value={`${Math.round(data.school.timetable_completion_pct)}%`} color={STATUS_COLORS.present} />
+        <StatTile label="Toplam sınıf" value={data.school.total_classes} color={ACCENT} />
+        <StatTile label="Yayınlanan ders programları" value={data.school.published_classes} color={CHART_PURPLE} />
       </div>
 
       <div className="os-mt-6">
-        <TrendSummary title="Student growth by year" points={data.school.student_growth} color={ACCENT} />
+        <TrendSummary title="Yıla göre öğrenci artışı" points={data.school.student_growth} color={ACCENT} />
       </div>
     </div>
   );

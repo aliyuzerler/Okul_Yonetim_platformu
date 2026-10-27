@@ -24,10 +24,10 @@ export default function RecentActivitySection({
   return (
     <div className="os-section">
       <SectionHeader
-        title="Recent activity"
+        title="Son hareketler"
         meta={
           <Link to="/students" className="os-text-xs os-no-underline os-c-accent">
-            View all →
+            Tümünü gör →
           </Link>
         }
       />
@@ -41,11 +41,11 @@ export default function RecentActivitySection({
         </div>
       ) : items.length === 0 ? (
         <EmptyState
-          title="Nothing here yet"
-          description="Enrol students and add teachers to see recent activity."
+          title="Henüz hareket yok"
+          description="Son hareketleri görmek için öğrenci kaydedin ve öğretmen ekleyin."
           action={
             <Link to="/students/new" className="os-text-sm os-fw-500 os-c-accent">
-              Enrol a student →
+              Öğrenci kaydet →
             </Link>
           }
         />
@@ -68,7 +68,7 @@ export default function RecentActivitySection({
               </div>
               <div className="os-flex os-col os-items-end os-gap-1 os-shrink-0">
                 <Tag type={item.kind === "teacher" ? "purple" : "blue"} size="sm">
-                  {item.kind === "teacher" ? "Teacher" : "Student"}
+                  {item.kind === "teacher" ? "Öğretmen" : "Öğrenci"}
                 </Tag>
                 <span className="os-text-xs os-c-tertiary">
                   {formatShortDayMonth(item.time)}

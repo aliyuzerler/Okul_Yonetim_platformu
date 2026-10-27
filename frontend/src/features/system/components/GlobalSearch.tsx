@@ -14,23 +14,23 @@ interface FlatResult extends SearchResultItem {
 }
 
 const GROUPS: { key: GroupKey; label: string; route: (id: string) => string }[] = [
-  { key: "students", label: "Students", route: (id) => `/students/${id}` },
-  { key: "teachers", label: "Teachers", route: (id) => `/teachers/${id}` },
-  { key: "guardians", label: "Guardians", route: () => "/guardians" },
-  { key: "non_academic_staff", label: "Non-academic staff", route: () => "/non-academic-staff" },
+  { key: "students", label: "Öğrenciler", route: (id) => `/students/${id}` },
+  { key: "teachers", label: "Öğretmenler", route: (id) => `/teachers/${id}` },
+  { key: "guardians", label: "Veliler", route: () => "/guardians" },
+  { key: "non_academic_staff", label: "İdari personel", route: () => "/non-academic-staff" },
 ];
 
 const ACTIONS: { id: string; name: string; route: string }[] = [
-  { id: "action-add-student", name: "Add student", route: "/students/new" },
-  { id: "action-add-teacher", name: "Add teacher", route: "/teachers/new" },
-  { id: "action-mark-attendance", name: "Mark attendance", route: "/attendance" },
-  { id: "action-new-timetable", name: "New timetable draft", route: "/timetables" },
-  { id: "action-generate-timetable", name: "Generate timetable", route: "/timetables/generate" },
-  { id: "action-send-notification", name: "Send notification", route: "/notifications" },
-  { id: "action-promotion", name: "Promote students", route: "/promotion" },
-  { id: "action-reports", name: "Reports", route: "/reports" },
-  { id: "action-analytics", name: "Analytics", route: "/analytics" },
-  { id: "action-settings", name: "Settings", route: "/settings" },
+  { id: "action-add-student", name: "Öğrenci ekle", route: "/students/new" },
+  { id: "action-add-teacher", name: "Öğretmen ekle", route: "/teachers/new" },
+  { id: "action-mark-attendance", name: "Yoklama al", route: "/attendance" },
+  { id: "action-new-timetable", name: "Yeni ders programı taslağı", route: "/timetables" },
+  { id: "action-generate-timetable", name: "Ders programı oluştur", route: "/timetables/generate" },
+  { id: "action-send-notification", name: "Bildirim gönder", route: "/notifications" },
+  { id: "action-promotion", name: "Sınıf geçirme", route: "/promotion" },
+  { id: "action-reports", name: "Raporlar", route: "/reports" },
+  { id: "action-analytics", name: "Analitik", route: "/analytics" },
+  { id: "action-settings", name: "Ayarlar", route: "/settings" },
 ];
 
 interface Props {
@@ -56,7 +56,7 @@ export default function GlobalSearch({ autoFocus, onClose }: Props) {
 
   const flat: FlatResult[] = useMemo(
     () => [
-      ...matchedActions.map((a) => ({ id: a.id, name: a.name, subtitle: "", group: "Actions", route: a.route })),
+      ...matchedActions.map((a) => ({ id: a.id, name: a.name, subtitle: "", group: "Hızlı işlemler", route: a.route })),
       ...GROUPS.flatMap((g) =>
         (data?.[g.key] ?? []).map((item) => ({ ...item, group: g.label, route: g.route(item.id) }))
       ),
@@ -123,7 +123,7 @@ export default function GlobalSearch({ autoFocus, onClose }: Props) {
         <input
           ref={inputRef}
           className="os-search__input"
-          placeholder="Search or run an action…"
+          placeholder="Arayın veya işlem çalıştırın…"
           value={query}
           autoFocus={autoFocus}
           onChange={(e) => {
@@ -143,22 +143,22 @@ export default function GlobalSearch({ autoFocus, onClose }: Props) {
         <div className="os-search-popover os-absolute os-inset-x-0 os-bg-layer os-border os-rounded-sm os-shadow-md os-overflow-y-auto os-z-popover"
         >
           {isFetching && flat.length === 0 && (
-            <div className="os-py-3 os-px-4 os-text-sm os-c-tertiary">Searching…</div>
+            <div className="os-py-3 os-px-4 os-text-sm os-c-tertiary">Aranıyor…</div>
           )}
           {!isFetching && isError && (
             <div className="os-py-3 os-px-4 os-text-sm os-c-danger">
-              Search failed - please try again.
+              Arama başarısız oldu - lütfen yeniden deneyin.
             </div>
           )}
           {!isFetching && !isError && flat.length === 0 && (
             <div className="os-py-3 os-px-4 os-text-sm os-c-tertiary">
-              No matches for &quot;{debounced}&quot;
+              &quot;{debounced}&quot; için sonuç bulunamadı
             </div>
           )}
           {matchedActions.length > 0 && (
             <div>
               <div className="os-pt-2 os-px-4 os-pb-1 os-text-2xs os-fw-600 os-tracking os-uppercase os-c-tertiary">
-                Actions
+                Hızlı işlemler
               </div>
               {matchedActions.map((action) => {
                 const isHighlighted = action.id === flat[activeIndex]?.id;
@@ -166,7 +166,7 @@ export default function GlobalSearch({ autoFocus, onClose }: Props) {
                   <button
                     key={action.id}
                     onMouseEnter={() => setHighlightedId(action.id)}
-                    onClick={() => goTo({ id: action.id, name: action.name, subtitle: "", group: "Actions", route: action.route })} className={`os-block os-w-full os-text-left os-py-2 os-px-4 os-border-none ${isHighlighted ? "os-bg-accent-light" : "os-bg-transparent"} os-pointer`}
+                    onClick={() => goTo({ id: action.id, name: action.name, subtitle: "", group: "Hızlı işlemler", route: action.route })} className={`os-block os-w-full os-text-left os-py-2 os-px-4 os-border-none ${isHighlighted ? "os-bg-accent-light" : "os-bg-transparent"} os-pointer`}
                   >
                     <div className="os-fw-600 os-text-md os-c-primary">{action.name}</div>
                   </button>

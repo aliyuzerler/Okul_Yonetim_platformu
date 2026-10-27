@@ -13,6 +13,7 @@ import ListState from "@/shared/ui/ListState";
 import TableSkeleton from "@/shared/ui/TableSkeleton";
 
 const CATEGORY_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.value, c.label]));
+const PRIORITY_LABEL = Object.fromEntries(PRIORITIES.map((p) => [p.value, p.label]));
 
 // Every sent notification, newest first: the whole school for admins, their own for teachers.
 export default function NotificationHistory() {
@@ -36,33 +37,33 @@ export default function NotificationHistory() {
   return (
     <div className="os-section">
       <div className="os-section__header">
-        <h2 className="os-section__title">Sent history</h2>
-        {data && <span className="os-section__meta">{data.total} sent</span>}
+        <h2 className="os-section__title">Gönderim geçmişi</h2>
+        {data && <span className="os-section__meta">{data.total} gönderim</span>}
       </div>
       <div className="os-px-6 os-pt-4">
         <FilterBar
-          search={{ value: filters.query, onChange: (v) => update("query", v), placeholder: "Search title, message or sender" }}
+          search={{ value: filters.query, onChange: (v) => update("query", v), placeholder: "Başlık, mesaj veya gönderende arayın" }}
           controls={[
             {
-              label: "Category",
+              label: "Kategori",
               node: (
-                <Select id="history-category" labelText="Category" hideLabel value={filters.category} onChange={(e) => update("category", e.target.value)}>
-                  <SelectItem value="" text="All categories" />
+                <Select id="history-category" labelText="Kategori" hideLabel value={filters.category} onChange={(e) => update("category", e.target.value)}>
+                  <SelectItem value="" text="Tüm kategoriler" />
                   {CATEGORIES.map((c) => <SelectItem key={c.value} value={c.value} text={c.label} />)}
                 </Select>
               ),
             },
             {
-              label: "Priority",
+              label: "Öncelik",
               node: (
-                <Select id="history-priority" labelText="Priority" hideLabel value={filters.priority} onChange={(e) => update("priority", e.target.value)}>
-                  <SelectItem value="" text="All priorities" />
+                <Select id="history-priority" labelText="Öncelik" hideLabel value={filters.priority} onChange={(e) => update("priority", e.target.value)}>
+                  <SelectItem value="" text="Tüm öncelikler" />
                   {PRIORITIES.map((p) => <SelectItem key={p.value} value={p.value} text={p.label} />)}
                 </Select>
               ),
             },
-            { label: "From", node: <DateField id="history-from" labelText="From" hideLabel placeholder="From" value={filters.from} maxDate={filters.to || undefined} onChange={(v) => update("from", v)} /> },
-            { label: "To", node: <DateField id="history-to" labelText="To" hideLabel placeholder="To" value={filters.to} minDate={filters.from || undefined} onChange={(v) => update("to", v)} /> },
+            { label: "Başlangıç", node: <DateField id="history-from" labelText="Başlangıç" hideLabel placeholder="Başlangıç" value={filters.from} maxDate={filters.to || undefined} onChange={(v) => update("from", v)} /> },
+            { label: "Bitiş", node: <DateField id="history-to" labelText="Bitiş" hideLabel placeholder="Bitiş" value={filters.to} minDate={filters.from || undefined} onChange={(v) => update("to", v)} /> },
           ]}
         />
       </div>
@@ -70,10 +71,10 @@ export default function NotificationHistory() {
         isLoading={isLoading}
         isError={isError}
         onRetry={refetch}
-        errorMessage="Could not load sent notifications."
+        errorMessage="Gönderilen bildirimler yüklenemedi."
         isEmpty={!data?.items.length}
-        empty={hasActive ? { title: "Nothing matches these filters", description: "Try a wider date range or a different search." } : { title: "Nothing sent yet", description: "Sent notifications will appear here." }}
-        skeleton={<TableSkeleton headers={["Sent", "Title", "Category", "Sender", "Read"]} />}
+        empty={hasActive ? { title: "Bu filtrelerle eşleşen kayıt yok", description: "Daha geniş bir tarih aralığı veya farklı bir arama deneyin." } : { title: "Henüz gönderim yok", description: "Gönderilen bildirimler burada görünecek." }}
+        skeleton={<TableSkeleton headers={["Gönderim", "Başlık", "Kategori", "Gönderen", "Okuma"]} />}
       >
         <DataGrid
           rows={data?.items ?? []}
@@ -90,21 +91,21 @@ export default function NotificationHistory() {
             },
           }}
           columns={[
-            { key: "sent", header: "Sent", render: (n) => <span className="os-nowrap os-text-sm">{formatDateTime(n.sent_at)}</span> },
+            { key: "sent", header: "Gönderim", render: (n) => <span className="os-nowrap os-text-sm">{formatDateTime(n.sent_at)}</span> },
             {
               key: "title",
-              header: "Title",
+              header: "Başlık",
               render: (n) => (
                 <div>
                   <span className="os-fw-600">{n.title}</span>
-                  {n.priority !== "normal" && <Tag type={PRIORITY_TAG[n.priority]} size="sm" className="os-ml-2">{n.priority}</Tag>}
+                  {n.priority !== "normal" && <Tag type={PRIORITY_TAG[n.priority]} size="sm" className="os-ml-2">{PRIORITY_LABEL[n.priority] ?? n.priority}</Tag>}
                   <p className="os-m-0 os-text-sm os-c-secondary os-truncate os-clamp-2">{n.message}</p>
                 </div>
               ),
             },
-            { key: "category", header: "Category", render: (n) => CATEGORY_LABEL[n.category] ?? n.category },
-            { key: "sender", header: "Sender", render: (n) => n.sender_name },
-            { key: "read", header: "Read", align: "end", render: (n) => `${n.read_count} / ${n.recipient_count}` },
+            { key: "category", header: "Kategori", render: (n) => CATEGORY_LABEL[n.category] ?? n.category },
+            { key: "sender", header: "Gönderen", render: (n) => n.sender_name },
+            { key: "read", header: "Okuma", align: "end", render: (n) => `${n.read_count} / ${n.recipient_count}` },
           ]}
         />
       </ListState>

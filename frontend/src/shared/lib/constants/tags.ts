@@ -12,10 +12,10 @@ export const NOTIFICATION_PRIORITY_TAG = {
 } as const;
 
 export const TIMETABLE_STATUS_TAG = {
-  draft: { type: "gray", label: "Draft" },
-  under_review: { type: "blue", label: "Under review" },
-  approved: { type: "teal", label: "Approved" },
-  published: { type: "green", label: "Published" },
-  rejected: { type: "red", label: "Rejected" },
-  archived: { type: "magenta", label: "Archived" },
+  draft: { type: "gray", label: "Taslak" },
+  under_review: { type: "blue", label: "İncelemede" },
+  approved: { type: "teal", label: "Onaylandı" },
+  published: { type: "green", label: "Yayınlandı" },
+  rejected: { type: "red", label: "Reddedildi" },
+  archived: { type: "magenta", label: "Arşivlendi" },
 } as const;

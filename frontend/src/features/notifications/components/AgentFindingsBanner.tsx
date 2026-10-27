@@ -40,7 +40,7 @@ export default function AgentFindingsBanner() {
                   hideCloseButton={false}
                   title={f.title}
                   subtitle={finding.headline}
-                  actionButtonLabel="View automation"
+                  actionButtonLabel="Otomasyonu görüntüle"
                   onActionButtonClick={() => navigate("/settings")}
                   onClose={() => setDismissed((prev) => new Set(prev).add(f.notification_id))}
                   className="os-max-w-full"
@@ -48,8 +48,8 @@ export default function AgentFindingsBanner() {
                 {finding.items.length > 0 && (
                   <details className="os-agent-finding__details">
                     <summary>
-                      <span>Review affected classes</span>
-                      {finding.count && <Tag type="gray" size="sm">{finding.count} classes</Tag>}
+                      <span>Etkilenen sınıfları inceleyin</span>
+                      {finding.count && <Tag type="gray" size="sm">{finding.count} sınıf</Tag>}
                     </summary>
                     <div className="os-agent-finding__list">
                       {finding.items.map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}

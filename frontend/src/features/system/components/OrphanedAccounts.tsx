@@ -28,25 +28,25 @@ export default function OrphanedAccounts() {
       <div className="os-page__header">
         <div>
           <h2 className="os-section__title os-m-0">
-            Orphaned accounts
+            Sahipsiz hesaplar
           </h2>
           <p className="os-page__subtitle os-mt-1">
-            ThunderID accounts with no matching local user record - left behind when a signup failed partway
-            through. Safe to review and delete.
+            Yerel kullanıcı kaydıyla eşleşmeyen ThunderID hesapları - kayıt işlemi
+            yarıda kaldığında geride kalmıştır. İnceleyip silmek güvenlidir.
           </p>
         </div>
         <Button kind={loaded ? "secondary" : "primary"} onClick={() => (loaded ? refetch() : setLoaded(true))} disabled={isFetching}>
-          {isFetching ? "Checking…" : loaded ? "Re-check" : "Check for orphaned accounts"}
+          {isFetching ? "Denetleniyor…" : loaded ? "Yeniden denetle" : "Sahipsiz hesapları denetle"}
         </Button>
       </div>
 
       <MutationErrorNotification
         isError={deleteOrphan.isError}
         error={deleteOrphan.error}
-        title="Could not delete account" className="os-mb-4"
+        title="Hesap silinemedi" className="os-mb-4"
       />
 
-      {isError && <ErrorMessage message="Could not check for orphaned accounts." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Sahipsiz hesap denetimi yapılamadı." onRetry={refetch} />}
 
       {loaded && (
         <div className="os-section">
@@ -62,16 +62,16 @@ export default function OrphanedAccounts() {
 
           {!isLoading && !!orphaned?.length && (
             <div className="os-px-6 os-pt-4">
-              <FilterBar search={{ value: search, onChange: setSearch, placeholder: "Search by username, email or ID" }} />
+              <FilterBar search={{ value: search, onChange: setSearch, placeholder: "Kullanıcı adı, e-posta veya kimliğe göre arayın" }} />
             </div>
           )}
 
           {!isLoading && !!orphaned?.length && shown.length === 0 && (
-            <EmptyState title="No accounts match your search" description="Try another username, email or ID." />
+            <EmptyState title="Aramanızla eşleşen hesap yok" description="Farklı bir kullanıcı adı, e-posta veya kimlik deneyin." />
           )}
 
           {!isLoading && !isError && (orphaned?.length ?? 0) === 0 && (
-            <EmptyState title="No orphaned accounts found" description="Every ThunderID account has a matching local user record." />
+            <EmptyState title="Sahipsiz hesap bulunamadı" description="Her ThunderID hesabının eşleşen bir yerel kullanıcı kaydı var." />
           )}
 
           {!isLoading && shown.length > 0 && (
@@ -82,7 +82,7 @@ export default function OrphanedAccounts() {
                 >
                   <div>
                     <p className="os-m-0 os-fw-600 os-text-md">
-                      {account.username || account.email || "(no username/email on file)"}
+                      {account.username || account.email || "(kayıtlı kullanıcı adı/e-posta yok)"}
                     </p>
                     <p className="os-mt-h os-mx-0 os-mb-0 os-text-xs os-c-tertiary">ID: {account.id}</p>
                   </div>
@@ -92,7 +92,7 @@ export default function OrphanedAccounts() {
                     renderIcon={TrashCan}
                     onClick={() => setPendingDeleteId(account.id)}
                   >
-                    Delete
+                    Sil
                   </Button>
                 </div>
               ))}
@@ -103,9 +103,9 @@ export default function OrphanedAccounts() {
 
       <ConfirmDeleteModal
         open={!!pendingDeleteId}
-        title="Delete orphaned account"
-        description="This permanently deletes the ThunderID account. This can't be undone. Only do this if you're sure no signup for this account is still in progress."
-        subject="Account"
+        title="Sahipsiz hesabı sil"
+        description="Bu işlem ThunderID hesabını kalıcı olarak siler. Bu işlem geri alınamaz. Bu hesap için bir kayıt işlemi hâlâ sürmüyorsa emin olduğunuzda uygulayın."
+        subject="Hesap"
         mutation={deleteOrphan}
         onClose={() => setPendingDeleteId(null)}
         onConfirm={() => {

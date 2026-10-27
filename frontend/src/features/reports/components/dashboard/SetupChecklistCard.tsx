@@ -20,15 +20,15 @@ export default function SetupChecklistCard({ items }: { items: SetupChecklistIte
         <div className="os-setup-checklist__heading">
           <div className="os-setup-checklist__icon"><CheckmarkFilled size={20} /></div>
           <div>
-            <p className="os-eyebrow">Getting started</p>
-            <h2>Finish setting up</h2>
-            <p>Complete these essentials to get your school ready for daily use.</p>
+            <p className="os-eyebrow">İlk adımlar</p>
+            <h2>Kurulumu tamamlayın</h2>
+            <p>Okulunuzu günlük kullanıma hazırlamak için bu temel adımları tamamlayın.</p>
           </div>
         </div>
-        <div className="os-setup-checklist__progress-label"><strong>{progress}%</strong><span>{doneCount} of {items.length} complete</span></div>
+        <div className="os-setup-checklist__progress-label"><strong>{progress}%</strong><span>{items.length} adımdan {doneCount} tamamlandı</span></div>
       </div>
-      <div className="os-setup-checklist__bar"><ProgressBar value={doneCount} max={items.length} label="Setup progress" /></div>
-      {nextItem && <p className="os-setup-checklist__next">Next up: <Link to={nextItem.path}>{nextItem.label}</Link></p>}
+      <div className="os-setup-checklist__bar"><ProgressBar value={doneCount} max={items.length} label="Kurulum ilerlemesi" /></div>
+      {nextItem && <p className="os-setup-checklist__next">Sıradaki: <Link to={nextItem.path}>{nextItem.label}</Link></p>}
       <div className="os-setup-checklist__items">
         {items.map((item) => (
           <Link key={item.label} to={item.path} className={`os-setup-checklist__item${item.done ? " is-complete" : ""}`}>

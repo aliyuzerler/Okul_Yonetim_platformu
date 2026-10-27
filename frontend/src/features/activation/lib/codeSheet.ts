@@ -10,7 +10,7 @@ export interface ClassGroup {
   codes: IssuedCode[];
 }
 
-const NO_CLASS = "Not in a class";
+const NO_CLASS = "Sınıfa atanmamış";
 
 // Groups codes by class in grade order; people without a current class come last.
 export function groupByClass(batch: GeneratedBatch): ClassGroup[] {
@@ -38,7 +38,7 @@ function csvCell(value: string): string {
 
 export function batchToCsv(batch: GeneratedBatch): string {
   const isStudent = batch.role === "student";
-  const header = ["Grade", "Class", "Form teacher", "Name", isStudent ? "Index number" : "Children", "Activation code", "Expires"];
+  const header = ["Sınıf seviyesi", "Sınıf", "Sınıf öğretmeni", "Ad", isStudent ? "Okul numarası" : "Çocuklar", "Etkinleştirme kodu", "Son geçerlilik"];
   const rows = [header];
   for (const group of groupByClass(batch)) {
     for (const c of group.codes) {

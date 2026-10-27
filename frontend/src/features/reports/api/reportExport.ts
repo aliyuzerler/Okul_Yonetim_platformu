@@ -1,18 +1,18 @@
 import api from "@/shared/api/client";
 
 export const ATTENDANCE_REPORT_COLUMNS = [
-  { value: "date", label: "Date" },
-  { value: "student", label: "Student" },
-  { value: "index_number", label: "Index no." },
-  { value: "status", label: "Status" },
-  { value: "note", label: "Note" },
+  { value: "date", label: "Tarih" },
+  { value: "student", label: "Öğrenci" },
+  { value: "index_number", label: "Okul no." },
+  { value: "status", label: "Durum" },
+  { value: "note", label: "Açıklama" },
 ];
 
 export const MARKS_REPORT_COLUMNS = [
-  { value: "student", label: "Student" },
-  { value: "index_number", label: "Index no." },
-  { value: "marks", label: "Marks" },
-  { value: "max_marks", label: "Max marks" },
+  { value: "student", label: "Öğrenci" },
+  { value: "index_number", label: "Okul no." },
+  { value: "marks", label: "Notlar" },
+  { value: "max_marks", label: "En yüksek not" },
   { value: "percentage", label: "%" },
 ];
 

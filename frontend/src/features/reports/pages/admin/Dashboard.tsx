@@ -45,7 +45,7 @@ export default function Dashboard() {
   const { data: todaySessions, isLoading: sessionsLoading } = useDailySessions(todayISODate());
   const { data: staffAttendance, isLoading: staffAttendanceLoading } = useStaffAttendanceByDate(todayISODate());
 
-  const title = school?.name ?? "Admin dashboard";
+  const title = school?.name ?? "Yönetici paneli";
   const sessionByClassId = useMemo(() => {
     const map = new Map<string, DailySession>();
     for (const s of todaySessions ?? []) map.set(s.class_id, s);
@@ -58,54 +58,54 @@ export default function Dashboard() {
   const termsLoading = yearsLoading || (!!currentYear && termsPending);
   const setupLoading = classesLoading || gradesLoading || subjectsLoading || teachersLoading || studentsLoading || termsLoading;
   const setupItems = [
-    { label: "Set a current academic year", done: !!currentYear, path: "/academic-years" },
-    { label: "Set up terms", done: !!currentYear && !termsError && (terms?.length ?? 0) > 0, path: "/academic-years" },
-    { label: "Add a grade", done: (grades?.length ?? 0) > 0, path: "/classes" },
-    { label: "Add a subject", done: (subjects?.length ?? 0) > 0, path: "/subjects" },
-    { label: "Add a teacher", done: teacherCount > 0, path: "/teachers" },
-    { label: "Add a class", done: (classes?.length ?? 0) > 0, path: "/classes" },
-    { label: "Add a student", done: studentCount > 0, path: "/students" },
+    { label: "Güncel eğitim-öğretim yılı belirleyin", done: !!currentYear, path: "/academic-years" },
+    { label: "Dönemleri oluşturun", done: !!currentYear && !termsError && (terms?.length ?? 0) > 0, path: "/academic-years" },
+    { label: "Bir sınıf seviyesi ekleyin", done: (grades?.length ?? 0) > 0, path: "/classes" },
+    { label: "Bir ders ekleyin", done: (subjects?.length ?? 0) > 0, path: "/subjects" },
+    { label: "Bir öğretmen ekleyin", done: teacherCount > 0, path: "/teachers" },
+    { label: "Bir sınıf ekleyin", done: (classes?.length ?? 0) > 0, path: "/classes" },
+    { label: "Bir öğrenci ekleyin", done: studentCount > 0, path: "/students" },
   ];
 
   return (
     <div className="os-page">
       <div className="os-dashboard-hero">
         <div className="os-dashboard-hero__copy">
-          <p className="os-eyebrow">School overview</p>
+          <p className="os-eyebrow">Okul genel görünümü</p>
           <h1 className="os-page__title">{title}</h1>
-          <p className="os-page__subtitle">A quick view of what is happening across your school today.</p>
+          <p className="os-page__subtitle">Bugün okulunuzda olup bitenlere dair hızlı bir bakış.</p>
         </div>
 
         <div className="os-dashboard-hero__aside">
           {currentYear && (
             <div className="os-year-pill">
               <Calendar size={16} className="os-shrink-0" />
-              <span><strong>{currentYear.label}</strong><small>Current academic year</small></span>
+              <span><strong>{currentYear.label}</strong><small>Güncel eğitim-öğretim yılı</small></span>
             </div>
           )}
           {school?.logo_url && (
             <img
               src={school.logo_url}
-              alt={school.name ?? "School logo"} className="os-dashboard-hero__logo os-object-contain os-shrink-0"
+              alt={school.name ?? "Okul logosu"} className="os-dashboard-hero__logo os-object-contain os-shrink-0"
             />
           )}
         </div>
       </div>
 
-      <div className="os-dashboard-actions" aria-label="Quick actions">
-        <Button as={Link} to="/students/new" kind="primary" size="md" renderIcon={Add}>Add student</Button>
-        <Button as={Link} to="/classes/new" kind="tertiary" size="md" renderIcon={Building}>Create class</Button>
-        <Button as={Link} to="/attendance" kind="tertiary" size="md" renderIcon={Calendar}>Take attendance</Button>
-        <Button as={Link} to="/analytics" kind="ghost" size="md" renderIcon={ArrowRight}>View analytics</Button>
+      <div className="os-dashboard-actions" aria-label="Hızlı işlemler">
+        <Button as={Link} to="/students/new" kind="primary" size="md" renderIcon={Add}>Öğrenci ekle</Button>
+        <Button as={Link} to="/classes/new" kind="tertiary" size="md" renderIcon={Building}>Sınıf oluştur</Button>
+        <Button as={Link} to="/attendance" kind="tertiary" size="md" renderIcon={Calendar}>Yoklama al</Button>
+        <Button as={Link} to="/analytics" kind="ghost" size="md" renderIcon={ArrowRight}>Analitiği gör</Button>
       </div>
 
       {!setupLoading && <SetupChecklistCard items={setupItems} />}
 
       <div className="os-stat-grid">
-        <StatCard label="Total students" value={studentCount} loading={studentsLoading} Icon={UserMultiple} path="/students" />
-        <StatCard label="Teachers" value={teacherCount} loading={teachersLoading} Icon={Education} path="/teachers" />
-        <StatCard label="Classes" value={classes?.length ?? 0} loading={classesLoading} Icon={Building} path="/classes" />
-        <StatCard label="Subjects" value={subjects?.length ?? 0} loading={subjectsLoading} Icon={Book} path="/subjects" />
+        <StatCard label="Toplam öğrenci" value={studentCount} loading={studentsLoading} Icon={UserMultiple} path="/students" />
+        <StatCard label="Öğretmenler" value={teacherCount} loading={teachersLoading} Icon={Education} path="/teachers" />
+        <StatCard label="Sınıflar" value={classes?.length ?? 0} loading={classesLoading} Icon={Building} path="/classes" />
+        <StatCard label="Dersler" value={subjects?.length ?? 0} loading={subjectsLoading} Icon={Book} path="/subjects" />
       </div>
 
       <div className="os-dashboard-lower-grid">

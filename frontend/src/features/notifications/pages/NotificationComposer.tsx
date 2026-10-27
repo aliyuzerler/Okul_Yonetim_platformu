@@ -83,45 +83,45 @@ export default function NotificationComposer() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Notifications</h1>
+          <h1 className="os-page__title">Bildirimler</h1>
           <p className="os-page__subtitle">
-            Send announcements to grades, classes, subjects or people.
+            Duyuruları sınıf seviyelerine, sınıflara, derslere veya kişilere gönderin.
             {role === "teacher" && myPosition && myPosition.rank_label !== "Teacher" && (
-              <> Sending as <strong>{myPosition.rank_label}</strong>{canBroadcastEveryone ? ", whole school." : "."}</>
+              <> <strong>{myPosition.rank_label}</strong> olarak gönderiyorsunuz{canBroadcastEveryone ? ", tüm okul." : "."}</>
             )}
           </p>
         </div>
         <Button renderIcon={Send} kind="primary" onClick={openComposer}>
-          Notify
+          Bildirim gönder
         </Button>
       </div>
 
       {create.isSuccess && (
         <InlineNotification
           kind="success"
-          title="Done"
-          subtitle="Notification saved."
+          title="Tamamlandı"
+          subtitle="Bildirim kaydedildi."
           lowContrast
           onClose={() => create.reset()} className="os-mb-6 os-max-w-full"
         />
       )}
 
-      <ComposedModal open={composeOpen} size="lg" onClose={closeComposer} aria-label="Compose notification">
-        <ModalHeader title="Compose notification" />
+      <ComposedModal open={composeOpen} size="lg" onClose={closeComposer} aria-label="Bildirim oluştur">
+        <ModalHeader title="Bildirim oluştur" />
         <ModalBody>
-        {create.isError && <InlineNotification kind="error" title="Could not send notification" subtitle={getErrorMessage(create.error)} lowContrast onClose={() => create.reset()} className="os-mb-6 os-max-w-full" />}
+        {create.isError && <InlineNotification kind="error" title="Bildirim gönderilemedi" subtitle={getErrorMessage(create.error)} lowContrast onClose={() => create.reset()} className="os-mb-6 os-max-w-full" />}
         <div className="os-section">
           <div className="os-section__header">
-            <h2 className="os-section__title">Compose</h2>
+            <h2 className="os-section__title">Oluştur</h2>
           </div>
           <div className="os-section__body os-flex os-col os-gap-6">
-            <TextInput id="notification-title" labelText="Title" placeholder="e.g. Term Test Timetable Released" value={title} onChange={(e) => setTitle(e.target.value)} disabled={create.isPending} />
-            <TextArea id="notification-message" labelText="Message" placeholder="Type your message here…" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} disabled={create.isPending} />
+            <TextInput id="notification-title" labelText="Başlık" placeholder="örn. Dönem sınavı ders programı yayınlandı" value={title} onChange={(e) => setTitle(e.target.value)} disabled={create.isPending} />
+            <TextArea id="notification-message" labelText="Mesaj" placeholder="Mesajınızı buraya yazın…" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} disabled={create.isPending} />
 
             <div className="os-grid os-grid-cols-2 os-gap-4">
               <Dropdown
                 id="notification-category"
-                titleText="Category"
+                titleText="Kategori"
                 label=""
                 items={CATEGORIES}
                 itemToString={(item) => (item as (typeof CATEGORIES)[number])?.label ?? ""}
@@ -130,7 +130,7 @@ export default function NotificationComposer() {
                 disabled={create.isPending}
               />
               <div>
-                <p className="os-text-xs os-fw-600 os-mb-2 os-c-secondary">Priority</p>
+                <p className="os-text-xs os-fw-600 os-mb-2 os-c-secondary">Öncelik</p>
                 <div className="os-flex os-gap-2">
                   {PRIORITIES.map((p) => (
                     <button
@@ -146,7 +146,7 @@ export default function NotificationComposer() {
 
             <div>
               <p className="os-text-xs os-fw-600 os-tracking-wide os-uppercase os-c-secondary os-mb-3">
-                Send To
+                Alıcılar
               </p>
               {rules.length > 0 && (
                 <div className="os-flex os-wrap os-gap-1h os-mb-3">
@@ -166,10 +166,10 @@ export default function NotificationComposer() {
 
             <div className="os-flex os-gap-3">
               <Button renderIcon={Send} kind="primary" onClick={() => handleSubmit(false)} disabled={!isReady || create.isPending}>
-                {create.isPending ? "Sending…" : "Send now"}
+                {create.isPending ? "Gönderiliyor…" : "Şimdi gönder"}
               </Button>
               <Button renderIcon={Save} kind="secondary" onClick={() => handleSubmit(true)} disabled={!isReady || create.isPending}>
-                Save as draft
+                Taslak olarak kaydet
               </Button>
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function NotificationComposer() {
       {drafts && drafts.length > 0 && (
         <div className="os-section os-mb-6">
           <div className="os-section__header">
-            <h2 className="os-section__title">Drafts</h2>
+            <h2 className="os-section__title">Taslaklar</h2>
           </div>
           {drafts.map((d) => <DraftRow key={d.id} draft={d} />)}
         </div>

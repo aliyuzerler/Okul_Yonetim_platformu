@@ -13,9 +13,9 @@ function statusTag(status: JobRunStatus) {
     case "ok":
       return <Tag type="green" size="sm">OK</Tag>;
     case "failed":
-      return <Tag type="red" size="sm">Failed</Tag>;
+      return <Tag type="red" size="sm">Başarısız</Tag>;
     case "running":
-      return <Tag type="blue" size="sm">Running</Tag>;
+      return <Tag type="blue" size="sm">Çalışıyor</Tag>;
   }
 }
 
@@ -29,10 +29,10 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Automation</h1>
+            <h1 className="os-page__title">Otomasyon</h1>
             <div className="os-page__subtitle os-page__subtitle--tip">
-              Scheduled agents that run by themselves, plus the year-end workflows and setup tools that run when you ask. Each one lists what it does.
-              <InfoTip>Other features do not depend on these checks. Agents marked Always on, such as the backup, cannot be turned off.</InfoTip>
+              Kendiliğinden çalışan zamanlanmış ajanlar; ayrıca talebinizde çalışan yıl sonu akışları ve kurulum araçları. Her biri ne yaptığını listeler.
+              <InfoTip>Diğer özellikler bu denetimlere bağlı değildir. Yedekleme gibi "Her zaman açık" olarak işaretli ajanlar kapatılamaz.</InfoTip>
             </div>
           </div>
         </div>
@@ -40,15 +40,15 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
 
       {isError && (
         <div className="os-mb-6">
-          <ErrorMessage message="Could not load background agents." onRetry={refetch} />
+          <ErrorMessage message="Arka plan ajanları yüklenemedi." onRetry={refetch} />
         </div>
       )}
 
       <MutationErrorNotification
         isError={setEnabled.isError || runNow.isError}
         error={setEnabled.error ?? runNow.error}
-        title="Action failed"
-        fallback="Please try again."
+        title="İşlem başarısız"
+        fallback="Lütfen yeniden deneyin."
         onClose={() => {
           setEnabled.reset();
           runNow.reset();
@@ -57,8 +57,8 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
 
       <div className="os-section os-mt-0">
         <div className="os-section__header">
-          <h2 className="os-section__title">Scheduled agents</h2>
-          <span className="os-section__meta">Run automatically; turn each one on or off</span>
+          <h2 className="os-section__title">Zamanlanmış ajanlar</h2>
+          <span className="os-section__meta">Kendiliğinden çalışır; her birini açıp kapatabilirsiniz</span>
         </div>
         {isLoading && (
           <div className="os-py-5 os-px-6">
@@ -79,7 +79,7 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
                 <p className="os-mt-1 os-mx-0 os-mb-0 os-text-sm os-c-secondary">{job.description}</p>
                 {job.checks.length > 0 && (
                   <details className="os-agent-checks os-mt-2">
-                    <summary className="os-text-sm os-c-accent-dark os-pointer">What it checks ({job.checks.length})</summary>
+                    <summary className="os-text-sm os-c-accent-dark os-pointer">Neleri denetler ({job.checks.length})</summary>
                     <ul>
                       {job.checks.map((c) => (
                         <li key={c.key}>
@@ -94,14 +94,14 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
                   <div className="os-flex os-items-center os-gap-2 os-mt-2h os-wrap">
                     {statusTag(job.last_run.status)}
                     {job.last_run.findings > 0 && (
-                      <Tag type="magenta" size="sm">{job.last_run.findings} finding{job.last_run.findings === 1 ? "" : "s"}</Tag>
+                      <Tag type="magenta" size="sm">{job.last_run.findings} bulgu</Tag>
                     )}
                     <span className="os-text-xs os-c-tertiary">
-                      Last ran {formatDateTime(job.last_run.started_at)}
+                      Son çalıştırma {formatDateTime(job.last_run.started_at)}
                     </span>
                   </div>
                 ) : (
-                  <p className="os-mt-2h os-mx-0 os-mb-0 os-text-xs os-c-tertiary">Never run yet</p>
+                  <p className="os-mt-2h os-mx-0 os-mb-0 os-text-xs os-c-tertiary">Henüz çalıştırma yok</p>
                 )}
                 {job.last_run?.summary && (
                   <p className="os-mt-1h os-mx-0 os-mb-0 os-text-sm os-c-primary">{job.last_run.summary}</p>
@@ -116,15 +116,15 @@ export default function Automation({ inline = false }: { inline?: boolean }) {
                   disabled={!job.enabled || runNow.isPending}
                   onClick={() => runNow.mutate(job.name)}
                 >
-                  Run now
+                  Şimdi çalıştır
                 </Button>
                 {!job.can_disable ? (
-                  <Tag type="gray" size="sm">Always on</Tag>
+                  <Tag type="gray" size="sm">Her zaman açık</Tag>
                 ) : (
                   <Toggle
                     id={`job-toggle-${job.name}`}
                     size="sm"
-                    labelText={`Enable ${job.title}`}
+                    labelText={`${job.title} aç/kapat`}
                     hideLabel
                     toggled={job.enabled}
                     disabled={setEnabled.isPending}
