@@ -36,18 +36,18 @@ export default function PeriodsEditor({ section, onClose }: { section: GradeSect
   const busy = save.isPending || regenerate.isPending;
 
   return (
-    <ComposedModal open size="md" onClose={onClose} aria-label={`${section.name} - period grid`}>
-      <ModalHeader title={`${section.name} - period grid`} />
+    <ComposedModal open size="md" onClose={onClose} aria-label={`${section.name} - ders saati düzeni`}>
+      <ModalHeader title={`${section.name} - ders saati düzeni`} />
       <ModalBody>
         <MutationErrorNotification
           isError={save.isError}
           error={save.error}
-          title="Could not save periods" className="os-mb-4"
+          title="Ders saatleri kaydedilemedi" className="os-mb-4"
         />
         <MutationErrorNotification
           isError={regenerate.isError}
           error={regenerate.error}
-          title="Could not regenerate periods" className="os-mb-4"
+          title="Ders saatleri yeniden üretilemedi" className="os-mb-4"
         />
         <div className="os-mb-4 os-flex os-justify-end">
           <Button
@@ -56,35 +56,35 @@ export default function PeriodsEditor({ section, onClose }: { section: GradeSect
             onClick={() => regenerate.mutate(undefined, { onSuccess: () => setRows(null) })}
             disabled={busy}
           >
-            {regenerate.isPending ? "Regenerating…" : "Regenerate from Timetable Settings"}
+            {regenerate.isPending ? "Yeniden üretiliyor…" : "Ders programı ayarlarından yeniden üret"}
           </Button>
         </div>
         {isLoading ? (
           <SkeletonText width="60%" />
         ) : active.length === 0 ? (
           <EmptyState
-            title="No periods configured"
-            description="Configure Timetable Settings for this academic year, then regenerate."
+            title="Ders saati yapılandırılmamış"
+            description="Bu eğitim-öğretim yılı için ders programı ayarlarını yapılandırın, sonra yeniden üretin."
           />
         ) : (
           <table className="os-table">
             <thead>
               <tr>
-                <th>Slot</th>
-                <th>Period #</th>
-                <th>Start</th>
-                <th>End</th>
+                <th>Tür</th>
+                <th>Ders saati no</th>
+                <th>Başlangıç</th>
+                <th>Bitiş</th>
               </tr>
             </thead>
             <tbody>
               {active.map((p, i) => (
                 <tr key={i} style={p.slot_type === "interval" ? { background: "var(--os-status-late-bg)" } : undefined}>
-                  <td>{p.slot_type === "interval" ? "Interval" : "Period"}</td>
+                  <td>{p.slot_type === "interval" ? "Teneffüs" : "Ders saati"}</td>
                   <td>{p.period_number ?? "-"}</td>
                   <td>
                     <TextInput
                       id={`start-${i}`}
-                      labelText={`${p.slot_type === "interval" ? "Interval" : "Period"} ${i + 1} start time`}
+                      labelText={`${p.slot_type === "interval" ? "Teneffüs" : "Ders saati"} ${i + 1} başlangıç saati`}
                       hideLabel
                       type="time"
                       size="sm"
@@ -96,7 +96,7 @@ export default function PeriodsEditor({ section, onClose }: { section: GradeSect
                   <td>
                     <TextInput
                       id={`end-${i}`}
-                      labelText={`${p.slot_type === "interval" ? "Interval" : "Period"} ${i + 1} end time`}
+                      labelText={`${p.slot_type === "interval" ? "Teneffüs" : "Ders saati"} ${i + 1} bitiş saati`}
                       hideLabel
                       type="time"
                       size="sm"
@@ -113,10 +113,10 @@ export default function PeriodsEditor({ section, onClose }: { section: GradeSect
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Close
+          Kapat
         </Button>
         <Button kind="primary" onClick={handleSave} disabled={!rows || busy}>
-          {save.isPending ? "Saving…" : "Save changes"}
+          {save.isPending ? "Kaydediliyor…" : "Değişiklikleri kaydet"}
         </Button>
       </ModalFooter>
     </ComposedModal>

@@ -21,7 +21,7 @@ export default function ConfirmEditModal({
   title,
   description,
   isPending,
-  confirmLabel = "Save changes",
+  confirmLabel = "Değişiklikleri kaydet",
   onClose,
   onConfirm,
 }: Props) {
@@ -33,10 +33,10 @@ export default function ConfirmEditModal({
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Cancel
+          İptal
         </Button>
         <Button kind="primary" onClick={onConfirm} disabled={isPending}>
-          {isPending ? "Saving…" : confirmLabel}
+          {isPending ? "Kaydediliyor…" : confirmLabel}
         </Button>
       </ModalFooter>
     </ComposedModal>

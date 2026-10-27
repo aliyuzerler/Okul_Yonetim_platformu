@@ -16,7 +16,7 @@ export default function TimetableReviewPanel({ academicYearId }: { academicYearI
     <div className="os-section">
       <div className="os-section__header">
         <h2 className="os-section__title os-flex os-items-center os-gap-2">
-          <Renew size={16} className="os-fill-accent" /> Timetable review
+          <Renew size={16} className="os-fill-accent" /> Ders programı incelemesi
         </h2>
       </div>
 
@@ -26,11 +26,11 @@ export default function TimetableReviewPanel({ academicYearId }: { academicYearI
         </div>
       ) : isError ? (
         <div className="os-py-4 os-px-6">
-          <ErrorMessage message="Could not load the review queue." onRetry={refetch} />
+          <ErrorMessage message="İnceleme kuyruğu yüklenemedi." onRetry={refetch} />
         </div>
       ) : !queue || queue.length === 0 ? (
         <div className="os-py-4 os-px-6">
-          <EmptyState title="Nothing pending review" description="Timetables submitted for grades you head will show up here." />
+          <EmptyState title="İnceleme bekleyen yok" description="Rehber öğretmeni olduğunuz seviyeler için gönderilen ders programları burada görünecek." />
         </div>
       ) : (
         <>
@@ -40,7 +40,7 @@ export default function TimetableReviewPanel({ academicYearId }: { academicYearI
           {queue.length > MAX_ROWS && (
             <div className="os-py-3 os-px-6">
               <Button kind="ghost" size="sm" as={Link} to="/t/timetable/review">
-                View all {queue.length} pending →
+                Bekleyen {queue.length} kaydın tümünü gör →
               </Button>
             </div>
           )}

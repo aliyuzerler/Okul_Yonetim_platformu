@@ -128,7 +128,7 @@ export default function DataGrid<T>({
                 <TableSelectAll
                   id="grid-select-all"
                   name="grid-select-all"
-                  ariaLabel="Select all rows on this page"
+                  ariaLabel="Bu sayfadaki tüm satırları seç"
                   checked={allOnPage}
                   indeterminate={someOnPage && !allOnPage}
                   onSelect={togglePage}
@@ -164,7 +164,7 @@ export default function DataGrid<T>({
                     <TableSelectRow
                       id={`grid-select-${id}`}
                       name={`grid-select-${id}`}
-                      ariaLabel="Select row"
+                      ariaLabel="Satırı seç"
                       checked={selected.has(id)}
                       onSelect={(e) => {
                         e.stopPropagation();

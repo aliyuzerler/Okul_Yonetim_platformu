@@ -36,23 +36,23 @@ interface Props {
 }
 
 export default function TimetableCellModal({ cell, form, onFormChange, subjects, teachers, onTeacherSearch, classrooms, canClear, save, clear, onSave, onClear, onClose }: Props) {
-  const title = cell ? `${WEEKDAYS.find((d) => d.value === cell.day)?.label} - Period ${cell.period}` : "";
+  const title = cell ? `${WEEKDAYS.find((d) => d.value === cell.day)?.label} - ${cell.period}. ders` : "";
   return (
     <ComposedModal open={!!cell} size="sm" onClose={onClose} aria-label={title}>
       <ModalHeader title={title} />
       <ModalBody>
-        <MutationErrorNotification isError={save.isError} error={save.error} title="Could not save" />
-        <MutationErrorNotification isError={clear.isError} error={clear.error} title="Could not clear" />
+        <MutationErrorNotification isError={save.isError} error={save.error} title="Kaydedilemedi" />
+        <MutationErrorNotification isError={clear.isError} error={clear.error} title="Temizlenemedi" />
         <div className="os-grid os-gap-4">
-          <EntityCombobox id="cell-subject" items={subjects} selectedId={form.subjectId} onSelect={(subjectId) => onFormChange({ ...form, subjectId })} getId={(s) => s.id} itemToString={(s) => s.name} labelText="Subject" placeholder="Search subjects…" />
-          <EntityCombobox id="cell-teacher" items={teachers} selectedId={form.teacherId} onSelect={(teacherId) => onFormChange({ ...form, teacherId })} onSearch={onTeacherSearch} getId={(t) => t.id} itemToString={(t) => `${displayName(t)} - ${t.employee_number}`} labelText="Teacher" placeholder="Search teachers…" />
-          <EntityCombobox id="cell-classroom" items={classrooms} selectedId={form.classroomId} onSelect={(classroomId) => onFormChange({ ...form, classroomId })} getId={(c) => c.id} itemToString={(c) => c.name} labelText="Classroom (optional)" placeholder="Search classrooms…" />
+          <EntityCombobox id="cell-subject" items={subjects} selectedId={form.subjectId} onSelect={(subjectId) => onFormChange({ ...form, subjectId })} getId={(s) => s.id} itemToString={(s) => s.name} labelText="Ders" placeholder="Derslerde ara…" />
+          <EntityCombobox id="cell-teacher" items={teachers} selectedId={form.teacherId} onSelect={(teacherId) => onFormChange({ ...form, teacherId })} onSearch={onTeacherSearch} getId={(t) => t.id} itemToString={(t) => `${displayName(t)} - ${t.employee_number}`} labelText="Öğretmen" placeholder="Öğretmenlerde ara…" />
+          <EntityCombobox id="cell-classroom" items={classrooms} selectedId={form.classroomId} onSelect={(classroomId) => onFormChange({ ...form, classroomId })} getId={(c) => c.id} itemToString={(c) => c.name} labelText="Derslik (isteğe bağlı)" placeholder="Dersliklerde ara…" />
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button kind="danger--ghost" onClick={onClear} disabled={clear.isPending || !canClear}>Clear</Button>
-        <Button kind="secondary" onClick={onClose}>Cancel</Button>
-        <Button kind="primary" onClick={onSave} disabled={save.isPending}>{save.isPending ? "Saving…" : "Save"}</Button>
+        <Button kind="danger--ghost" onClick={onClear} disabled={clear.isPending || !canClear}>Temizle</Button>
+        <Button kind="secondary" onClick={onClose}>İptal</Button>
+        <Button kind="primary" onClick={onSave} disabled={save.isPending}>{save.isPending ? "Kaydediliyor…" : "Kaydet"}</Button>
       </ModalFooter>
     </ComposedModal>
   );

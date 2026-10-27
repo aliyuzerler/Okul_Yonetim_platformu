@@ -8,7 +8,7 @@ interface Props {
 }
 
 // Keeps long explanations out of the layout; the short line stays visible.
-export default function InfoTip({ children, label = "More information" }: Props) {
+export default function InfoTip({ children, label = "Daha fazla bilgi" }: Props) {
   return (
     <Toggletip align="bottom" className="os-infotip">
       <ToggletipButton label={label}>

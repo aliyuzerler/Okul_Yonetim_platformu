@@ -20,11 +20,17 @@ import ProfileBanner from "@/shared/ui/ProfileBanner";
 import ConfirmDeleteModal from "@/shared/ui/ConfirmDeleteModal";
 import ConfirmEditModal from "@/shared/ui/ConfirmEditModal";
 import type { Teacher, TeacherTitle } from "@/features/teachers/api/teacher";
-import { EMPLOYMENT_STATUSES } from "@/features/teachers/constants";
 import TeacherProfileSections from "@/features/teachers/components/TeacherProfileSections";
 import MutationErrorNotification from "@/shared/ui/MutationErrorNotification";
 import { usePageTitle } from "@/shared/hooks/usePageTitle";
 import { displayName } from "@/shared/lib/name";
+
+// shared/lib EMPLOYMENT_STATUSES is English; display labels are translated here.
+const employmentStatusLabel: Record<string, string> = {
+  active: "Aktif",
+  resigned: "İstifa etti",
+  transferred: "Başka okula atandı",
+};
 
 function teacherToForm(t: Teacher) {
   return {
@@ -108,7 +114,7 @@ export default function TeacherDetail() {
     setForm((f) => ({ ...f, [field]: value }));
 
   const updateError = updateTeacher.isError
-    ? getErrorMessage(updateTeacher.error, "Failed to update teacher")
+    ? getErrorMessage(updateTeacher.error, "Öğretmen güncellenemedi")
     : null;
 
   const isValid =
@@ -118,7 +124,7 @@ export default function TeacherDetail() {
   if (isError || !teacher)
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load teacher" onRetry={refetch} />
+        <ErrorMessage message="Öğretmen yüklenemedi." onRetry={refetch} />
       </div>
     );
 
@@ -129,7 +135,7 @@ export default function TeacherDetail() {
         meta={
           teacher.employment_status === "active"
             ? teacher.employee_number
-            : `${teacher.employee_number} · ${EMPLOYMENT_STATUSES.find((s) => s.value === teacher.employment_status)?.label}`
+            : `${teacher.employee_number} · ${employmentStatusLabel[teacher.employment_status] ?? teacher.employment_status}`
         }
         actions={
           editing ? (
@@ -140,7 +146,7 @@ export default function TeacherDetail() {
                 onClick={handleCancel}
                 disabled={updateTeacher.isPending}
               >
-                Cancel
+                İptal
               </Button>
               <Button
                 renderIcon={Save}
@@ -149,7 +155,7 @@ export default function TeacherDetail() {
                 onClick={() => setConfirmEditOpen(true)}
                 disabled={!isValid || updateTeacher.isPending}
               >
-                {updateTeacher.isPending ? "Saving…" : "Save changes"}
+                {updateTeacher.isPending ? "Kaydediliyor…" : "Değişiklikleri kaydet"}
               </Button>
             </>
           ) : (
@@ -160,7 +166,7 @@ export default function TeacherDetail() {
                 size="sm"
                 onClick={() => setEditing(true)}
               >
-                Edit
+                Düzenle
               </Button>
               <Button
                 renderIcon={TrashCan}
@@ -171,7 +177,7 @@ export default function TeacherDetail() {
                   setConfirmOpen(true);
                 }}
               >
-                Delete
+                Sil
               </Button>
               <Button
                 renderIcon={ArrowLeft}
@@ -180,7 +186,7 @@ export default function TeacherDetail() {
                 as={Link}
                 to="/teachers"
               >
-                Back
+                Geri
               </Button>
             </>
           )
@@ -191,8 +197,8 @@ export default function TeacherDetail() {
         <MutationErrorNotification
           isError={deleteTeacher.isError}
           error={deleteTeacher.error}
-          title="Could not delete teacher"
-          fallback="The teacher may be assigned to a class or have attendance records."
+          title="Öğretmen silinemedi"
+          fallback="Öğretmen bir sınıfa atanmış veya yoklama kayıtları olabilir."
           onClose={() => deleteTeacher.reset()} className="os-mb-4"
         />
 
@@ -215,14 +221,17 @@ export default function TeacherDetail() {
 
       <ConfirmDeleteModal
         open={confirmOpen}
-        title="Delete teacher"
+        title="Öğretmeni sil"
         description={
           <>
-            Delete <strong>{displayName(teacher)}</strong>? This removes their
-            account and cannot be undone.
+             <strong>{displayName(teacher)}</strong> silinsin mi? Bu işlem hesabını da
+            kaldırır ve geri alınamaz.
           </>
         }
-        subject="Teacher"
+        subject="Öğretmen"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteTeacher}
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
@@ -231,8 +240,8 @@ export default function TeacherDetail() {
 
       <ConfirmEditModal
         open={confirmEditOpen}
-        title="Save changes"
-        description={<>Save these changes to <strong>{displayName(teacher)}</strong>&apos;s profile?</>}
+        title="Değişiklikleri kaydet"
+        description={<>Bu değişiklikler <strong>{displayName(teacher)}</strong> adlı öğretmenin profiline kaydedilsin mi?</>}
         isPending={updateTeacher.isPending}
         onClose={() => setConfirmEditOpen(false)}
         onConfirm={handleSave}

@@ -24,10 +24,10 @@ export default function CsvInput({ id, label, help, template, value, onChange }:
   const rows = value.trim() ? value.trim().split(/\r?\n/).length - 1 : 0;
   return (
     <div className="os-workflow-inputs__wide">
-      <TextArea id={id} labelText={label} helperText={help} rows={6} value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste the CSV here, or choose a file" />
+      <TextArea id={id} labelText={label} helperText={help} rows={6} value={value} onChange={(e) => onChange(e.target.value)} placeholder="CSV metnini buraya yapıştırın veya bir dosya seçin" />
       <div className="os-flex os-gap-3 os-items-center os-mt-2">
         <FileUploaderButton
-          labelText="Choose CSV file"
+          labelText="CSV dosyası seç"
           buttonKind="tertiary"
           size="sm"
           accept={[".csv", "text/csv"]}
@@ -39,10 +39,10 @@ export default function CsvInput({ id, label, help, template, value, onChange }:
         />
         {template && (
           <Button kind="ghost" size="sm" renderIcon={Download} onClick={() => downloadTemplate(template, id.replace(/^wf-/, ""))}>
-            Download template
+            Şablonu indir
           </Button>
         )}
-        {rows > 0 && <span className="os-text-sm os-c-secondary">{rows === 1 ? "1 row" : `${rows} rows`} after the header</span>}
+        {rows > 0 && <span className="os-text-sm os-c-secondary">Başlık satırından sonra {rows} satır</span>}
       </div>
     </div>
   );

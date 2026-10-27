@@ -23,7 +23,7 @@ export default function WelcomeBanner({
   rankLabel: PositionRankLabel;
 }) {
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Günaydın" : hour < 17 ? "İyi günler" : "İyi akşamlar";
 
   return (
     <div className="os-bg-layer os-border os-py-5 os-px-6 os-mb-6 os-flex os-items-center os-gap-4 os-wrap"
@@ -48,7 +48,7 @@ export default function WelcomeBanner({
       {classCount > 0 && (
         <Link to="/t/attendance" className={`os-teacher-banner__status${pendingCount > 0 ? " is-pending" : " is-done"}`}>
           {pendingCount > 0 ? <Time size={16} /> : <CheckmarkFilled size={16} />}
-          {pendingCount > 0 ? `${pendingCount} of ${classCount} class${classCount > 1 ? "es" : ""} to mark today` : "All classes marked today"}
+          {pendingCount > 0 ? `${classCount} sınıfın ${pendingCount} tanesi bekliyor` : "Bugün tüm sınıflar işaretlendi"}
         </Link>
       )}
     </div>

@@ -30,42 +30,42 @@ export default function ProvisionLoginModal({
   return (
     <FormModal
       open
-      title={`Set up portal login - ${name}`}
+      title={`Portal girişi oluştur - ${name}`}
       onClose={onClose}
       onSubmit={handleSubmit}
       isPending={provision.isPending}
       submitDisabled={!isValid || !guardian.email}
-      submitLabel="Create login"
-      pendingLabel="Creating…"
+      submitLabel="Giriş oluştur"
+      pendingLabel="Oluşturuluyor…"
       isError={provision.isError}
       error={provision.error}
-      errorFallback="Failed to create login"
+      errorFallback="Giriş oluşturulamadı"
     >
       {!guardian.email && (
         <InlineNotification
           kind="warning"
-          title="No email on file"
-          subtitle="This guardian needs an email address before a login can be provisioned. Edit their details first."
+          title="E-posta kayıtlı değil"
+          subtitle="Portal girişi açılmadan önce bu velinin bir e-posta adresi gerekir. Önce bilgilerini düzenleyin."
           lowContrast
           hideCloseButton className="os-mb-4 os-max-w-full"
         />
       )}
       <InlineNotification
         kind="info"
-        title="One-time password"
-        subtitle={`${name}'s NIC number on file becomes their initial portal password. They'll be prompted to change it on first sign-in.`}
+        title="Tek kullanımlık şifre"
+        subtitle={`${name} için kayıtlı T.C. Kimlik No, ilk portal şifresi olur. İlk oturum açışında değiştirmesi istenir.`}
         lowContrast
         hideCloseButton className="os-mb-4 os-max-w-full"
       />
       <TextInput
         id="guardian-login-username"
-        labelText="Username"
-        helperText="What this guardian signs in with - separate from their email. Their name is taken from their guardian details."
+        labelText="Kullanıcı adı"
+        helperText="Bu velinin oturum açarken kullanacağı ad - e-postasından bağımsızdır. Adı, veli bilgilerinden alınır."
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         onBlur={() => setTouched(true)}
         invalid={touched && !username.trim()}
-        invalidText="Required."
+        invalidText="Bu alan zorunludur."
       />
     </FormModal>
   );

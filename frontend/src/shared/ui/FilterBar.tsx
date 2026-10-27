@@ -19,7 +19,7 @@ export default function FilterBar({ search, controls }: Props) {
       <div className="os-filter-bar__search">
         <TableToolbarSearch
           persistent
-          placeholder={search.placeholder ?? "Search…"}
+          placeholder={search.placeholder ?? "Ara…"}
           value={search.value}
           onChange={(e) => search.onChange(typeof e === "string" ? e : e.target.value)}
         />

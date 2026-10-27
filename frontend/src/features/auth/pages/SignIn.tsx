@@ -24,9 +24,9 @@ export default function SignIn() {
           />
           <span className="os-auth-card__brand-name">OpenSchool</span>
         </div>
-        <h1 className="os-auth-card__title">Sign in</h1>
+        <h1 className="os-auth-card__title">Oturum aç</h1>
         <p className="os-auth-card__subtitle">
-          Sign in to continue to your dashboard.
+          Panele devam etmek için oturum açın.
         </p>
         <div className="os-auth-card__actions">
           <SignInButton>
@@ -36,13 +36,13 @@ export default function SignIn() {
                 disabled={isLoading}
                 className="os-full-width-btn"
               >
-                {isLoading ? "Signing in…" : "Sign in"}
+                {isLoading ? "Oturum açılıyor…" : "Oturum aç"}
               </Button>
             )}
           </SignInButton>
         </div>
         <div className="os-auth-card__footer">
-          <Link to="/forgot-password">Forgot password?</Link> · <Link to="/activate">First time? Activate your account</Link>
+          <Link to="/forgot-password">Şifremi unuttum</Link> · <Link to="/activate">İlk kez mi? Hesabınızı etkinleştirin</Link>
         </div>
       </div>
     </div>

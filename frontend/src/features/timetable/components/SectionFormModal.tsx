@@ -31,8 +31,8 @@ export default function SectionFormModal({
   error: unknown;
 }) {
   return (
-    <ComposedModal open={open} size="md" onClose={onClose} aria-label={isEdit ? "Edit grade section" : "New grade section"}>
-      <ModalHeader title={isEdit ? "Edit grade section" : "New grade section"} />
+    <ComposedModal open={open} size="md" onClose={onClose} aria-label={isEdit ? "Seviye şubesini düzenle" : "Yeni seviye şubesi"}>
+      <ModalHeader title={isEdit ? "Seviye şubesini düzenle" : "Yeni seviye şubesi"} />
       <ModalBody>
         <MutationErrorNotification
           isError={isError}
@@ -41,22 +41,22 @@ export default function SectionFormModal({
         <div className="os-grid os-gap-4">
           <TextInput
             id="section-name"
-            labelText="Section name"
-            placeholder="e.g. Junior Secondary"
+            labelText="Şube adı"
+            placeholder="örn. Ortaokul"
             value={form.name}
             onChange={(e) => onFormChange({ ...form, name: e.target.value })}
           />
           <div className="os-grid os-grid-cols-2 os-gap-4">
             <TextInput
               id="section-interval-start"
-              labelText="Interval start"
+              labelText="Teneffüs başlangıcı"
               type="time"
               value={form.interval_start_time}
               onChange={(e) => onFormChange({ ...form, interval_start_time: e.target.value })}
             />
             <TextInput
               id="section-interval-end"
-              labelText="Interval end"
+              labelText="Teneffüs bitişi"
               type="time"
               value={form.interval_end_time}
               onChange={(e) => onFormChange({ ...form, interval_end_time: e.target.value })}
@@ -64,8 +64,8 @@ export default function SectionFormModal({
           </div>
           <MultiSelect
             id="section-grades"
-            titleText="Grades in this section"
-            label="Select grades…"
+            titleText="Bu şubedeki sınıf seviyeleri"
+            label="Sınıf seviyeleri seçin…"
             items={grades ?? []}
             itemToString={(g) => g?.name ?? ""}
             selectedItems={(grades ?? []).filter((g) => selectedGradeIds.includes(g.id))}
@@ -75,10 +75,10 @@ export default function SectionFormModal({
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Cancel
+          İptal
         </Button>
         <Button kind="primary" onClick={onSubmit} disabled={!form.name.trim() || isPending}>
-          {isPending ? "Saving…" : "Save"}
+          {isPending ? "Kaydediliyor…" : "Kaydet"}
         </Button>
       </ModalFooter>
     </ComposedModal>

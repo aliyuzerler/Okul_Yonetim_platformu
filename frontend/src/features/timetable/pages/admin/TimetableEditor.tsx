@@ -38,7 +38,7 @@ export default function TimetableEditor() {
   const { data: timetable, isLoading } = useTimetable(id);
   const { data: entries } = useTimetableEntries(id);
   const { data: cls } = useClass(timetable?.class_id ?? "");
-  usePageTitle(cls ? `Timetable ${cls.name}` : null);
+  usePageTitle(cls ? `Ders programı: ${cls.name}` : null);
   const { data: grades } = useGrades();
   const [teacherSearch, setTeacherSearch] = useState("");
   const { data: teacherPage } = useTeachers({ limit: 25, search: teacherSearch });
@@ -125,36 +125,36 @@ export default function TimetableEditor() {
             {gradeName} - {cls?.name} <Tag type="gray" size="sm">v{timetable.version}</Tag>
           </h1>
           <p className="os-page__subtitle">
-            Status: <strong>{statusLabel(timetable.status)}</strong>
+            Durum: <strong>{statusLabel(timetable.status)}</strong>
             {timetable.review_comments && <> - <em>{timetable.review_comments}</em></>}
           </p>
         </div>
         <div className="os-flex os-gap-2">
-          <Button kind="tertiary" onClick={() => navigate(-1)}>Back</Button>
+          <Button kind="tertiary" onClick={() => navigate(-1)}>Geri</Button>
           <Button kind="ghost" onClick={() => { setValidationOpen(true); runValidation(); }} disabled={validating}>
-            {validating ? "Validating…" : "Validate"}
+            {validating ? "Denetleniyor…" : "Denetle"}
           </Button>
           {isDraft && (
             <Button kind="primary" onClick={() => submit.mutate()} disabled={submit.isPending}>
-              {submit.isPending ? "Submitting…" : "Submit for review"}
+              {submit.isPending ? "Gönderiliyor…" : "İncelemeye gönder"}
             </Button>
           )}
           {timetable.status === "approved" && (
             <Button kind="primary" onClick={() => publish.mutate()} disabled={publish.isPending}>
-              {publish.isPending ? "Publishing…" : "Publish"}
+              {publish.isPending ? "Yayınlanıyor…" : "Yayınla"}
             </Button>
           )}
         </div>
       </div>
 
-      <MutationErrorNotification isError={submit.isError} error={submit.error} title="Could not submit" fallback="Fix the validation issues shown by Validate, then try again." onClose={() => submit.reset()} />
-      <MutationErrorNotification isError={publish.isError} error={publish.error} title="Could not publish" onClose={() => publish.reset()} />
+      <MutationErrorNotification isError={submit.isError} error={submit.error} title="Gönderilemedi" fallback="Denetle ile gösterilen sorunları düzeltin, sonra yeniden deneyin." onClose={() => submit.reset()} />
+      <MutationErrorNotification isError={publish.isError} error={publish.error} title="Yayınlanamadı" onClose={() => publish.reset()} />
 
       <div className="os-section os-overflow-x-auto">
         {!gradeSection ? (
-          <EmptyState title="No grade section configured" description="Assign this class's grade to a Grade Section (with a period grid) before building the timetable." />
+          <EmptyState title="Seviye şubesi yapılandırılmamış" description="Ders programını oluşturmadan önce bu sınıfın seviyesini ders saati düzeni olan bir Seviye şubesine atayın." />
         ) : !periods?.length ? (
-          <EmptyState title="No periods configured" description="Open Grade Sections and generate/configure the period grid for this section." />
+          <EmptyState title="Ders saati yapılandırılmamış" description="Seviye şubelerini açın ve bu şube için ders saati düzenini üretin/yapılandırın." />
         ) : (
           <TimetableGrid periods={periods} entryAt={entryAt} editable={isDraft} onOpenCell={openCell} />
         )}
@@ -162,10 +162,10 @@ export default function TimetableEditor() {
 
       {!!history?.length && (
         <div className="os-section os-py-4 os-px-6">
-          <h2 className="os-section__title os-mb-3">Status history</h2>
+          <h2 className="os-section__title os-mb-3">Durum geçmişi</h2>
           {history.map((h) => (
             <div key={h.id} className="os-text-sm os-c-secondary os-mb-1h">
-              <strong>{statusLabel(h.to_status)}</strong> by {h.changed_by_name} on {formatDateTime(h.changed_at)}
+              <strong>{statusLabel(h.to_status)}</strong> - {h.changed_by_name} tarafından {formatDateTime(h.changed_at)}
               {h.comment && <> - {h.comment}</>}
             </div>
           ))}
@@ -190,12 +190,12 @@ export default function TimetableEditor() {
 
       <ConfirmDeleteModal
         open={confirmingClear}
-        title="Clear cell"
-        description="Clear this period's assignment? You can reassign it afterwards."
-        confirmLabel="Clear"
-        pendingLabel="Clearing…"
-        subject="Cell"
-        successVerb="cleared"
+        title="Hücreyi temizle"
+        description="Bu ders saatinin ataması temizlensin mi? Sonrasında yeniden atayabilirsiniz."
+        confirmLabel="Temizle"
+        pendingLabel="Temizleniyor…"
+        subject="Hücre"
+        successVerb="temizlendi"
         mutation={deleteEntry}
         onClose={() => setConfirmingClear(false)}
         onConfirm={clearCell}

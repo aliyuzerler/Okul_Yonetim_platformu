@@ -24,12 +24,12 @@ export default class ErrorBoundary extends Component<{ children: ReactNode }, St
       <div className="os-error-fallback os-error-fallback--full">
         <div className="os-error-fallback__inner">
           <WarningAltFilled size={32} className="os-error-fallback__icon" />
-          <h1 className="os-error-fallback__title">Something went wrong</h1>
+          <h1 className="os-error-fallback__title">Bir sorun oluştu</h1>
           <p className="os-error-fallback__text">
-            An unexpected error occurred. Reloading usually fixes this. If it keeps happening, contact your administrator.
+            Beklenmeyen bir hata oluştu. Sayfayı yenilemek genellikle sorunu çözer. Sorun sürerse yöneticinizle iletişime geçin.
           </p>
           <Button kind="primary" onClick={() => window.location.reload()}>
-            Reload page
+            Sayfayı yenile
           </Button>
         </div>
       </div>

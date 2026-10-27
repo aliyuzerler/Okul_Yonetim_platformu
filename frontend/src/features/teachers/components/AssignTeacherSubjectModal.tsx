@@ -33,16 +33,16 @@ export default function AssignTeacherSubjectModal({ open, teacher, subjects, mut
   return (
     <FormModal
       open={open}
-      title={`Assign subject to ${displayName(teacher)}`}
+      title={`${displayName(teacher)} için ders ata`}
       onClose={close}
       onSubmit={assign}
       isPending={mutation.isPending}
       submitDisabled={!subjectId}
-      submitLabel="Assign subject"
-      pendingLabel="Assigning…"
+      submitLabel="Ders ata"
+      pendingLabel="Atanıyor…"
       isError={mutation.isError}
       error={mutation.error}
-      errorFallback="Could not assign this subject. Please try again."
+      errorFallback="Bu ders atanamadı. Lütfen tekrar deneyin."
     >
       <EntityCombobox
         id={`assign-subject-${teacher.id}`}
@@ -51,12 +51,12 @@ export default function AssignTeacherSubjectModal({ open, teacher, subjects, mut
         onSelect={setSubjectId}
         getId={(subject) => subject.id}
         itemToString={(subject) => `${subject.name} (${subject.code})`}
-        labelText="Subject"
-        placeholder="Search by subject name or code…"
+        labelText="Ders"
+        placeholder="Ders adı veya koduna göre ara…"
       />
       {selectedSubject && (
         <p className="os-mt-2 os-mb-0 os-text-xs os-c-secondary">
-          This subject will be added to {displayName(teacher)}&apos;s qualifications.
+          Bu ders, {displayName(teacher)} adlı öğretmenin yetkinliklerine eklenecek.
         </p>
       )}
     </FormModal>

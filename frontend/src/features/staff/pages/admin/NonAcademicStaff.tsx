@@ -42,11 +42,11 @@ export default function NonAcademicStaff() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Non-academic staff</h1>
-          <p className="os-page__subtitle">Lab assistants, librarians, office and other staff without a login.</p>
+          <h1 className="os-page__title">İdari personel</h1>
+          <p className="os-page__subtitle">Girişi olmayan laboratuvar görevlileri, kütüphane görevlileri, idari işler ve diğer personel.</p>
         </div>
         <Button renderIcon={Add} kind="primary" size="md" onClick={() => setCreating(true)}>
-          Add staff
+          Personel ekle
         </Button>
       </div>
 
@@ -55,7 +55,7 @@ export default function NonAcademicStaff() {
           <div className="os-flex-basis-16 os-min-w-12">
             <TableToolbarSearch
               persistent
-              placeholder="Search staff by name or employee number…"
+              placeholder="Personeli ad veya sicil numarasına göre ara…"
               value={search}
               onChange={(e) => { setSearch(typeof e === "string" ? e : e.target.value); setPage(1); }}
             />
@@ -63,13 +63,13 @@ export default function NonAcademicStaff() {
           <div className="os-min-w-14">
             <Select
               id="staff-designation-filter"
-              labelText="Designation"
+              labelText="Unvan"
               hideLabel
               size="md"
               value={designation}
               onChange={(e) => { setDesignation(e.target.value as NonAcademicDesignation | ""); setPage(1); }}
             >
-              <SelectItem value="" text="All designations" />
+              <SelectItem value="" text="Tüm unvanlar" />
               {NON_ACADEMIC_DESIGNATIONS.map((d) => (
                 <SelectItem key={d.value} value={d.value} text={d.label} />
               ))}
@@ -79,21 +79,21 @@ export default function NonAcademicStaff() {
 
         {(search || designation) && (
           <div className="os-flex os-items-center os-gap-2 os-wrap os-mt-3">
-            <span className="os-text-xs os-fw-600 os-c-tertiary">Active filters:</span>
+            <span className="os-text-xs os-fw-600 os-c-tertiary">Etkin filtreler:</span>
             {designation && (
               <Tag type="teal" filter onClose={() => { setDesignation(""); setPage(1); }}>
-                Role: {designationLabel(designation)}
+                Unvan: {designationLabel(designation)}
               </Tag>
             )}
-            {search && <Tag type="blue" filter onClose={() => { setSearch(""); setPage(1); }}>Search: "{search}"</Tag>}
+            {search && <Tag type="blue" filter onClose={() => { setSearch(""); setPage(1); }}>Arama: "{search}"</Tag>}
             <Button kind="ghost" size="sm" renderIcon={Close} onClick={() => { setSearch(""); setDesignation(""); setPage(1); }}>
-              Clear all
+              Tümünü temizle
             </Button>
           </div>
         )}
       </div>
 
-      {isError && <ErrorMessage message="Could not load staff members." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Personel kayıtları yüklenemedi." onRetry={refetch} />}
 
       <div className="os-grid os-grid-cols-side os-gap-6 os-items-grid-start">
         <div className="os-section os-bg-layer os-mt-0 os-p-0 os-overflow-hidden">
@@ -108,8 +108,8 @@ export default function NonAcademicStaff() {
           {!isLoading && !isError && ordered.length === 0 && (
             <div className="os-p-6">
               <EmptyState
-                title="No staff found"
-                description="Add lab assistants, librarians, office staff, or adjust your filter."
+                title="Personel bulunamadı"
+                description="Laboratuvar görevlisi, kütüphane görevlisi veya idari personel ekleyin ya da filtrenizi değiştirin."
               />
             </div>
           )}
@@ -153,7 +153,7 @@ export default function NonAcademicStaff() {
           <StaffDetail staff={selected} onDeleted={() => setSelectedId(null)} />
         ) : (
           <Tile className="os-section os-bg-layer os-mt-0 os-text-center os-py-12 os-px-6">
-            <EmptyState title="Select a staff member" description="Choose a staff member from the left directory to view full profile details." />
+            <EmptyState title="Bir personel seçin" description="Tüm profil bilgilerini görmek için soldaki dizinden bir personel seçin." />
           </Tile>
         )}
       </div>

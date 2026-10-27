@@ -44,16 +44,16 @@ function TeacherSubjectRow({ teacher, allSubjects }: { teacher: Teacher; allSubj
         {isLoading ? (
           <SkeletonText width="6rem" />
         ) : isError ? (
-          <span className="os-c-danger os-text-md">Error loading subjects</span>
+          <span className="os-c-danger os-text-md">Dersler yüklenemedi</span>
         ) : !assignedSubjects || assignedSubjects.length === 0 ? (
-          <span className="os-text-md os-c-tertiary">No subjects assigned</span>
+          <span className="os-text-md os-c-tertiary">Atanmış ders yok</span>
         ) : (
           <div className="os-flex os-items-center os-wrap os-gap-2">
             {assignedSubjects.map((s) => (
               <div key={s.id} className="os-flex os-items-center os-gap-1">
                 <Tag type="blue" size="sm">{s.name}</Tag>
                 <IconButton
-                  label={`Remove ${s.name}`}
+                  label={`${s.name} dersini kaldır`}
                   kind="ghost"
                   size="sm"
                   onClick={() => setSubjectToRemove(s)}
@@ -67,34 +67,35 @@ function TeacherSubjectRow({ teacher, allSubjects }: { teacher: Teacher; allSubj
       </td>
       <td>
         <Button kind="ghost" size="sm" renderIcon={Add} onClick={() => setAssignOpen(true)} disabled={assignableSubjects.length === 0}>
-          Assign subject
+          Ders ata
         </Button>
         {assignableSubjects.length === 0 && !isLoading && !isError && (
-          <p role="status" className="os-m-0 os-mt-1 os-text-xs os-c-tertiary">All subjects assigned</p>
+          <p role="status" className="os-m-0 os-mt-1 os-text-xs os-c-tertiary">Tüm dersler atandı</p>
         )}
         {assignMutation.isError && (
           <div className="os-c-danger os-text-xs os-mt-1">
-            Failed to assign
+            Ders atanamadı
           </div>
         )}
         {removeMutation.isError && (
           <div className="os-c-danger os-text-xs os-mt-1">
-            Failed to remove
+            Ders kaldırılamadı
           </div>
         )}
       </td>
       <ConfirmDeleteModal
         open={!!subjectToRemove}
-        title="Remove subject"
+        title="Dersi kaldır"
         description={
           <>
-            Remove <strong>{subjectToRemove?.name}</strong> from {displayName(teacher)}&apos;s assigned subjects?
+             <strong>{subjectToRemove?.name}</strong> dersi, {displayName(teacher)} adlı öğretmenin
+            atamalarından kaldırılsın mı?
           </>
         }
-        confirmLabel="Remove"
-        pendingLabel="Removing…"
-        subject="Subject"
-        successVerb="removed"
+        confirmLabel="Kaldır"
+        pendingLabel="Kaldırılıyor…"
+        subject="Ders"
+        successVerb="kaldırıldı"
         mutation={removeMutation}
         onClose={() => setSubjectToRemove(null)}
         onConfirm={confirmRemove}
@@ -137,15 +138,15 @@ export default function TeacherSubjects() {
   }
 
   if (teachersError) {
-    return <ErrorMessage message="Could not load teachers." onRetry={refetchTeachers} />;
+    return <ErrorMessage message="Öğretmenler yüklenemedi." onRetry={refetchTeachers} />;
   }
 
   return (
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Teacher subjects</h1>
-          <p className="os-page__subtitle">Subjects each teacher is qualified to teach.</p>
+          <h1 className="os-page__title">Öğretmen dersleri</h1>
+          <p className="os-page__subtitle">Her öğretmenin girmeye yetkili olduğu dersler.</p>
         </div>
       </div>
 
@@ -153,23 +154,23 @@ export default function TeacherSubjects() {
         <div className="os-flex os-items-start os-gap-3 os-mb-6">
           <InlineNotification
             kind="error"
-            title="Could not load the subject catalogue"
-            subtitle="Teacher records are still available below. Retry the catalogue, or open Subjects & curriculum to configure and save subjects first."
+            title="Ders kataloğu yüklenemedi"
+            subtitle="Öğretmen kayıtları aşağıda görüntülenmeye devam eder. Kataloğu yeniden deneyin veya önce Dersler ve müfredat bölümünden dersleri oluşturup kaydedin."
             lowContrast
             className="os-flex-1 os-m-0"
           />
-          <Button kind="ghost" size="sm" onClick={() => refetchSubjects()}>Retry</Button>
+          <Button kind="ghost" size="sm" onClick={() => refetchSubjects()}>Yeniden dene</Button>
         </div>
       ) : subjects && subjects.length === 0 ? (
         <div className="os-flex os-items-start os-gap-3 os-mb-6">
           <InlineNotification
             kind="info"
-            title="Add subjects before assigning teachers"
-            subtitle="Open Subjects & curriculum, configure the relevant grade groups, and save the subjects. They will then be available here for teacher assignments."
+            title="Öğretmen atamadan önce ders ekleyin"
+            subtitle="Dersler ve müfredat bölümünü açın, ilgili sınıf seviyesi gruplarını yapılandırın ve dersleri kaydedin. Dersler daha sonra öğretmen atamalarında burada görünecek."
             lowContrast
             className="os-flex-1 os-m-0"
           />
-          <Button kind="ghost" size="sm" as={Link} to="/subjects">Open Subjects & curriculum</Button>
+          <Button kind="ghost" size="sm" as={Link} to="/subjects">Dersler ve müfredata git</Button>
         </div>
       ) : null}
 
@@ -177,15 +178,15 @@ export default function TeacherSubjects() {
         search={{
           value: searchQuery,
           onChange: (value) => { setSearchQuery(value); setPage(1); },
-          placeholder: "Search teachers by name or employee number…",
+          placeholder: "Öğretmeni ad veya sicil numarasına göre ara…",
         }}
       />
 
       <SectionCard
-        title="Teacher qualifications"
+        title="Öğretmen yetkinlikleri"
         meta={!loadingTeachers && (
           <span className="os-section__meta">
-            {normalizedSearch ? `${totalItems} matching` : `${totalItems} teachers`}
+            {normalizedSearch ? `${totalItems} eşleşen` : `${totalItems} öğretmen`}
           </span>
         )}
         flush
@@ -193,10 +194,10 @@ export default function TeacherSubjects() {
         <table className="os-table">
           <thead>
             <tr>
-              <th>Teacher</th>
-              <th>Employee #</th>
-              <th>Assigned subjects</th>
-              <th>Actions</th>
+              <th>Öğretmen</th>
+              <th>Sicil no.</th>
+              <th>Atanmış dersler</th>
+              <th>İşlemler</th>
             </tr>
           </thead>
           <tbody>
@@ -209,7 +210,7 @@ export default function TeacherSubjects() {
             ) : visibleTeachers.length === 0 ? (
               <tr>
                 <td colSpan={4} className="os-text-center os-c-tertiary os-p-8">
-                  No teachers found matching your search.
+                  Aramanızla eşleşen öğretmen bulunamadı.
                 </td>
               </tr>
             ) : (

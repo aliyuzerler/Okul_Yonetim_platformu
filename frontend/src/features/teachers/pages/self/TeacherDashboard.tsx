@@ -58,14 +58,14 @@ export default function TeacherDashboard() {
   if (profileError || !profile) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load your teacher profile" onRetry={refetch} />
+        <ErrorMessage message="Öğretmen profiliniz yüklenemedi." onRetry={refetch} />
       </div>
     );
   }
 
   // Subjects assigned in classes, else the teacher's qualifications until an admin assigns classes.
   const classSubjects = [...new Set(myClasses.flatMap((c) => c.subjects))];
-  const subjectSummary = (classSubjects.length > 0 ? classSubjects : (qualified ?? []).map((q) => q.name)).join(", ") || "No subjects yet";
+  const subjectSummary = (classSubjects.length > 0 ? classSubjects : (qualified ?? []).map((q) => q.name)).join(", ") || "Henüz ders yok";
   const rankLabel = positionSummary?.rank_label ?? "Teacher";
 
   return (
@@ -81,10 +81,10 @@ export default function TeacherDashboard() {
       />
 
       <div className="os-stat-grid">
-        <StatCard label="My classes" value={myClasses.length} loading={false} Icon={Building} path="/t/classes" />
-        <StatCard label="Students" value={totalStudents} loading={false} Icon={UserMultiple} path="/t/classes" />
-        <StatCard label="Marked today" value={markedCount} loading={false} Icon={CheckmarkOutline} path="/t/attendance" />
-        <StatCard label="Not marked yet" value={pendingCount} loading={false} Icon={Time} path="/t/attendance" />
+        <StatCard label="Sınıflarım" value={myClasses.length} loading={false} Icon={Building} path="/t/classes" />
+        <StatCard label="Öğrenciler" value={totalStudents} loading={false} Icon={UserMultiple} path="/t/classes" />
+        <StatCard label="Bugün işaretlenen" value={markedCount} loading={false} Icon={CheckmarkOutline} path="/t/attendance" />
+        <StatCard label="Henüz işaretlenmeyen" value={pendingCount} loading={false} Icon={Time} path="/t/attendance" />
       </div>
 
       <div className="os-grid os-grid-cols-2-1 os-gap-6 os-items-grid-start">

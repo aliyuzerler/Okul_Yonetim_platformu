@@ -20,7 +20,14 @@ import { formatDateOnly } from "@/shared/lib/date";
 import { displayName } from "@/shared/lib/name";
 
 const STATUS_TAG: Record<string, "green" | "red" | "magenta"> = { active: "green", resigned: "red", transferred: "magenta" };
-const FILTER_LABELS: Record<string, string> = { query: "Search", status: "Status" };
+const FILTER_LABELS: Record<string, string> = { query: "Arama", status: "Durum" };
+
+// shared/lib EMPLOYMENT_STATUSES is English; display labels are translated here.
+const employmentStatusLabel: Record<string, string> = {
+  active: "Aktif",
+  resigned: "İstifa etti",
+  transferred: "Başka okula atandı",
+};
 
 export default function Teachers() {
   const navigate = useNavigate();
@@ -44,10 +51,10 @@ export default function Teachers() {
   const teachers = data?.items ?? [];
 
   const columns: GridColumn<Teacher>[] = [
-    { key: "employee_number", header: "Employee no.", render: (t) => <span className="os-table__mono">{t.employee_number}</span> },
+    { key: "employee_number", header: "Sicil no.", render: (t) => <span className="os-table__mono">{t.employee_number}</span> },
     {
       key: "full_name",
-      header: "Full name",
+      header: "Ad soyad",
       render: (t) => (
         <div className="os-flex os-items-center os-gap-2">
           <Avatar name={displayName(t)} size="sm" />
@@ -55,21 +62,21 @@ export default function Teachers() {
         </div>
       ),
     },
-    { key: "phone", header: "Phone", render: (t) => <span className="os-table__muted">{t.phone ?? "-"}</span> },
-    { key: "joined_date", header: "Joined date", render: (t) => <span className="os-table__muted">{formatDateOnly(t.joined_date)}</span> },
+    { key: "phone", header: "Telefon", render: (t) => <span className="os-table__muted">{t.phone ?? "-"}</span> },
+    { key: "joined_date", header: "İşe başlama", render: (t) => <span className="os-table__muted">{formatDateOnly(t.joined_date)}</span> },
     {
       key: "status",
-      header: "Status",
-      render: (t) => <Tag type={STATUS_TAG[t.employment_status] ?? "gray"} size="sm">{EMPLOYMENT_STATUSES.find((s) => s.value === t.employment_status)?.label ?? t.employment_status}</Tag>,
+      header: "Durum",
+      render: (t) => <Tag type={STATUS_TAG[t.employment_status] ?? "gray"} size="sm">{employmentStatusLabel[t.employment_status] ?? t.employment_status}</Tag>,
     },
     {
       key: "actions",
-      header: "Actions",
+      header: "İşlemler",
       align: "end",
       render: (t) => (
         <div className="os-grid__actions">
-          <IconButton label="Edit" kind="ghost" size="sm" onClick={() => navigate(`/teachers/${t.id}`, { state: { edit: true } })}><Edit /></IconButton>
-          <IconButton label="Delete" kind="ghost" size="sm" onClick={() => { deleteTeacher.reset(); setToDelete(t); }}><TrashCan /></IconButton>
+          <IconButton label="Düzenle" kind="ghost" size="sm" onClick={() => navigate(`/teachers/${t.id}`, { state: { edit: true } })}><Edit /></IconButton>
+          <IconButton label="Sil" kind="ghost" size="sm" onClick={() => { deleteTeacher.reset(); setToDelete(t); }}><TrashCan /></IconButton>
         </div>
       ),
     },
@@ -79,45 +86,45 @@ export default function Teachers() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Teachers</h1>
-          <p className="os-page__subtitle">Manage teacher profiles</p>
+          <h1 className="os-page__title">Öğretmenler</h1>
+          <p className="os-page__subtitle">Öğretmen profillerini yönetin</p>
         </div>
-        <Button renderIcon={Add} kind="primary" size="md" as={Link} to="/teachers/new">Add teacher</Button>
+        <Button renderIcon={Add} kind="primary" size="md" as={Link} to="/teachers/new">Öğretmen ekle</Button>
       </div>
 
       <AgentFindingsBanner />
 
       <div className="os-section">
         <FilterBar
-          search={{ value: filters.query, onChange: (v) => setFilter("query", v), placeholder: "Search by name or employee number…" }}
+          search={{ value: filters.query, onChange: (v) => setFilter("query", v), placeholder: "Ad veya sicil numarasına göre ara…" }}
           controls={[
             {
-              label: "Status",
+              label: "Durum",
               node: (
-                <Select id="filter-teacher-status" labelText="Status" hideLabel size="md" value={filters.status} onChange={(e) => setFilter("status", e.target.value)}>
-                  <SelectItem value="" text="All statuses" />
-                  {EMPLOYMENT_STATUSES.map((s) => <SelectItem key={s.value} value={s.value} text={s.label} />)}
+                <Select id="filter-teacher-status" labelText="Durum" hideLabel size="md" value={filters.status} onChange={(e) => setFilter("status", e.target.value)}>
+                  <SelectItem value="" text="Tüm durumlar" />
+                  {EMPLOYMENT_STATUSES.map((s) => <SelectItem key={s.value} value={s.value} text={employmentStatusLabel[s.value] ?? s.label} />)}
                 </Select>
               ),
             },
           ]}
         />
         <ActiveFilterTags filters={activeKeys.map((k) => ({ key: k, label: FILTER_LABELS[k], value: filters[k] }))} onClear={(k) => { clear(k as keyof typeof filters); setPage(1); }} onClearAll={() => { clear(); setPage(1); }} />
-        <MutationErrorNotification isError={deleteTeacher.isError} error={deleteTeacher.error} title="Could not delete teacher" fallback="The teacher may be assigned to a class or have attendance records." onClose={() => deleteTeacher.reset()} className="os-section__notice" />
+        <MutationErrorNotification isError={deleteTeacher.isError} error={deleteTeacher.error} title="Öğretmen silinemedi" fallback="Öğretmen bir sınıfa atanmış veya yoklama kayıtları olabilir." onClose={() => deleteTeacher.reset()} className="os-section__notice" />
         <ListState
           isLoading={isLoading}
           isError={isError}
           isEmpty={teachers.length === 0}
-          errorMessage="Failed to load teachers"
+          errorMessage="Öğretmen listesi yüklenemedi."
           onRetry={refetch}
           skeleton={<TableSkeleton headers={columns.map((c) => c.header)} />}
-          empty={{ title: "No teachers found", description: "Add your first teacher or adjust your search filter to get started." }}
+          empty={{ title: "Öğretmen bulunamadı", description: "İlk öğretmeninizi ekleyin veya arama filtrenizi değiştirin." }}
         >
           <DataGrid
             rows={teachers}
             columns={columns}
             getRowId={(t) => t.id}
-            countLabel={(shown, total) => `Showing ${shown} of ${total} teachers`}
+            countLabel={(shown, total) => `Toplam ${total} öğretmenden ${shown} tanesi gösteriliyor`}
             server={{ page, pageSize, totalItems: data?.total ?? 0, onChange: ({ page: p, pageSize: ps }) => { setPage(p); setPageSize(ps); } }}
           />
         </ListState>
@@ -125,9 +132,12 @@ export default function Teachers() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete teacher"
-        description={<>Delete <strong>{toDelete ? displayName(toDelete) : ""}</strong>? This removes their account and cannot be undone.</>}
-        subject="Teacher"
+        title="Öğretmeni sil"
+        description={<> <strong>{toDelete ? displayName(toDelete) : ""}</strong> silinsin mi? Bu işlem hesabını da kaldırır ve geri alınamaz.</>}
+        subject="Öğretmen"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteTeacher}
         onClose={() => setToDelete(null)}
         onConfirm={() => toDelete && deleteTeacher.mutate(toDelete.id)}

@@ -11,19 +11,19 @@ interface Props {
 // losing unsaved work with no warning.
 export default function IdleWarningModal({ open, onStaySignedIn, onSignOut }: Props) {
   return (
-    <ComposedModal open={open} size="sm" onClose={onStaySignedIn} preventCloseOnClickOutside aria-label="Still there?">
-      <ModalHeader title="Still there?" />
+    <ComposedModal open={open} size="sm" onClose={onStaySignedIn} preventCloseOnClickOutside aria-label="Hâlâ burada mısınız?">
+      <ModalHeader title="Hâlâ burada mısınız?" />
       <ModalBody>
         <p className="os-text-md">
-          You&apos;ve been inactive for a while. For your security, you&apos;ll be signed out in less than a minute
-          unless you choose to stay signed in.
+          Bir süredir işlem yapmadınız. Güvenliğiniz için oturumunuzu açık tutmayı seçmezseniz bir dakikadan
+          kısa süre içinde oturumunuz kapatılacak.
         </p>
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onSignOut}>
-          Sign out now
+          Şimdi oturumu kapat
         </Button>
-        <Button onClick={onStaySignedIn}>Stay signed in</Button>
+        <Button onClick={onStaySignedIn}>Oturumu açık tut</Button>
       </ModalFooter>
     </ComposedModal>
   );

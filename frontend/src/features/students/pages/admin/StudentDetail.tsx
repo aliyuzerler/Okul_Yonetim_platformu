@@ -40,7 +40,7 @@ export default function StudentDetail() {
   if (isError || !student) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load student" onRetry={refetch} />
+        <ErrorMessage message="Öğrenci yüklenemedi." onRetry={refetch} />
       </div>
     );
   }
@@ -55,34 +55,34 @@ export default function StudentDetail() {
         actions={
           activeTab === 0 && editor.editing ? (
             <>
-              <Button kind="secondary" size="sm" onClick={() => unsavedGuard.guard(editor.cancel)} disabled={pending}>Cancel</Button>
+              <Button kind="secondary" size="sm" onClick={() => unsavedGuard.guard(editor.cancel)} disabled={pending}>İptal</Button>
               <Button renderIcon={Save} kind="primary" size="sm" onClick={() => setConfirmSave(true)} disabled={!editor.isValid || pending}>
-                {pending ? "Saving…" : "Save changes"}
+                {pending ? "Kaydediliyor…" : "Değişiklikleri kaydet"}
               </Button>
             </>
           ) : activeTab === 0 ? (
             <>
-              <Button renderIcon={Edit} kind="ghost" size="sm" onClick={editor.startEdit}>Edit</Button>
-              <Button renderIcon={TrashCan} kind="danger--ghost" size="sm" onClick={() => setConfirmDelete(true)}>Delete</Button>
-              <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/students">Back</Button>
+              <Button renderIcon={Edit} kind="ghost" size="sm" onClick={editor.startEdit}>Düzenle</Button>
+              <Button renderIcon={TrashCan} kind="danger--ghost" size="sm" onClick={() => setConfirmDelete(true)}>Sil</Button>
+              <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/students">Geri</Button>
             </>
           ) : (
-            <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/students">Back</Button>
+            <Button renderIcon={ArrowLeft} kind="secondary" size="sm" as={Link} to="/students">Geri</Button>
           )
         }
       />
 
       <div className="os-py-6 os-px-8">
         <Tabs selectedIndex={activeTab} onChange={({ selectedIndex }) => setActiveTab(selectedIndex)}>
-          <TabList aria-label="Student sections">
-            <Tab>Profile</Tab>
-            <Tab>Guardians</Tab>
-            <Tab>Subject enrolment</Tab>
-            <Tab>Progress reports</Tab>
-            <Tab>Activities</Tab>
-            <Tab>Leadership &amp; awards</Tab>
-            <Tab>Disciplinary</Tab>
-            <Tab>Records</Tab>
+          <TabList aria-label="Öğrenci bölümleri">
+            <Tab>Profil</Tab>
+            <Tab>Veliler</Tab>
+            <Tab>Ders kaydı</Tab>
+            <Tab>Gelişim raporları</Tab>
+            <Tab>Etkinlikler</Tab>
+            <Tab>Liderlik ve ödüller</Tab>
+            <Tab>Disiplin</Tab>
+            <Tab>Kayıtlar</Tab>
           </TabList>
           <TabPanels>
             <TabPanel className="os-p-0">
@@ -111,9 +111,12 @@ export default function StudentDetail() {
 
       <ConfirmDeleteModal
         open={confirmDelete}
-        title="Delete student"
-        description={<>Delete <strong>{student.full_name}</strong>? This removes their account and cannot be undone.</>}
-        subject="Student"
+        title="Öğrenciyi sil"
+        description={<> <strong>{student.full_name}</strong> silinsin mi? Bu işlem hesabını da kaldırır ve geri alınamaz.</>}
+        subject="Öğrenci"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={editor.deleteStudent}
         onClose={() => setConfirmDelete(false)}
         onConfirm={editor.remove}
@@ -121,8 +124,8 @@ export default function StudentDetail() {
       />
       <ConfirmEditModal
         open={confirmSave}
-        title="Save changes"
-        description={<>Save these changes to <strong>{student.full_name}</strong>'s profile?</>}
+        title="Değişiklikleri kaydet"
+        description={<>Bu değişiklikler <strong>{student.full_name}</strong> adlı öğrencinin profiline kaydedilsin mi?</>}
         isPending={pending}
         onClose={() => setConfirmSave(false)}
         onConfirm={() => editor.save(() => setConfirmSave(false))}

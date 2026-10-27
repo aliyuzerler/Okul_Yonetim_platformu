@@ -23,17 +23,17 @@ export function AssignPrincipalModal({ currentTeacherId, onClose }: { currentTea
   return (
     <FormModal
       open
-      title={currentTeacherId ? "Change principal" : "Assign principal"}
+      title={currentTeacherId ? "Müdürü değiştir" : "Müdür ata"}
       onClose={onClose}
       onSubmit={() => choice && assign.mutate({ teacher_id: choice }, { onSuccess: onClose })}
       isPending={assign.isPending}
-      submitLabel="Assign"
+      submitLabel="Ata"
       submitDisabled={!choice}
       isError={assign.isError}
       error={assign.error}
-      errorFallback="Failed to assign Principal"
+      errorFallback="Müdür atanamadı"
     >
-      <EntityCombobox id="principal-teacher" labelText="Teacher" items={teachers} selectedId={choice} onSelect={setChoice} onSearch={setTeacherSearch} getId={(t) => t.id} itemToString={(t) => displayName(t)} placeholder="Search teachers by name…" />
+      <EntityCombobox id="principal-teacher" labelText="Öğretmen" items={teachers} selectedId={choice} onSelect={setChoice} onSearch={setTeacherSearch} getId={(t) => t.id} itemToString={(t) => displayName(t)} placeholder="Öğretmeni ada göre ara…" />
     </FormModal>
   );
 }
@@ -50,24 +50,24 @@ export function AddVicePrincipalModal({ onClose }: { onClose: () => void }) {
   return (
     <FormModal
       open
-      title="Add vice principal"
+      title="Müdür yardımcısı ekle"
       onClose={onClose}
       onSubmit={() => teacherId && assign.mutate({ teacher_id: teacherId, notify_whole_school: wholeSchool, grade_ids: wholeSchool ? [] : gradeIds }, { onSuccess: onClose })}
       isPending={assign.isPending}
-      submitLabel="Add"
+      submitLabel="Ekle"
       submitDisabled={!teacherId}
       isError={assign.isError}
       error={assign.error}
-      errorFallback="Failed to add Vice Principal"
+      errorFallback="Müdür yardımcısı eklenemedi"
     >
       <div className="os-grid os-gap-4">
-        <EntityCombobox id="vp-teacher" labelText="Teacher" items={teachers ?? []} selectedId={teacherId} onSelect={setTeacherId} onSearch={setTeacherSearch} getId={(t) => t.id} itemToString={(t) => displayName(t)} placeholder="Search teachers by name…" />
-        <Checkbox id="vp-whole-school" labelText="Can notify the whole school" checked={wholeSchool} onChange={(_e, { checked }) => setWholeSchool(checked)} />
+        <EntityCombobox id="vp-teacher" labelText="Öğretmen" items={teachers ?? []} selectedId={teacherId} onSelect={setTeacherId} onSearch={setTeacherSearch} getId={(t) => t.id} itemToString={(t) => displayName(t)} placeholder="Öğretmeni ada göre ara…" />
+        <Checkbox id="vp-whole-school" labelText="Tüm okulu bilgilendirebilir" checked={wholeSchool} onChange={(_e, { checked }) => setWholeSchool(checked)} />
         {!wholeSchool && (
           <MultiSelect
             id="vp-grades"
-            titleText="Grades this Vice Principal can notify"
-            label="Select grades…"
+            titleText="Müdür yardımcısının bilgilendirebileceği seviyeler"
+            label="Seviye seçin…"
             items={grades ?? []}
             itemToString={(g) => g?.name ?? ""}
             selectedItems={(grades ?? []).filter((g) => gradeIds.includes(g.id))}

@@ -32,12 +32,12 @@ export default function FormModal({
   onSubmit,
   isPending,
   submitDisabled,
-  submitLabel = "Save",
-  pendingLabel = "Saving…",
+  submitLabel = "Kaydet",
+  pendingLabel = "Kaydediliyor…",
   isError,
   error,
-  errorTitle = "Error",
-  errorFallback = "Something went wrong. Please try again.",
+  errorTitle = "Hata",
+  errorFallback = "Bir sorun oluştu. Lütfen yeniden deneyin.",
   size = "sm",
   children,
 }: Props) {
@@ -58,7 +58,7 @@ export default function FormModal({
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Cancel
+          İptal
         </Button>
         <Button kind="primary" onClick={onSubmit} disabled={submitDisabled || isPending}>
           {isPending ? pendingLabel : submitLabel}

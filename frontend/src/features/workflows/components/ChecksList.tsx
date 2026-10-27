@@ -6,10 +6,10 @@ import type { Check } from "@/features/workflows/api/workflows";
 export default function ChecksList({ checks }: { checks: Check[] }) {
   if (checks.length === 0) return null;
   return (
-    <ul className="os-checks" aria-label="Preconditions">
+    <ul className="os-checks" aria-label="Önkoşullar">
       {checks.map((c) => {
         const Icon = c.ok ? CheckmarkFilled : c.blocking ? ErrorFilled : WarningAltFilled;
-        const state = c.ok ? "Passed" : c.blocking ? "Must fix" : "Warning";
+        const state = c.ok ? "Geçti" : c.blocking ? "Düzeltilmeli" : "Uyarı";
         return (
           <li key={c.key} className={`os-checks__item ${c.ok ? "is-ok" : c.blocking ? "is-blocking" : "is-warning"}`}>
             <Icon size={16} aria-hidden="true" />
@@ -19,7 +19,7 @@ export default function ChecksList({ checks }: { checks: Check[] }) {
             </div>
             {!c.ok && c.fix_path && (
               <Link to={c.fix_path} className="os-table__link os-text-sm">
-                Fix
+                Düzelt
               </Link>
             )}
           </li>

@@ -20,7 +20,7 @@ export default function WorkflowInputs({ fields, values, onChange }: Props) {
           case "select":
             return (
               <Select key={f.key} id={id} labelText={f.label} helperText={f.help} value={value} onChange={(e) => onChange(f.key, e.target.value)}>
-                <SelectItem value="" text="Choose…" />
+                <SelectItem value="" text="Seçin…" />
                 {f.options?.map((o) => <SelectItem key={o.value} value={o.value} text={o.label} />)}
               </Select>
             );

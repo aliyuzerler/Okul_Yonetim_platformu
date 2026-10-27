@@ -18,9 +18,9 @@ export default function ConfirmActionModal({ open, title, description, confirmLa
       <ModalHeader title={title} />
       <ModalBody><p className="os-text-md">{description}</p></ModalBody>
       <ModalFooter>
-        <Button kind="secondary" onClick={onClose}>Cancel</Button>
+        <Button kind="secondary" onClick={onClose}>İptal</Button>
         <Button kind={danger ? "danger" : "primary"} onClick={onConfirm} disabled={pending}>
-          {pending ? "Working…" : confirmLabel}
+          {pending ? "İşleniyor…" : confirmLabel}
         </Button>
       </ModalFooter>
     </ComposedModal>

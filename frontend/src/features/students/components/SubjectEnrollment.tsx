@@ -4,25 +4,25 @@ import { useEnrollmentPicker, isCompulsory } from "@/features/students/hooks/use
 import MutationErrorNotification from "@/shared/ui/MutationErrorNotification";
 import SectionCard from "@/shared/ui/SectionCard";
 
-const pickRule = (min: number, max: number) => (min === max ? `Pick exactly ${min}` : `Pick ${min}–${max}`);
+const pickRule = (min: number, max: number) => (min === max ? `Tam ${min} ders seçin` : `${min}–${max} ders seçin`);
 
 export default function SubjectEnrollment({ studentId }: { studentId: string }) {
   const p = useEnrollmentPicker(studentId);
   const validationErrors = p.submit.data && !p.submit.data.valid ? (p.submit.data.errors ?? []) : [];
 
   return (
-    <SectionCard title="Subject enrolment">
+    <SectionCard title="Ders kaydı">
         {!p.academicYearId ? (
-          <InlineNotification kind="info" title="No current academic year" subtitle="Set a current academic year before assigning subjects." lowContrast hideCloseButton className="os-max-w-full" />
+          <InlineNotification kind="info" title="Güncel eğitim-öğretim yılı yok" subtitle="Ders atamadan önce güncel bir eğitim-öğretim yılı belirleyin." lowContrast hideCloseButton className="os-max-w-full" />
         ) : (
           <>
             <div className="os-mb-4"><Tag type="cool-gray" size="sm">{p.currentYear?.label}</Tag></div>
-            <Select id="enrollment-level" labelText="Curriculum level" value={p.selectedLevel} onChange={(e) => p.changeLevel(e.target.value)}>
-              <SelectItem value="" text="Select level…" />
+            <Select id="enrollment-level" labelText="Müfredat düzeyi" value={p.selectedLevel} onChange={(e) => p.changeLevel(e.target.value)}>
+              <SelectItem value="" text="Seviye seçin…" />
               {p.levels?.map((l) => <SelectItem key={l.id} value={l.id} text={l.label} />)}
             </Select>
 
-            {p.selectedLevel && p.treeLoading && <InlineLoading description="Loading subjects…" />}
+            {p.selectedLevel && p.treeLoading && <InlineLoading description="Dersler yükleniyor…" />}
 
             {p.selectedLevel && p.tree && (
               <div className="os-mt-5">
@@ -34,8 +34,8 @@ export default function SubjectEnrollment({ studentId }: { studentId: string }) 
                     <div key={g.id} className="os-mb-6">
                       <div className="os-flex os-items-center os-gap-2 os-mb-2">
                         <strong>{g.label}</strong>
-                        <Tag type={compulsory ? "blue" : "gray"} size="sm">{compulsory ? "Compulsory" : pickRule(g.min_select, g.max_select)}</Tag>
-                        <span className="os-text-xs os-c-tertiary">{picks.length} selected</span>
+                        <Tag type={compulsory ? "blue" : "gray"} size="sm">{compulsory ? "Zorunlu" : pickRule(g.min_select, g.max_select)}</Tag>
+                        <span className="os-text-xs os-c-tertiary">{picks.length} ders seçildi</span>
                       </div>
                       {g.subjects.map((s) => {
                         const checked = picks.includes(s.subject_id);
@@ -55,13 +55,13 @@ export default function SubjectEnrollment({ studentId }: { studentId: string }) 
                 })}
 
                 {validationErrors.length > 0 && (
-                  <InlineNotification kind="error" title="Some groups need attention" subtitle={validationErrors.map((e) => `${e.label}: ${e.message}`).join(" · ")} lowContrast hideCloseButton className="os-mb-4 os-max-w-full" />
+                  <InlineNotification kind="error" title="Bazı gruplarda eksikler var" subtitle={validationErrors.map((e) => `${e.label}: ${e.message}`).join(" · ")} lowContrast hideCloseButton className="os-mb-4 os-max-w-full" />
                 )}
-                <MutationErrorNotification isError={p.submit.isError} error={p.submit.error} title="Could not save enrolment" fallback="Please try again." />
-                {p.submit.data?.valid && <InlineNotification kind="success" title="Saved" subtitle="Subject enrolment updated." lowContrast hideCloseButton className="os-mb-4 os-max-w-full" />}
+                <MutationErrorNotification isError={p.submit.isError} error={p.submit.error} title="Ders kaydı kaydedilemedi" fallback="Lütfen tekrar deneyin." />
+                {p.submit.data?.valid && <InlineNotification kind="success" title="Kaydedildi" subtitle="Ders kaydı güncellendi." lowContrast hideCloseButton className="os-mb-4 os-max-w-full" />}
 
                 <Button renderIcon={Save} kind="primary" size="sm" onClick={p.save} disabled={p.submit.isPending}>
-                  {p.submit.isPending ? "Saving…" : "Save enrolment"}
+                  {p.submit.isPending ? "Kaydediliyor…" : "Ders kaydını kaydet"}
                 </Button>
               </div>
             )}

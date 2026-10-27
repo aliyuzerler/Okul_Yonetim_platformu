@@ -15,7 +15,7 @@ interface Props {
 export default function MutationErrorNotification({
   isError,
   error,
-  title = "Error",
+  title = "Hata",
   fallback,
   onClose,
   className,

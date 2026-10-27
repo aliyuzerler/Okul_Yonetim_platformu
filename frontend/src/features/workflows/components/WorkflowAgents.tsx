@@ -18,19 +18,19 @@ function WorkflowRow({ w, last }: { w: CatalogEntry; last: boolean }) {
       <div className="os-flex-1 os-min-w-20">
         <div className="os-flex os-items-center os-gap-2h os-wrap">
           <span className="os-fw-600 os-text-md">{w.order > 0 ? `${w.order}. ` : ""}{w.title}</span>
-          <Tag type="purple" size="sm">On request</Tag>
+          <Tag type="purple" size="sm">İstek üzerine</Tag>
           {w.last_run && <Tag type={RUN_STATE_TAG[w.last_run.state].type} size="sm">{RUN_STATE_TAG[w.last_run.state].label}</Tag>}
         </div>
         <p className="os-mt-1 os-mx-0 os-mb-0 os-text-sm os-c-secondary">{w.description}</p>
         <details className="os-agent-checks os-mt-2">
-          <summary className="os-text-sm os-c-accent-dark os-pointer">Steps and tools ({w.steps.length})</summary>
+          <summary className="os-text-sm os-c-accent-dark os-pointer">Adımlar ve araçlar ({w.steps.length})</summary>
           <ul>
             {w.steps.map((s) => {
               const tool = w.tools.find((t) => t.name === s.tool);
               return (
                 <li key={s.key}>
                   <span className="os-fw-600">{s.title}.</span> {tool?.description}{" "}
-                  <span className="os-text-xs os-c-tertiary">{s.phase === "apply" ? "Writes on apply" : "Read only, while proposing"}</span>
+                  <span className="os-text-xs os-c-tertiary">{s.phase === "apply" ? "Uygulanırken yazar" : "Yalnızca okur, öneri hazırlanırken"}</span>
                 </li>
               );
             })}
@@ -38,12 +38,12 @@ function WorkflowRow({ w, last }: { w: CatalogEntry; last: boolean }) {
         </details>
         <p className="os-mt-2h os-mx-0 os-mb-0 os-text-xs os-c-tertiary">
           {w.last_run
-            ? `${w.last_run.summary ? `${w.last_run.summary} · ` : ""}Last run ${formatDateTime(w.last_run.applied_at ?? w.last_run.created_at)}`
-            : "Never run yet"}
+            ? `${w.last_run.summary ? `${w.last_run.summary} · ` : ""}Son çalıştırma ${formatDateTime(w.last_run.applied_at ?? w.last_run.created_at)}`
+            : "Henüz çalıştırılmadı"}
         </p>
       </div>
       <Button kind="ghost" size="sm" renderIcon={ArrowRight} as={Link} to={pathFor(w)}>
-        Open
+        Aç
       </Button>
     </div>
   );
@@ -75,15 +75,15 @@ export default function WorkflowAgents() {
   const setup = catalog?.filter((w) => w.group === "setup") ?? [];
   const error = isError ? (
     <div className="os-p-6">
-      <ErrorMessage message="Could not load the workflows." onRetry={refetch} />
+      <ErrorMessage message="Akışlar yüklenemedi." onRetry={refetch} />
     </div>
   ) : null;
 
   return (
     <>
-      <WorkflowSection title="Year-end workflows" meta="Run on request from Year-end, in this order" entries={yearEnd} loading={isLoading} error={error} />
+      <WorkflowSection title="Yıl sonu akışları" meta="Yıl Sonu sayfasından istek üzerine, bu sırayla çalışır" entries={yearEnd} loading={isLoading} error={error} />
       {(isLoading || setup.length > 0) && (
-        <WorkflowSection title="Setup tools" meta="Run on request, for example from Students" entries={setup} loading={isLoading} />
+        <WorkflowSection title="Kurulum araçları" meta="İstek üzerine çalışır; örneğin Öğrenciler sayfasından" entries={setup} loading={isLoading} />
       )}
     </>
   );

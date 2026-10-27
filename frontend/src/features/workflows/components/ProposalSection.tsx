@@ -16,7 +16,7 @@ function Cell({ column, row, editable, onEdit, busy }: { column: Column; row: Ro
   const value = row.cells[column.key] ?? "";
   const label = `${column.label}: ${Object.values(row.cells)[0] ?? row.id}`;
   if (!editable || !column.editable) {
-    if (column.type === "boolean") return <>{value === "true" ? "Yes" : "No"}</>;
+    if (column.type === "boolean") return <>{value === "true" ? "Evet" : "Hayır"}</>;
     if (column.type === "select") {
       const options = row.options?.[column.key] ?? column.options ?? [];
       return <>{options.find((o) => o.value === value)?.label ?? (value || "-")}</>;
@@ -29,7 +29,7 @@ function Cell({ column, row, editable, onEdit, busy }: { column: Column; row: Ro
   const options = row.options?.[column.key] ?? column.options ?? [];
   return (
     <Select id={`cell-${row.id}-${column.key}`} labelText={label} hideLabel size="sm" value={value} disabled={busy} onChange={(e) => onEdit(row.id, { [column.key]: e.target.value })}>
-      <SelectItem value="" text="None" />
+      <SelectItem value="" text="Yok" />
       {options.map((o) => <SelectItem key={o.value} value={o.value} text={o.label} />)}
     </Select>
   );
@@ -53,21 +53,21 @@ export default function ProposalSection({ section, editable, onEdit, busyRowId }
     <div className="os-section">
       <div className="os-section__header">
         <h2 className="os-section__title">{section.title}</h2>
-        <span className="os-section__meta">{section.rows.length} rows</span>
+        <span className="os-section__meta">{section.rows.length} satır</span>
       </div>
       {section.description && <p className="os-px-6 os-pt-3 os-m-0 os-text-sm os-c-secondary">{section.description}</p>}
       {section.rows.length > 10 && (
         <div className="os-px-6 os-pt-3">
-          <FilterBar search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: `Search ${section.title.toLowerCase()}` }} />
+          <FilterBar search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: `${section.title} içinde ara…` }} />
         </div>
       )}
-      {section.rows.length === 0 && <p className="os-px-6 os-py-4 os-m-0 os-text-sm os-c-tertiary">Nothing to show here for this run.</p>}
+      {section.rows.length === 0 && <p className="os-px-6 os-py-4 os-m-0 os-text-sm os-c-tertiary">Bu çalıştırma için burada gösterilecek bir şey yok.</p>}
       {section.rows.length > 0 && <div className="os-table-scroll">
         <table className="os-table os-table--stack os-table--no-hover">
           <thead>
             <tr>
               {section.columns.map((c) => <th key={c.key}>{c.label}</th>)}
-              {showReason && <th>Why</th>}
+              {showReason && <th>Gerekçe</th>}
             </tr>
           </thead>
           <tbody>
@@ -83,7 +83,7 @@ export default function ProposalSection({ section, editable, onEdit, busyRowId }
                     </td>
                   ))}
                   {showReason && (
-                    <td data-label="Why" className="os-text-sm">
+                    <td data-label="Gerekçe" className="os-text-sm">
                       {row.warning ? <span className="os-c-warning">{row.warning}</span> : <span className="os-c-secondary">{row.reason}</span>}
                     </td>
                   )}

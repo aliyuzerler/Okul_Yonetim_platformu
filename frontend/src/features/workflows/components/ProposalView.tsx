@@ -23,14 +23,14 @@ export default function ProposalView({ run, onEdit, editingRow }: Props) {
         ))}
       </div>
       {(run.proposal.warnings ?? []).map((w) => (
-        <InlineNotification key={w} kind="warning" lowContrast hideCloseButton title="Check this" subtitle={w} className="os-max-w-full" />
+        <InlineNotification key={w} kind="warning" lowContrast hideCloseButton title="Bunu gözden geçirin" subtitle={w} className="os-max-w-full" />
       ))}
-      {run.error && <InlineNotification kind="error" lowContrast hideCloseButton title="This run failed" subtitle={run.error} className="os-max-w-full" />}
+      {run.error && <InlineNotification kind="error" lowContrast hideCloseButton title="Bu çalıştırma başarısız oldu" subtitle={run.error} className="os-max-w-full" />}
       {run.proposal.sections.map((section) => (
         <ProposalSection key={section.key} section={section} editable={editable} busyRowId={editingRow} onEdit={(rowId, cells) => onEdit(section.key, rowId, cells)} />
       ))}
       <details className="os-section os-p-4">
-        <summary className="os-fw-600 os-pointer">Steps this run took ({run.trace.length})</summary>
+        <summary className="os-fw-600 os-pointer">Bu çalıştırmanın işlem kaydı ({run.trace.length})</summary>
         <TraceList steps={run.trace} />
       </details>
     </div>

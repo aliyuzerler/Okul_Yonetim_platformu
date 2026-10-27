@@ -40,7 +40,7 @@ export default function ActivationSettingsCard() {
   }
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError || !form) return <ErrorMessage message="Could not load activation settings." onRetry={refetch} />;
+  if (isError || !form) return <ErrorMessage message="Etkinleştirme ayarları yüklenemedi." onRetry={refetch} />;
 
   const set = <K extends keyof Form>(field: K, value: Form[K]) => setForm((f) => (f ? { ...f, [field]: value } : f));
   const ttlValid = typeof form.code_ttl_days === "number" && Number.isInteger(form.code_ttl_days) && form.code_ttl_days >= 1 && form.code_ttl_days <= 90;
@@ -56,46 +56,46 @@ export default function ActivationSettingsCard() {
         closes_at: closesAtFromYmd(form.closes),
         code_ttl_days: Number(form.code_ttl_days),
       },
-      { onSuccess: () => showToast({ kind: "success", title: "Activation settings saved" }) },
+      { onSuccess: () => showToast({ kind: "success", title: "Etkinleştirme ayarları kaydedildi" }) },
     );
   };
 
   return (
     <SectionCard
-      title="Self-activation"
-      meta={<Button renderIcon={Save} kind="primary" size="sm" onClick={save} disabled={update.isPending || !ttlValid || !windowValid}>Save</Button>}
+      title="Kendi kendine etkinleştirme"
+      meta={<Button renderIcon={Save} kind="primary" size="sm" onClick={save} disabled={update.isPending || !ttlValid || !windowValid}>Kaydet</Button>}
     >
       <p className="os-text-sm os-c-secondary os-mt-0 os-mb-4">
-        People can create their own login with a code you issue below. Turned off, nobody of that type can activate and no codes can be generated for them. Admins can still create logins as before.
+        Kişiler aşağıda ürettiğiniz bir kodla kendi giriş bilgilerini oluşturabilir. Kapalıyken ilgili gruptan kimse hesabını etkinleştiremez ve onlar için kod üretilemez. Yöneticiler her zamanki gibi giriş bilgisi oluşturmaya devam eder.
       </p>
-      <MutationErrorNotification isError={update.isError} error={update.error} title="Could not save settings" />
+      <MutationErrorNotification isError={update.isError} error={update.error} title="Ayarlar kaydedilemedi" />
       <div className="os-grid os-grid-cols-2 os-gap-5 os-mb-5">
-        <Toggle id="activation-students" labelText="Students" labelA="Off" labelB="On" toggled={form.student_enabled} onToggle={(on) => set("student_enabled", on)} />
-        <Toggle id="activation-parents" labelText="Guardians" labelA="Off" labelB="On" toggled={form.parent_enabled} onToggle={(on) => set("parent_enabled", on)} />
-        <DateField id="activation-opens" labelText="Opens on (optional)" value={form.opens} onChange={(v) => set("opens", v)} />
+        <Toggle id="activation-students" labelText="Öğrenciler" labelA="Kapalı" labelB="Açık" toggled={form.student_enabled} onToggle={(on) => set("student_enabled", on)} />
+        <Toggle id="activation-parents" labelText="Veliler" labelA="Kapalı" labelB="Açık" toggled={form.parent_enabled} onToggle={(on) => set("parent_enabled", on)} />
+        <DateField id="activation-opens" labelText="Açılış tarihi (isteğe bağlı)" value={form.opens} onChange={(v) => set("opens", v)} />
         <DateField
           id="activation-closes"
-          labelText="Closes after (optional)"
+          labelText="Kapanış tarihi (isteğe bağlı)"
           value={form.closes}
           minDate={form.opens || undefined}
           invalid={!windowValid}
-          invalidText="Must be on or after the opening date."
+          invalidText="Açılış tarihiyle aynı veya sonraki bir tarih olmalı."
           onChange={(v) => set("closes", v)}
         />
         <NumberInput
           id="activation-ttl"
-          label="Codes stay valid for (days)"
-          helperText="Applies to codes generated after saving."
+          label="Kodların geçerlilik süresi (gün)"
+          helperText="Kayıttan sonra üretilen kodlara uygulanır."
           min={1}
           max={90}
           value={form.code_ttl_days}
           invalid={!ttlValid}
-          invalidText="Enter a whole number from 1 to 90."
+          invalidText="1 ile 90 arasında tam bir sayı girin."
           onChange={(_e, { value }) => set("code_ttl_days", value === "" ? "" : Number(value))}
         />
       </div>
       {(form.opens || form.closes) && (
-        <Button kind="ghost" size="sm" onClick={() => setForm((f) => (f ? { ...f, opens: "", closes: "" } : f))}>Clear dates</Button>
+        <Button kind="ghost" size="sm" onClick={() => setForm((f) => (f ? { ...f, opens: "", closes: "" } : f))}>Tarihleri temizle</Button>
       )}
     </SectionCard>
   );

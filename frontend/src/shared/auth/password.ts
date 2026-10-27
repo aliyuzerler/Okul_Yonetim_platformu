@@ -40,20 +40,20 @@ export function validateNewPassword(password: string, confirm: string) {
     criteria,
     valid: Object.values(criteria).every(Boolean) && confirm === password,
     passwordError: tooShort
-      ? `Must be at least ${PASSWORD_MIN_LENGTH} characters.`
+      ? `En az ${PASSWORD_MIN_LENGTH} karakter olmalıdır.`
       : tooCommon
-        ? "That password is too common. Choose something less guessable."
+        ? "Bu şifre çok yaygın. Daha zor tahmin edilebilir bir şifre seçin."
         : hasSequence
-          ? "Avoid predictable sequences such as 1234 or abcd."
+          ? "1234 veya abcd gibi öngörülebilir dizilerden kaçının."
         : password && !criteria.uppercase
-          ? "Add at least one uppercase letter."
+          ? "En az bir büyük harf ekleyin."
           : password && !criteria.lowercase
-            ? "Add at least one lowercase letter."
+            ? "En az bir küçük harf ekleyin."
             : password && !criteria.number
-              ? "Add at least one number."
+              ? "En az bir rakam ekleyin."
               : password && !criteria.special
-                ? "Add at least one special character."
+                ? "En az bir özel karakter ekleyin."
         : undefined,
-    confirmError: mismatch ? "Passwords do not match." : undefined,
+    confirmError: mismatch ? "Şifreler eşleşmiyor." : undefined,
   };
 }

@@ -31,31 +31,31 @@ export default function TimetableReviewRow({ timetable }: { timetable: Timetable
           </Tag>
         </p>
         <p className="os-m-0 os-text-xs os-c-tertiary">
-          Submitted {formatDateTime(timetable.submitted_at)}
+          {formatDateTime(timetable.submitted_at)} tarihinde gönderildi
         </p>
         <MutationErrorNotification
           isError={approve.isError || reject.isError}
           error={approve.error ?? reject.error}
-          title="Action failed" className="os-max-w-28 os-mt-2"
+          title="İşlem başarısız" className="os-max-w-28 os-mt-2"
         />
       </div>
       <Button kind="ghost" size="sm" as={Link} to={`/timetables/${timetable.id}`}>
-        View
+        Görüntüle
       </Button>
       <Button kind="danger--tertiary" size="sm" onClick={() => setRejecting(true)} disabled={reject.isPending}>
-        Reject
+        Reddet
       </Button>
       <Button kind="primary" size="sm" onClick={() => approve.mutate(undefined)} disabled={approve.isPending}>
-        {approve.isPending ? "Approving…" : "Approve"}
+        {approve.isPending ? "Onaylanıyor…" : "Onayla"}
       </Button>
 
-      <ComposedModal open={rejecting} size="sm" onClose={() => setRejecting(false)} aria-label={`Reject ${classLabel(timetable.grade_name, timetable.class_name)}`}>
-        <ModalHeader title={`Reject ${classLabel(timetable.grade_name, timetable.class_name)}`} />
+      <ComposedModal open={rejecting} size="sm" onClose={() => setRejecting(false)} aria-label={`Reddet: ${classLabel(timetable.grade_name, timetable.class_name)}`}>
+        <ModalHeader title={`Reddet: ${classLabel(timetable.grade_name, timetable.class_name)}`} />
         <ModalBody>
           <TextArea
             id={`reject-comment-${timetable.id}`}
-            labelText="Reason (required)"
-            placeholder="e.g. Science teacher is double-booked on Monday Period 3"
+            labelText="Gerekçe (zorunlu)"
+            placeholder="örn. Fen öğretmeni Pazartesi 3. derste iki sınıfa aynı anda atanmış"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={4}
@@ -63,10 +63,10 @@ export default function TimetableReviewRow({ timetable }: { timetable: Timetable
         </ModalBody>
         <ModalFooter>
           <Button kind="secondary" onClick={() => setRejecting(false)}>
-            Cancel
+            İptal
           </Button>
           <Button kind="danger" onClick={handleReject} disabled={!comment.trim() || reject.isPending}>
-            {reject.isPending ? "Rejecting…" : "Reject"}
+            {reject.isPending ? "Reddediliyor…" : "Reddet"}
           </Button>
         </ModalFooter>
       </ComposedModal>

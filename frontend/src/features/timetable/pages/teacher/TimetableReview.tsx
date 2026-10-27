@@ -13,8 +13,8 @@ export default function TimetableReview() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Timetable review</h1>
-          <p className="os-page__subtitle">Timetables waiting for your approval for {currentYear?.label ?? "the current year"}.</p>
+          <h1 className="os-page__title">Ders programı incelemesi</h1>
+          <p className="os-page__subtitle">{currentYear?.label ?? "güncel yıl"} için onayınızı bekleyen ders programları.</p>
         </div>
       </div>
 
@@ -24,9 +24,9 @@ export default function TimetableReview() {
             <SkeletonText width="40%" />
           </div>
         ) : isError ? (
-          <ErrorMessage message="Could not load the review queue." onRetry={refetch} />
+          <ErrorMessage message="İnceleme kuyruğu yüklenemedi." onRetry={refetch} />
         ) : !queue || queue.length === 0 ? (
-          <EmptyState title="Nothing pending review" description="Timetables submitted for grades you head will show up here." />
+          <EmptyState title="İnceleme bekleyen yok" description="Rehber öğretmenliği yaptığınız seviyeler için gönderilen ders programları burada görünecek." />
         ) : (
           queue.map((t) => <TimetableReviewRow key={t.id} timetable={t} />)
         )}

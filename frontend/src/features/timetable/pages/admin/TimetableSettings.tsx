@@ -68,30 +68,30 @@ function SettingsForm({
       {initial && (
         <div className="os-grid os-grid-cols-3 os-gap-5 os-bg-layer-hover os-py-4 os-px-6 os-mb-6 os-border"
         >
-          <SummaryStat label="School hours" value={`${initial.school_start_time} – ${initial.school_end_time}`} />
+          <SummaryStat label="Okul saatleri" value={`${initial.school_start_time} – ${initial.school_end_time}`} />
           <SummaryStat
-            label="Periods & duration"
-            value={`${initial.number_of_periods} periods (${initial.period_duration_minutes} mins)`}
+            label="Ders saatleri ve süre"
+            value={`${initial.number_of_periods} ders saati (${initial.period_duration_minutes} dk)`}
           />
-          <SummaryStat label="Default interval" value={`${initial.interval_duration_minutes} minutes`} />
+          <SummaryStat label="Varsayılan teneffüs" value={`${initial.interval_duration_minutes} dakika`} />
         </div>
       )}
 
       <div className="os-flex os-justify-end os-mb-4">
         <Button renderIcon={Save} kind="primary" onClick={handleSave} disabled={upsert.isPending}>
-          {upsert.isPending ? "Saving…" : "Save"}
+          {upsert.isPending ? "Kaydediliyor…" : "Kaydet"}
         </Button>
       </div>
       <MutationErrorNotification
         isError={upsert.isError}
         error={upsert.error}
-        title="Could not save settings"
+        title="Ayarlar kaydedilemedi"
         onClose={() => upsert.reset()} className="os-mb-4"
       />
       {upsert.isSuccess && (
         <InlineNotification
           kind="success"
-          title="Settings saved"
+          title="Ayarlar kaydedildi"
           lowContrast
           onClose={() => upsert.reset()} className="os-max-w-full os-mb-4"
         />
@@ -99,21 +99,21 @@ function SettingsForm({
       <div className="os-grid os-grid-2-max-20 os-gap-5">
         <TextInput
           id="school-start-time"
-          labelText="School starting time"
+          labelText="Okul başlangıç saati"
           type="time"
           value={form.school_start_time}
           onChange={(e) => setForm((f) => ({ ...f, school_start_time: e.target.value }))}
         />
         <TextInput
           id="school-end-time"
-          labelText="School ending time"
+          labelText="Okul bitiş saati"
           type="time"
           value={form.school_end_time}
           onChange={(e) => setForm((f) => ({ ...f, school_end_time: e.target.value }))}
         />
         <NumberInput
           id="number-of-periods"
-          label="Number of periods"
+          label="Ders saati sayısı"
           min={1}
           max={15}
           value={form.number_of_periods}
@@ -123,7 +123,7 @@ function SettingsForm({
         />
         <NumberInput
           id="period-duration"
-          label="Period duration (minutes)"
+          label="Ders saati süresi (dakika)"
           min={10}
           max={120}
           value={form.period_duration_minutes}
@@ -133,7 +133,7 @@ function SettingsForm({
         />
         <NumberInput
           id="interval-duration"
-          label="Default interval duration (minutes)"
+          label="Varsayılan teneffüs süresi (dakika)"
           min={5}
           max={120}
           value={form.interval_duration_minutes}
@@ -157,14 +157,14 @@ export default function TimetableSettings({ inline = false }: { inline?: boolean
         {!inline && (
           <div className="os-page__header">
             <div className="os-page__header-left">
-              <h1 className="os-page__title">Timetable settings</h1>
+              <h1 className="os-page__title">Ders programı ayarları</h1>
             </div>
           </div>
         )}
         <div className="os-section">
           <EmptyState
-            title="No current academic year"
-            description="Set an academic year as current before configuring timetable settings."
+            title="Güncel eğitim-öğretim yılı yok"
+            description="Ders programı ayarlarını yapılandırmadan önce bir eğitim-öğretim yılını güncel olarak ayarlayın."
           />
         </div>
       </div>
@@ -176,16 +176,16 @@ export default function TimetableSettings({ inline = false }: { inline?: boolean
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Timetable settings</h1>
-            <p className="os-page__subtitle">Default periods and interval times for {currentYear.label}.</p>
+            <h1 className="os-page__title">Ders programı ayarları</h1>
+            <p className="os-page__subtitle">{currentYear.label} için varsayılan ders saatleri ve teneffüs zamanları.</p>
           </div>
         </div>
       )}
 
       <Tabs>
-        <TabList aria-label="Timetable settings tabs">
-          <Tab>Default templates</Tab>
-          <Tab>Grade interval times</Tab>
+        <TabList aria-label="Ders programı ayarları sekmeleri">
+          <Tab>Varsayılan şablonlar</Tab>
+          <Tab>Seviye teneffüs saatleri</Tab>
         </TabList>
         <TabPanels>
           <TabPanel className="os-py-4 os-px-0">

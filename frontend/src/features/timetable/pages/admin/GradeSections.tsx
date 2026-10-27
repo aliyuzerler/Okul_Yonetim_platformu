@@ -93,14 +93,14 @@ export default function GradeSections({ inline = false }: { inline?: boolean }) 
         {!inline && (
           <div className="os-page__header">
             <div className="os-page__header-left">
-              <h1 className="os-page__title">Grade sections</h1>
+              <h1 className="os-page__title">Seviye şubeleri</h1>
             </div>
           </div>
         )}
         <div className="os-section">
           <EmptyState
-            title="No current academic year"
-            description="Set an academic year as current before configuring grade sections."
+            title="Güncel eğitim-öğretim yılı yok"
+            description="Seviye şubelerini yapılandırmadan önce bir eğitim-öğretim yılını güncel olarak ayarlayın."
           />
         </div>
       </div>
@@ -112,11 +112,11 @@ export default function GradeSections({ inline = false }: { inline?: boolean }) 
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Grade sections</h1>
-            <p className="os-page__subtitle">Grade groups, their period grid and section head for {currentYear.label}.</p>
+            <h1 className="os-page__title">Seviye şubeleri</h1>
+            <p className="os-page__subtitle">{currentYear.label} için seviye grupları, ders saati düzenleri ve şube rehber öğretmenleri.</p>
           </div>
           <Button renderIcon={Add} kind="primary" size="md" onClick={openCreate}>
-            New Section
+            Yeni şube
           </Button>
         </div>
       )}
@@ -124,10 +124,10 @@ export default function GradeSections({ inline = false }: { inline?: boolean }) 
       {inline && (
         <div className="os-flex os-justify-between os-items-center os-mb-4 os-wrap os-gap-4">
           <p className="os-m-0 os-text-md os-c-secondary">
-            Set up different interval times for different grades by grouping them into sections.
+            Sınıf seviyelerini şubelerde gruplayarak farklı seviyelere farklı teneffüs saatleri ayarlayın.
           </p>
           <Button renderIcon={Add} kind="primary" size="sm" onClick={openCreate}>
-            New Section
+            Yeni şube
           </Button>
         </div>
       )}
@@ -138,21 +138,21 @@ export default function GradeSections({ inline = false }: { inline?: boolean }) 
             <SkeletonText width="40%" />
           </div>
         )}
-        {isError && <ErrorMessage message="Could not load grade sections." onRetry={refetch} />}
+        {isError && <ErrorMessage message="Seviye şubeleri yüklenemedi." onRetry={refetch} />}
         <MutationErrorNotification
           isError={deleteSection.isError}
           error={deleteSection.error}
-          title="Could not delete section"
+          title="Şube silinemedi"
           onClose={() => deleteSection.reset()} className="os-mt-0 os-mx-6 os-mb-4"
         />
 
         {!isLoading && !isError && (!sections || sections.length === 0) && (
           <EmptyState
-            title="No grade sections yet"
-            description="e.g. Primary (Grades 1-5), Junior Secondary (6-9), Senior Secondary (10-11), Advanced Level (12-13)."
+            title="Henüz seviye şubesi yok"
+            description="örn. İlkokul (1-5), Ortaokul (6-9), Lise (10-11), A/L (12-13)."
             action={
               <Button renderIcon={Add} kind="primary" onClick={openCreate}>
-                New Section
+                Yeni şube
               </Button>
             }
           />
@@ -193,9 +193,12 @@ export default function GradeSections({ inline = false }: { inline?: boolean }) 
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete grade section"
-        description={<>Delete <strong>{toDelete?.name}</strong>? This cannot be undone, and is blocked while grades are still assigned.</>}
-        subject="Grade section"
+        title="Seviye şubesini sil"
+        description={<><strong>{toDelete?.name}</strong> silinsin mi? Bu işlem geri alınamaz; ayrıca seviyeler atanmış olduğu sürece engellenir.</>}
+        subject="Seviye şubesi"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteSection}
         onClose={() => setToDelete(null)}
         onConfirm={handleDelete}

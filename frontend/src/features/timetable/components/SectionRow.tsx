@@ -24,23 +24,23 @@ export default function SectionRow({
           <Time size={16} className="os-fill-accent" />
           <span className="os-fw-600 os-text-md">{s.name}</span>
           <span className="os-text-xs os-c-tertiary">
-            Interval {s.interval_start_time}–{s.interval_end_time}
+            Teneffüs {s.interval_start_time}–{s.interval_end_time}
           </span>
         </div>
         <div className="os-flex os-gap-2">
           <Button kind="ghost" size="sm" onClick={onPeriods}>
-            Periods
+            Ders saatleri
           </Button>
           <Button kind="ghost" size="sm" onClick={onEdit}>
-            Edit
+            Düzenle
           </Button>
-          <RemoveIconButton label="Delete" onClick={onDelete} />
+          <RemoveIconButton label="Sil" onClick={onDelete} />
         </div>
       </div>
 
       <div className="os-flex os-wrap os-gap-1h">
         {s.grade_ids.length === 0 ? (
-          <span className="os-text-xs os-c-tertiary">No grades assigned</span>
+          <span className="os-text-xs os-c-tertiary">Atanmış sınıf seviyesi yok</span>
         ) : (
           s.grade_ids.map((gid) => (
             <Tag key={gid} type="teal" size="sm">

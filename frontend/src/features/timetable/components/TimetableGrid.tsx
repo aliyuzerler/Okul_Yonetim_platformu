@@ -15,7 +15,7 @@ export default function TimetableGrid({ periods, entryAt, editable, onOpenCell }
     <table className="os-table os-min-w-50">
       <thead>
         <tr>
-          <th className="os-w-8">Time</th>
+          <th className="os-w-8">Saat</th>
           {WEEKDAYS.map((d) => <th key={d.value}>{d.label}</th>)}
         </tr>
       </thead>
@@ -24,13 +24,13 @@ export default function TimetableGrid({ periods, entryAt, editable, onOpenCell }
           p.slot_type === "interval" ? (
             <tr key={p.id}>
               <td colSpan={WEEKDAYS.length + 1} className="os-bg-status-late os-text-center os-fw-600">
-                Interval {p.start_time}–{p.end_time}
+                Teneffüs {p.start_time}–{p.end_time}
               </td>
             </tr>
           ) : (
             <tr key={p.id}>
               <td>
-                <div className="os-fw-600">P{p.period_number}</div>
+                <div className="os-fw-600">{p.period_number}. ders</div>
                 <div className="os-text-xs os-c-tertiary">{p.start_time}–{p.end_time}</div>
               </td>
               {WEEKDAYS.map((d) => {
@@ -40,7 +40,7 @@ export default function TimetableGrid({ periods, entryAt, editable, onOpenCell }
                     {e?.option_block_name ? (
                       <div>
                         <div className="os-fw-500">{e.option_block_name}</div>
-                        <div className="os-text-xs os-c-secondary">Option block</div>
+                        <div className="os-text-xs os-c-secondary">Seçmeli ders bloğu</div>
                       </div>
                     ) : e?.subject_name ? (
                       <div>
@@ -49,7 +49,7 @@ export default function TimetableGrid({ periods, entryAt, editable, onOpenCell }
                         {e.classroom_name && <div className="os-text-xs os-c-tertiary">{e.classroom_name}</div>}
                       </div>
                     ) : (
-                      <span className="os-text-xs os-c-disabled">{editable ? "+ Add" : ""}</span>
+                      <span className="os-text-xs os-c-disabled">{editable ? "+ Ekle" : ""}</span>
                     )}
                   </td>
                 );

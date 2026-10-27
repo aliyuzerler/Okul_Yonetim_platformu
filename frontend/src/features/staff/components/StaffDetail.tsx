@@ -13,6 +13,13 @@ import { EMPLOYMENT_STATUSES, designationLabel } from "@/features/staff/constant
 import StaffFormModal from "@/features/staff/components/StaffFormModal";
 import MutationErrorNotification from "@/shared/ui/MutationErrorNotification";
 
+// shared/lib EMPLOYMENT_STATUSES is English; display labels are translated here.
+const employmentStatusLabel: Record<string, string> = {
+  active: "Aktif",
+  resigned: "İstifa etti",
+  transferred: "Başka okula atandı",
+};
+
 export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onDeleted: () => void }) {
   const { data: houses } = useHouses();
   const updateStatus = useUpdateNonAcademicStaffEmploymentStatus();
@@ -36,7 +43,7 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
             {staff.employee_number}
           </Tag>
           <Button renderIcon={Edit} kind="ghost" size="sm" onClick={() => setEditing(true)}>
-            Edit
+            Düzenle
           </Button>
           <Button
             renderIcon={TrashCan}
@@ -47,7 +54,7 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
               setConfirmDelete(true);
             }}
           >
-            Delete
+            Sil
           </Button>
         </div>
       </div>
@@ -55,18 +62,18 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
         <MutationErrorNotification
           isError={deleteStaff.isError}
           error={deleteStaff.error}
-          title="Could not delete staff member"
-          fallback="Something went wrong."
+          title="Personel silinemedi"
+          fallback="Beklenmeyen bir hata oluştu."
           onClose={() => deleteStaff.reset()} className="os-mb-4"
         />
 
         <div className="os-grid os-grid-cols-2 os-gap-4 os-mb-6">
           <div>
-            <p className="os-mt-0 os-mx-0 os-mb-h os-text-xs os-c-tertiary">Phone</p>
+            <p className="os-mt-0 os-mx-0 os-mb-h os-text-xs os-c-tertiary">Telefon</p>
             <p className="os-m-0 os-text-md">{staff.phone || "-"}</p>
           </div>
           <div>
-            <p className="os-mt-0 os-mx-0 os-mb-h os-text-xs os-c-tertiary">Joined</p>
+            <p className="os-mt-0 os-mx-0 os-mb-h os-text-xs os-c-tertiary">İşe başlama</p>
             <p className="os-m-0 os-text-md">{staff.joined_date ?? "-"}</p>
           </div>
         </div>
@@ -74,7 +81,7 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
         <div className="os-grid os-grid-cols-2 os-gap-4">
           <Select
             id="staff-employment-status"
-            labelText="Employment status"
+            labelText="Çalışma durumu"
             value={staff.employment_status}
             disabled={updateStatus.isPending}
             onChange={(e) =>
@@ -85,17 +92,17 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
             }
           >
             {EMPLOYMENT_STATUSES.map((s) => (
-              <SelectItem key={s.value} value={s.value} text={s.label} />
+              <SelectItem key={s.value} value={s.value} text={employmentStatusLabel[s.value] ?? s.label} />
             ))}
           </Select>
           <Select
             id="staff-house"
-            labelText="House"
+            labelText="Kol"
             value={staff.house_id ?? ""}
             disabled={updateHouse.isPending}
             onChange={(e) => updateHouse.mutate({ id: staff.id, houseId: e.target.value })}
           >
-            <SelectItem value="" text="No house" />
+            <SelectItem value="" text="Kol yok" />
             {houses?.map((h) => (
               <SelectItem key={h.id} value={h.id} text={h.name} />
             ))}
@@ -114,13 +121,16 @@ export default function StaffDetail({ staff, onDeleted }: { staff: StaffRow; onD
 
       <ConfirmDeleteModal
         open={confirmDelete}
-        title="Delete staff member"
+        title="Personeli sil"
         description={
           <>
-            Delete <strong>{staff.full_name}</strong>? This cannot be undone.
+             <strong>{staff.full_name}</strong> silinsin mi? Bu işlem geri alınamaz.
           </>
         }
-        subject="Staff member"
+        subject="Personel"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteStaff}
         onClose={() => setConfirmDelete(false)}
         onConfirm={() => deleteStaff.mutate(staff.id)}

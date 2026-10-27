@@ -14,7 +14,7 @@ export default function TeacherTimetable() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">My timetable</h1>
+          <h1 className="os-page__title">Ders programım</h1>
           <p className="os-page__subtitle">{currentYear?.label ?? ""}</p>
         </div>
       </div>
@@ -22,11 +22,11 @@ export default function TeacherTimetable() {
       {isLoading ? (
         <div className="os-section os-p-6"><SkeletonText width="40%" /></div>
       ) : isError ? (
-        <div className="os-section"><ErrorMessage message="Could not load your timetable." onRetry={refetch} /></div>
+        <div className="os-section"><ErrorMessage message="Ders programınız yüklenemedi." onRetry={refetch} /></div>
       ) : !schedule?.length ? (
-        <div className="os-section"><EmptyState title="No published classes yet" description="Your teaching schedule will appear here once a timetable is published." /></div>
+        <div className="os-section"><EmptyState title="Henüz yayınlanmış sınıf yok" description="Bir ders programı yayınlandığında öğretim programınız burada görünecek." /></div>
       ) : (
-        <TimetableByDay entries={schedule} asSections getRowId={(_e, i) => String(i)} middle={{ key: "class", header: "Class", render: (e) => classLabel(e.grade_name, e.class_name) }} />
+        <TimetableByDay entries={schedule} asSections getRowId={(_e, i) => String(i)} middle={{ key: "class", header: "Sınıf", render: (e) => classLabel(e.grade_name, e.class_name) }} />
       )}
     </div>
   );

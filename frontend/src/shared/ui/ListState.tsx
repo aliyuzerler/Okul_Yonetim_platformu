@@ -18,7 +18,7 @@ export default function ListState({
   isLoading,
   isError,
   isEmpty,
-  errorMessage = "Failed to load data",
+  errorMessage = "Veriler yüklenemedi.",
   onRetry,
   skeleton,
   empty,

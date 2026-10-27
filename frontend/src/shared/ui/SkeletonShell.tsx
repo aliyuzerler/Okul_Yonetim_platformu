@@ -21,7 +21,7 @@ export function ContentSkeleton() {
   return (
     <div
       className="os-content-skeleton"
-      aria-label="Loading page"
+      aria-label="Sayfa yükleniyor"
       role="status"
     >
       {/* Page heading */}
@@ -162,7 +162,7 @@ export default function SkeletonShell() {
       {/* Application header */}
       <header
         className="os-skeleton-header"
-        aria-label="Loading application shell"
+        aria-label="Uygulama çerçevesi yükleniyor"
         role="status"
       >
         <SkeletonPlaceholder className="os-skeleton-header__menu" />
@@ -188,7 +188,7 @@ export default function SkeletonShell() {
         <aside className="os-layout__sidebar">
           <nav
             className="os-skeleton-nav"
-            aria-label="Loading navigation"
+            aria-label="Gezinme yükleniyor"
             role="status"
           >
             {[

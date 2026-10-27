@@ -18,7 +18,7 @@ function scan(root: HTMLElement | null): FieldError[] {
     .map((el) => {
       const label = root.querySelector(`label[for="${CSS.escape(el.id)}"]`)?.textContent?.trim() ?? el.getAttribute("aria-label") ?? "";
       const describedBy = (el.getAttribute("aria-describedby") ?? "").split(" ").filter(Boolean);
-      const message = describedBy.map((id) => document.getElementById(id)?.textContent?.trim()).find(Boolean) ?? "Check this field.";
+      const message = describedBy.map((id) => document.getElementById(id)?.textContent?.trim()).find(Boolean) ?? "Bu alanı kontrol edin.";
       return { id: el.id, label, message };
     });
 }

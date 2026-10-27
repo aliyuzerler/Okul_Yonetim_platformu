@@ -7,9 +7,9 @@ import type { SelfServiceResetRole } from "@/features/auth/api/auth";
 import { getErrorMessage } from "@/shared/api/errors";
 
 const ROLES: { value: SelfServiceResetRole; label: string; secretLabel: string; secretHelp: string }[] = [
-  { value: "teacher", label: "Teacher", secretLabel: "NIC number", secretHelp: "Your NIC number, as set when your account was created." },
-  { value: "student", label: "Student", secretLabel: "Index number", secretHelp: "Your school index number." },
-  { value: "parent", label: "Guardian", secretLabel: "NIC number", secretHelp: "Your NIC number, as set when your account was created." },
+  { value: "teacher", label: "Öğretmen", secretLabel: "T.C. Kimlik No", secretHelp: "Hesabınız oluşturulurken kaydedilen T.C. Kimlik Numaranız." },
+  { value: "student", label: "Öğrenci", secretLabel: "Okul numarası", secretHelp: "Okul numaranız." },
+  { value: "parent", label: "Veli", secretLabel: "T.C. Kimlik No", secretHelp: "Hesabınız oluşturulurken kaydedilen T.C. Kimlik Numaranız." },
 ];
 
 export default function ForgotPassword() {
@@ -34,13 +34,13 @@ export default function ForgotPassword() {
           <div className="os-auth-card__success-icon">
             <CheckmarkFilled size={28} />
           </div>
-          <h1 className="os-auth-card__title">Check your email</h1>
+          <h1 className="os-auth-card__title">E-postanızı kontrol edin</h1>
           <p className="os-auth-card__subtitle">
-            If those details match an account, a password reset link has been sent to the email on file.
-            The link expires in 15 minutes.
+            Bilgiler bir hesapla eşleşirse, şifre sıfırlama bağlantısı kayıtlı e-posta adresine gönderildi.
+            Bağlantı 15 dakika sonra geçersiz olur.
           </p>
           <Button href="/signin" className="os-full-width-btn">
-            Back to Sign In
+            Oturum açmaya dön
           </Button>
         </div>
       </div>
@@ -60,17 +60,17 @@ export default function ForgotPassword() {
           />
           <span className="os-auth-card__brand-name">OpenSchool</span>
         </div>
-        <h1 className="os-auth-card__title">Forgot password</h1>
+        <h1 className="os-auth-card__title">Şifremi unuttum</h1>
         <p className="os-auth-card__subtitle">
-          Verify your identity to receive a password reset link by email. Admin accounts should contact
-          another administrator instead.
+          Şifre sıfırlama bağlantısını e-postayla almak için kimliğinizi doğrulayın. Yönetici hesapları
+          bunun yerine başka bir yöneticiyle iletişime geçmelidir.
         </p>
 
         {forgotPassword.isError && (
           <InlineNotification
             kind="error"
-            title="Could not verify identity"
-            subtitle={getErrorMessage(forgotPassword.error, "Please check your details and try again.")}
+            title="Kimlik doğrulanamadı"
+            subtitle={getErrorMessage(forgotPassword.error, "Lütfen bilgilerinizi kontrol edip yeniden deneyin.")}
             lowContrast
             hideCloseButton className="os-mb-5 os-max-w-full"
           />
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
         <div className="os-auth-card__form">
           <Select
             id="forgot-password-role"
-            labelText="I am a"
+            labelText="Rolünüz"
             value={role}
             onChange={(e) => setRole(e.target.value as SelfServiceResetRole)}
           >
@@ -89,8 +89,8 @@ export default function ForgotPassword() {
           </Select>
           <TextInput
             id="forgot-password-identifier"
-            labelText="Email address"
-            placeholder="e.g. user@school.edu"
+            labelText="E-posta adresi"
+            placeholder="örn. kullanici@okul.edu.tr"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
           />
@@ -98,7 +98,7 @@ export default function ForgotPassword() {
             id="forgot-password-secret"
             labelText={roleInfo.secretLabel}
             helperText={roleInfo.secretHelp}
-            placeholder={`Enter your ${roleInfo.secretLabel}`}
+            placeholder={`${roleInfo.secretLabel} girin`}
             value={secret}
             onChange={(e) => setSecret(e.target.value)}
           />
@@ -110,12 +110,12 @@ export default function ForgotPassword() {
             onClick={handleVerify}
             disabled={!canVerify || forgotPassword.isPending}
           >
-            {forgotPassword.isPending ? "Sending…" : "Send reset link"}
+            {forgotPassword.isPending ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder"}
           </Button>
         </div>
 
         <div className="os-auth-card__footer">
-          <Link to="/signin">Back to sign in</Link>
+          <Link to="/signin">Oturum açmaya dön</Link>
         </div>
       </div>
     </div>

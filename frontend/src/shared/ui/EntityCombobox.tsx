@@ -72,7 +72,7 @@ export default function EntityCombobox<T>({
         : ({ item, inputValue }) => itemToString(item as T).toLocaleLowerCase().includes((inputValue ?? "").trim().toLocaleLowerCase())}
       titleText={labelText}
       aria-label={labelText ? undefined : ariaLabel}
-      placeholder={placeholder ?? "Search by name or ID…"}
+      placeholder={placeholder ?? "Ada veya numaraya göre ara…"}
       invalid={invalid}
       invalidText={invalidText}
       disabled={disabled}

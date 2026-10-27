@@ -30,29 +30,29 @@ export default function GenerateCodesCard() {
   };
 
   return (
-    <SectionCard title="Activation codes">
+    <SectionCard title="Etkinleştirme kodları">
       {!role ? (
-        <p className="os-text-sm os-c-secondary os-m-0">Turn on self-activation for students or guardians above to generate codes.</p>
+        <p className="os-text-sm os-c-secondary os-m-0">Kod üretmek için yukarıda öğrenciler veya veliler için kendi kendine etkinleştirmeyi açın.</p>
       ) : (
         <>
           <p className="os-text-sm os-c-secondary os-mt-0 os-mb-4">
-            Each person without a login gets one code. Generating again for the same people cancels their earlier codes.
+            Giriş bilgisi olmayan her kişi bir kod alır. Aynı kişiler için yeniden üretim, önceki kodlarını geçersiz kılar.
           </p>
           <div className="os-grid os-grid-cols-2 os-gap-5 os-mb-5">
-            <Select id="codes-role" labelText="Account type" value={role} onChange={(e) => setChosenRole(e.target.value as ActivationRole)}>
+            <Select id="codes-role" labelText="Hesap türü" value={role} onChange={(e) => setChosenRole(e.target.value as ActivationRole)}>
               {enabled.map((r) => <SelectItem key={r} value={r} text={ROLE_LABELS[r].many} />)}
             </Select>
-            <Select id="codes-class" labelText="Class (current year)" helperText="For guardians, the class of their child." value={classId} onChange={(e) => setClassId(e.target.value)}>
-              <SelectItem value="" text="Everyone without a login" />
+            <Select id="codes-class" labelText="Sınıf (güncel yıl)" helperText="Veliler için çocuğunun sınıfı." value={classId} onChange={(e) => setClassId(e.target.value)}>
+              <SelectItem value="" text="Giriş bilgisi olmayan herkes" />
               {classes?.map((c) => <SelectItem key={c.id} value={c.id} text={c.name} />)}
             </Select>
           </div>
           <Button kind="primary" size="md" onClick={() => setConfirming(true)} disabled={generate.isPending}>
-            {generate.isPending ? "Generating…" : "Generate codes"}
+            {generate.isPending ? "Üretiliyor…" : "Kod üret"}
           </Button>
         </>
       )}
-      <MutationErrorNotification isError={generate.isError} error={generate.error} title="Could not generate codes" className="os-mt-4" />
+      <MutationErrorNotification isError={generate.isError} error={generate.error} title="Kodlar üretilemedi" className="os-mt-4" />
 
       {batch && (
         <div className="os-mt-5">
@@ -62,9 +62,9 @@ export default function GenerateCodesCard() {
 
       <ConfirmActionModal
         open={confirming}
-        title="Generate activation codes?"
-        description={`New codes will be issued to ${role ? ROLE_LABELS[role].many.toLowerCase() : ""} without a login${classId ? " in the chosen class" : ""}. Any codes they already have stop working.`}
-        confirmLabel="Generate"
+        title="Etkinleştirme kodları üretilecek mi?"
+        description={`Giriş bilgisi olmayan ${role ? ROLE_LABELS[role].many.toLowerCase() : ""}${classId ? " (seçilen sınıf)" : ""} için yeni kodlar üretilecek. Halihazırda sahip oldukları kodlar geçersiz olur.`}
+        confirmLabel="Üret"
         onClose={() => setConfirming(false)}
         onConfirm={run}
       />

@@ -34,33 +34,33 @@ export default function PasswordInterstitial() {
           <div className="os-otp-heading">
             <span className="os-otp-heading__icon" aria-hidden="true"><Security size={24} /></span>
             <div>
-              <p className="os-otp-eyebrow">Account security</p>
-              <h1 id="otp-title">One-time password</h1>
+              <p className="os-otp-eyebrow">Hesap güvenliği</p>
+              <h1 id="otp-title">Tek kullanımlık şifre</h1>
             </div>
           </div>
           <p className="os-otp-subtitle">
             {keepAllowed
-              ? "You signed in with a system-assigned password. Keep it, or set a new one now."
-              : "You've kept your system-assigned password for too long. Set a new password to continue."}
+              ? "Sistem tarafından atanan bir şifreyle oturum açtınız. Bu şifreyi koruyabilir veya hemen yeni bir şifre belirleyebilirsiniz."
+              : "Sistem tarafından atanan şifrenizi çok uzun süredir koruyorsunuz. Devam etmek için yeni bir şifre belirleyin."}
           </p>
 
           {!settingNew && keepAllowed ? (
             <>
-              <MutationErrorNotification isError={keepDefault.isError} error={keepDefault.error} title="Something went wrong" fallback="Please try again." />
+              <MutationErrorNotification isError={keepDefault.isError} error={keepDefault.error} title="Bir sorun oluştu" fallback="Lütfen yeniden deneyin." />
               <div className="os-otp-options">
                 <div className="os-otp-option">
                   <Button kind="secondary" className="os-full-width-btn" onClick={() => keepDefault.mutate()} disabled={keepDefault.isPending}>
-                    {keepDefault.isPending ? "Saving…" : "Keep password"}
+                    {keepDefault.isPending ? "Kaydediliyor…" : "Şifreyi koru"}
                   </Button>
                 </div>
                 <div className="os-otp-option os-otp-option--primary">
-                  <Button className="os-full-width-btn" onClick={() => setSettingNew(true)}>Change password</Button>
+                  <Button className="os-full-width-btn" onClick={() => setSettingNew(true)}>Şifreyi değiştir</Button>
                 </div>
               </div>
             </>
           ) : (
             <>
-              <MutationErrorNotification isError={changePassword.isError} error={changePassword.error} title="Could not update password" fallback="Please try again." />
+              <MutationErrorNotification isError={changePassword.isError} error={changePassword.error} title="Şifre güncellenemedi" fallback="Lütfen yeniden deneyin." />
               <div className="os-otp-form">
                 <PasswordFields
                   idPrefix="interstitial-password"
@@ -71,17 +71,17 @@ export default function PasswordInterstitial() {
                 />
                 <div className="os-otp-form__actions">
                   <Button onClick={() => valid && changePassword.mutate(password)} disabled={!valid || changePassword.isPending}>
-                    {changePassword.isPending ? "Saving…" : "Save new password"}
+                    {changePassword.isPending ? "Kaydediliyor…" : "Yeni şifreyi kaydet"}
                   </Button>
-                  {keepAllowed && <Button kind="ghost" onClick={() => setSettingNew(false)}>Back</Button>}
+                  {keepAllowed && <Button kind="ghost" onClick={() => setSettingNew(false)}>Geri</Button>}
                 </div>
               </div>
             </>
           )}
 
           <footer className="os-otp-footer">
-            <span>Not your account?</span>
-            <Button kind="ghost" size="sm" onClick={() => signOut()}>Sign out</Button>
+            <span>Hesabınız sizin değil mi?</span>
+            <Button kind="ghost" size="sm" onClick={() => signOut()}>Oturumu kapat</Button>
           </footer>
         </main>
       </div>

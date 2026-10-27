@@ -8,6 +8,11 @@ import ErrorMessage from "@/shared/ui/ErrorMessage";
 import InfoRow from "@/shared/ui/InfoRow";
 import { getInitials, displayName } from "@/shared/lib/name";
 
+const GENDER_LABELS: Record<string, string> = {
+  male: "Erkek",
+  female: "Kız",
+};
+
 export default function TeacherProfile() {
   const { data: profile, isLoading, isError, refetch } = useMyTeacherProfile();
   const { data: subjects } = useTeacherSubjects(profile?.id ?? "");
@@ -23,7 +28,7 @@ export default function TeacherProfile() {
   if (isError || !profile) {
     return (
       <div className="os-p-8">
-        <ErrorMessage message="Failed to load your profile" onRetry={refetch} />
+        <ErrorMessage message="Profiliniz yüklenemedi." onRetry={refetch} />
       </div>
     );
   }
@@ -37,7 +42,7 @@ export default function TeacherProfile() {
           <p className="os-profile__meta">{profile.employee_number}</p>
         </div>
         <div className="os-profile__actions">
-          <Tag type={profile.is_active ? "green" : "gray"} size="sm">{profile.is_active ? "Active" : "Inactive"}</Tag>
+          <Tag type={profile.is_active ? "green" : "gray"} size="sm">{profile.is_active ? "Aktif" : "Etkin değil"}</Tag>
         </div>
       </div>
 
@@ -46,15 +51,15 @@ export default function TeacherProfile() {
           {/* Main */}
           <div>
             <div className="os-section">
-              <div className="os-section__header"><h2 className="os-section__title">Personal details</h2></div>
+              <div className="os-section__header"><h2 className="os-section__title">Kişisel bilgiler</h2></div>
               <div className="os-kv-grid">
                 {[
-                  ["Full name", profile.full_name],
-                  ["Title", profile.title ?? "-"],
-                  ["Gender", profile.gender ? profile.gender[0].toUpperCase() + profile.gender.slice(1) : "-"],
-                  ["Phone", profile.phone ?? "-"],
-                  ["Employee number", profile.employee_number],
-                  ["Joined date", profile.joined_date ?? "-"],
+                  ["Ad soyad", profile.full_name],
+                  ["Unvan", profile.title ?? "-"],
+                  ["Cinsiyet", profile.gender ? GENDER_LABELS[profile.gender] ?? profile.gender : "-"],
+                  ["Telefon", profile.phone ?? "-"],
+                  ["Sicil numarası", profile.employee_number],
+                  ["İşe başlama tarihi", profile.joined_date ?? "-"],
                 ].map(([label, value]) => (
                   <div key={label} className="os-kv-item">
                     <p className="os-kv-item__label">{label}</p>
@@ -65,10 +70,10 @@ export default function TeacherProfile() {
             </div>
 
             <div className="os-section">
-              <div className="os-section__header"><h2 className="os-section__title">Subjects</h2></div>
+              <div className="os-section__header"><h2 className="os-section__title">Dersler</h2></div>
               <div className="os-section__body os-flex os-gap-2 os-wrap">
                 {!subjects || subjects.length === 0 ? (
-                  <p className="os-c-tertiary os-text-sm">No subjects assigned yet.</p>
+                  <p className="os-c-tertiary os-text-sm">Henüz atanmış ders yok.</p>
                 ) : (
                   subjects.map((s) => (
                     <div key={s.id} className="os-flex os-items-center os-gap-2 os-py-2 os-px-3h os-border os-bg-layer-hover">
@@ -84,21 +89,21 @@ export default function TeacherProfile() {
           {/* Sidebar */}
           <div>
             <div className="os-section">
-              <div className="os-section__header"><h2 className="os-section__title">Quick info</h2></div>
+              <div className="os-section__header"><h2 className="os-section__title">Özet bilgi</h2></div>
               <div className="os-section__body os-py-3 os-px-6">
-                <InfoRow label="Employee ID" value={profile.employee_number} />
-                <InfoRow label="Status" value={profile.is_active ? "Active" : "Inactive"} />
-                <InfoRow label="Subjects" value={subjects?.length ?? 0} />
-                <InfoRow label="Classes" value={myClasses.length} />
-                <InfoRow label="Joined" value={profile.joined_date ?? "-"} divider={false} />
+                <InfoRow label="Sicil no." value={profile.employee_number} />
+                <InfoRow label="Durum" value={profile.is_active ? "Aktif" : "Etkin değil"} />
+                <InfoRow label="Dersler" value={subjects?.length ?? 0} />
+                <InfoRow label="Sınıflar" value={myClasses.length} />
+                <InfoRow label="İşe başlama" value={profile.joined_date ?? "-"} divider={false} />
               </div>
             </div>
 
             <div className="os-section">
-              <div className="os-section__header"><h2 className="os-section__title">This year</h2></div>
+              <div className="os-section__header"><h2 className="os-section__title">Bu yıl</h2></div>
               <div className="os-section__body os-py-3 os-px-6">
-                <InfoRow label="Sessions taken" value={sessionsTaken} bold accent />
-                <InfoRow label="Students taught" value={studentsTaught} bold accent divider={false} />
+                <InfoRow label="Alınan yoklama oturumları" value={sessionsTaken} bold accent />
+                <InfoRow label="Öğrenciler" value={studentsTaught} bold accent divider={false} />
               </div>
             </div>
           </div>

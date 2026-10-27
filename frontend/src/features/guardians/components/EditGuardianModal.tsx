@@ -53,13 +53,13 @@ export default function EditGuardianModal({ guardian, onClose }: { guardian: Gua
   return (
     <FormModal
       open
-      title="Edit guardian"
+      title="Veliyi düzenle"
       onClose={onClose}
       onSubmit={handleSave}
       isPending={updateGuardian.isPending}
       isError={updateGuardian.isError}
       error={updateGuardian.error}
-      errorFallback="Failed to update guardian"
+      errorFallback="Veli güncellenemedi"
     >
       <div className="os-grid os-gap-4">
         <PersonNameFields
@@ -71,7 +71,7 @@ export default function EditGuardianModal({ guardian, onClose }: { guardian: Gua
         />
         <Select
           id="edit-guardian-relationship"
-          labelText="Relationship"
+          labelText="Yakınlık"
           value={form.relationship}
           onChange={(e) => setForm((f) => ({ ...f, relationship: e.target.value as GuardianRelationship }))}
         >
@@ -81,28 +81,28 @@ export default function EditGuardianModal({ guardian, onClose }: { guardian: Gua
         </Select>
         <TextInput
           id="edit-guardian-phone"
-          labelText="Phone"
+          labelText="Telefon"
           value={form.phone}
           onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
           invalid={!!touched.phone && (!form.phone.trim() || !isValidSriLankanPhone(form.phone))}
-          invalidText={form.phone.trim() ? PHONE_INVALID_TEXT : "A phone number is required."}
+          invalidText={form.phone.trim() ? PHONE_INVALID_TEXT : "Telefon numarası zorunludur."}
         />
         <TextInput
           id="edit-guardian-email"
-          labelText="Email"
+          labelText="E-posta"
           type="email"
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
         />
         <TextInput
           id="edit-guardian-nic"
-          labelText="NIC number"
+          labelText="T.C. Kimlik No"
           value={form.nic_number}
           onChange={(e) => setForm((f) => ({ ...f, nic_number: e.target.value }))}
           onBlur={() => setTouched((t) => ({ ...t, nic_number: true }))}
           invalid={!!touched.nic_number && !form.nic_number.trim()}
-          invalidText="NIC number is required."
+          invalidText="T.C. Kimlik No zorunludur."
         />
       </div>
     </FormModal>

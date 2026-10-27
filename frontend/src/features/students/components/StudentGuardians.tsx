@@ -34,7 +34,7 @@ export default function StudentGuardians({ studentId }: { studentId: string }) {
 
   return (
     <SectionCard
-      title="Guardians"
+      title="Veliler"
       meta={
         <Button
           renderIcon={Add}
@@ -43,38 +43,38 @@ export default function StudentGuardians({ studentId }: { studentId: string }) {
           onClick={() => setAddOpen(true)}
           disabled={isLoading || isError || atMax}
         >
-          Add guardian
+          Veli ekle
         </Button>
       }
     >
         <MutationErrorNotification
           isError={setPrimary.isError}
           error={setPrimary.error}
-          title="Could not set primary contact"
-          fallback="Please try again."
+          title="Birincil iletişim atanamadı"
+          fallback="Lütfen tekrar deneyin."
           onClose={() => setPrimary.reset()} className="os-mb-4"
         />
         <MutationErrorNotification
           isError={unlinkGuardian.isError}
           error={unlinkGuardian.error}
-          title="Could not remove guardian"
-          fallback="Please try again."
+          title="Veli kaldırılamadı"
+          fallback="Lütfen tekrar deneyin."
           onClose={() => unlinkGuardian.reset()} className="os-mb-4"
         />
         {atMax && (
           <p className="os-mt-0 os-mx-0 os-mb-4 os-text-xs os-c-tertiary">
-            A student can have at most {MAX_GUARDIANS} guardians on file. Remove one to add another.
+            Bir öğrenci için en fazla {MAX_GUARDIANS} veli kaydedilebilir. Başka eklemek için önce birini kaldırın.
           </p>
         )}
 
         {isLoading && <ListRowSkeleton leadingWidth="2.25rem" titleWidth="45%" subtitleWidth="30%" trailingWidth="5rem" />}
 
-        {isError && <ErrorMessage message="Could not load guardians." onRetry={refetch} />}
+        {isError && <ErrorMessage message="Veliler yüklenemedi." onRetry={refetch} />}
 
         {!isLoading && !isError && guardians?.length === 0 && (
           <EmptyState
-            title="No guardians yet"
-            description="Every student needs at least one guardian on file."
+            title="Henüz veli yok"
+            description="Her öğrencinin en az bir velisi kayıtlı olmalıdır."
           />
         )}
 
@@ -109,15 +109,17 @@ export default function StudentGuardians({ studentId }: { studentId: string }) {
 
       <ConfirmDeleteModal
         open={!!toUnlink}
-        title="Remove guardian"
+        title="Veliyi kaldır"
         description={
           <>
-            Remove <strong>{toUnlink && displayName(toUnlink)}</strong> from this student? Their guardian
-            record isn't deleted - this only unlinks them from this student.
+             <strong>{toUnlink && displayName(toUnlink)}</strong> bu öğrenciden kaldırılsın mı? Veli kaydı
+            silinmez - bu işlem yalnızca velinin bu öğrenciyle bağını kaldırır.
           </>
         }
-        subject="Guardian"
-        successVerb="removed"
+        subject="Veli"
+        successVerb="kaldırıldı"
+        confirmLabel="Kaldır"
+        pendingLabel="Kaldırılıyor…"
         mutation={unlinkGuardian}
         onClose={() => setToUnlink(null)}
         onConfirm={() => {

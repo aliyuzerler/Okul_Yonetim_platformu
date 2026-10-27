@@ -10,9 +10,14 @@ import PersonNameFields from "@/shared/ui/PersonNameFields";
 type Gender = "" | "male" | "female";
 
 const ENROLLMENT_STATUSES: { value: StudentEnrollmentStatus; label: string }[] = [
-  { value: "active", label: "Active" },
-  { value: "left", label: "Left the school" },
+  { value: "active", label: "Aktif" },
+  { value: "left", label: "Okuldan ayrıldı" },
 ];
+
+const GENDER_LABELS: Record<string, string> = {
+  male: "Erkek",
+  female: "Kız",
+};
 
 export type StudentProfileForm = {
   full_name: string;
@@ -50,8 +55,8 @@ export default function StudentProfileTab({
 
   return (
     <>
-      <SectionCard title="Profile" className="os-mt-4">
-          <MutationErrorNotification isError={!!updateError} error={null} title="Could not update student" fallback={updateError ?? "Please try again."} />
+      <SectionCard title="Profil" className="os-mt-4">
+          <MutationErrorNotification isError={!!updateError} error={null} title="Öğrenci güncellenemedi" fallback={updateError ?? "Lütfen tekrar deneyin."} />
           <div className="os-grid os-grid-cols-2 os-gap-5">
             <PersonNameFields
               idPrefix="student-profile"
@@ -64,11 +69,11 @@ export default function StudentProfileTab({
                 });
               }}
             />
-            <TextInput id="index-number" labelText="Index number" value={student.index_number} readOnly />
-            <TextInput id="email" labelText="Email" value={student.email ?? "-"} readOnly />
+            <TextInput id="index-number" labelText="Okul numarası" value={student.index_number} readOnly />
+            <TextInput id="email" labelText="E-posta" value={student.email ?? "-"} readOnly />
             <TextInput
               id="phone"
-              labelText="Phone"
+              labelText="Telefon"
               value={form.phone_number}
               readOnly={!editing}
               onChange={(e) => onChange("phone_number", e.target.value)}
@@ -82,33 +87,33 @@ export default function StudentProfileTab({
             />
             <TextInput
               id="address"
-              labelText="Address"
+              labelText="Adres"
               value={form.address}
               readOnly={!editing}
               onChange={(e) => onChange("address", e.target.value)}
             />
             {editing ? (
               <RadioButtonGroup
-                legendText="Gender"
+                legendText="Cinsiyet"
                 name="gender"
                 valueSelected={form.gender}
                 onChange={(value) => onGenderChange(value as Gender)}
               >
-                <RadioButton id="gender-male" labelText="Male" value="male" />
-                <RadioButton id="gender-female" labelText="Female" value="female" />
+                <RadioButton id="gender-male" labelText="Erkek" value="male" />
+                <RadioButton id="gender-female" labelText="Kız" value="female" />
               </RadioButtonGroup>
             ) : (
               <TextInput
                 id="gender"
-                labelText="Gender"
-                value={form.gender ? form.gender[0].toUpperCase() + form.gender.slice(1) : "-"}
+                labelText="Cinsiyet"
+                value={form.gender ? GENDER_LABELS[form.gender] ?? form.gender : "-"}
                 readOnly
               />
             )}
             <div className="os-col-span-full">
               <TextArea
                 id="special-remarks"
-                labelText="Special remarks"
+                labelText="Özel notlar"
                 rows={3}
                 value={form.special_remarks}
                 readOnly={!editing}
@@ -118,7 +123,7 @@ export default function StudentProfileTab({
           </div>
       </SectionCard>
 
-      <SectionCard title="Current class">
+      <SectionCard title="Mevcut sınıf">
           {student.class_name ? (
             <div className="os-flex os-gap-2 os-wrap">
               <Tag type="blue" size="sm">
@@ -136,11 +141,11 @@ export default function StudentProfileTab({
               )}
             </div>
           ) : (
-            <span className="os-text-md os-c-tertiary">Not enrolled in a class.</span>
+            <span className="os-text-md os-c-tertiary">Henüz bir sınıfa kayıtlı değil.</span>
           )}
       </SectionCard>
 
-      <SectionCard title="House">
+      <SectionCard title="Kol">
           {currentHouse && (
             <div className="os-flex os-items-center os-gap-2 os-mb-3">
               <span className="os-inline-block os-w-3q os-h-3q os-rounded-full" style={{ backgroundColor: currentHouse.color }}
@@ -150,24 +155,24 @@ export default function StudentProfileTab({
           )}
           <Select
             id="student-house"
-            labelText={<>Assigned house <InfoTip>Only a system administrator can change it. Every change is recorded in the audit log.</InfoTip></>}
-            helperText="Assigned automatically to balance houses."
+            labelText={<>Atanmış kol <InfoTip>Yalnızca sistem yöneticisi değiştirebilir. Her değişiklik denetim kaydına işlenir.</InfoTip></>}
+            helperText="Kolları dengelemek için otomatik atanır."
             value={student.house_id ?? ""}
             disabled={updateHouse.isPending}
             onChange={(e) => updateHouse.mutate({ id: student.id, houseId: e.target.value })}
           >
-            <SelectItem value="" text="No house" />
+            <SelectItem value="" text="Kol yok" />
             {houses?.map((h) => (
               <SelectItem key={h.id} value={h.id} text={h.name} />
             ))}
           </Select>
       </SectionCard>
 
-      <SectionCard title="Enrolment status">
+      <SectionCard title="Kayıt durumu">
           <Select
             id="student-enrollment-status"
-            labelText="Status"
-            helperText="Mark as left when a student leaves the school."
+            labelText="Durum"
+            helperText="Öğrenci okuldan ayrıldığında “Okuldan ayrıldı” olarak işaretleyin."
             value={student.enrollment_status}
             disabled={updateStatus.isPending}
             onChange={(e) => updateStatus.mutate({ id: student.id, status: e.target.value as StudentEnrollmentStatus })}

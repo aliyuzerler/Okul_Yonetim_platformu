@@ -63,15 +63,15 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
             {guardian.user_id ? (
               <Tag size="sm" type="green">
                 <Locked size={12} className="os-mr-1" />
-                Portal access
+                Portal erişimi
               </Tag>
             ) : (
               <Tag size="sm" type="cool-gray">
-                No portal login
+                Portal girişi yok
               </Tag>
             )}
             <Button renderIcon={Edit} kind="ghost" size="sm" onClick={() => setEditing(true)}>
-              Edit
+              Düzenle
             </Button>
             <Button
               renderIcon={TrashCan}
@@ -82,7 +82,7 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
                 setConfirmDelete(true);
               }}
             >
-              Delete
+              Sil
             </Button>
           </div>
         }
@@ -91,21 +91,21 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
         <MutationErrorNotification
           isError={deleteGuardian.isError}
           error={deleteGuardian.error}
-          title="Could not delete guardian"
-          fallback="This guardian may still be linked to a student."
+          title="Veli silinemedi"
+          fallback="Bu veli hâlâ bir öğrenciye bağlı olabilir."
           onClose={() => deleteGuardian.reset()} className="os-mb-4"
         />
 
         <div className="os-guardian-contact-grid os-mb-6">
-          <ContactCard icon={<Phone size={18} className="os-fill-accent" />} label="Phone" value={guardian.phone} />
-          <ContactCard icon={<Email size={18} className="os-fill-accent" />} label="Email" value={guardian.email || "Not provided"} />
-          <ContactCard icon={<Identification size={18} className="os-fill-accent" />} label="NIC number" value={guardian.nic_number || "Not provided"} />
+          <ContactCard icon={<Phone size={18} className="os-fill-accent" />} label="Telefon" value={guardian.phone} />
+          <ContactCard icon={<Email size={18} className="os-fill-accent" />} label="E-posta" value={guardian.email || "Girilmedi"} />
+          <ContactCard icon={<Identification size={18} className="os-fill-accent" />} label="T.C. Kimlik No" value={guardian.nic_number || "Girilmedi"} />
         </div>
 
         <div className="os-guardian-section-heading">
           <div>
-            <h3 className="os-text-sm os-fw-600 os-mt-0 os-mx-0">Linked students</h3>
-            <p className="os-m-0 os-text-xs os-c-tertiary">Students connected to this guardian profile</p>
+            <h3 className="os-text-sm os-fw-600 os-mt-0 os-mx-0">Bağlı öğrenciler</h3>
+            <p className="os-m-0 os-text-xs os-c-tertiary">Bu veli profiline bağlı öğrenciler</p>
           </div>
           {students && <Tag size="sm" type="cool-gray">{students.length}</Tag>}
         </div>
@@ -124,19 +124,19 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
             ))}
           </div>
         ) : (
-          <p className="os-text-sm os-c-tertiary os-mb-6">No students linked.</p>
+          <p className="os-text-sm os-c-tertiary os-mb-6">Bağlı öğrenci yok.</p>
         )}
 
         <div className="os-guardian-section-heading os-mt-6">
           <div>
-            <h3 className="os-text-sm os-fw-600 os-mt-0 os-mx-0">Notification history</h3>
-            <p className="os-m-0 os-text-xs os-c-tertiary">Messages delivered to this guardian’s portal</p>
+            <h3 className="os-text-sm os-fw-600 os-mt-0 os-mx-0">Bildirim geçmişi</h3>
+            <p className="os-m-0 os-text-xs os-c-tertiary">Bu velinin portalına teslim edilen mesajlar</p>
           </div>
           {notifications && <Notification size={18} className="os-fill-accent" />}
         </div>
         {!guardian.user_id ? (
           <p className="os-text-sm os-c-tertiary">
-            This guardian has no portal login, so they haven't received any in-app notifications.
+            Bu velinin portal girişi yok, bu nedenle uygulama içi bildirim almamıştır.
           </p>
         ) : notificationsLoading ? (
           <SkeletonText width="80%" />
@@ -172,7 +172,7 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
             )}
           </div>
         ) : (
-          <p className="os-text-sm os-c-tertiary">No notifications sent yet.</p>
+          <p className="os-text-sm os-c-tertiary">Henüz bildirim gönderilmedi.</p>
         )}
       </div>
 
@@ -180,23 +180,25 @@ export default function GuardianDetail({ guardian, onDeleted }: { guardian: Guar
 
       <ConfirmDeleteModal
         open={confirmDelete}
-        title="Delete guardian"
+        title="Veliyi sil"
         description={
           studentsLoading ? (
-            "Checking linked students…"
+            "Bağlı öğrenciler denetleniyor…"
           ) : hasStudents ? (
             <>
-              <strong>{displayName(guardian)}</strong> is still linked to {students?.length} student
-              {students && students.length !== 1 ? "s" : ""}. Unlink them from this guardian first
-              (from each student's profile), then delete.
+               <strong>{displayName(guardian)}</strong> hâlâ {students?.length} öğrenciye bağlı. Önce her
+              öğrencinin profilinden bağlantıyı kaldırın, sonra silin.
             </>
           ) : (
             <>
-              Delete <strong>{displayName(guardian)}</strong>? This cannot be undone.
+               <strong>{displayName(guardian)}</strong> silinsin mi? Bu işlem geri alınamaz.
             </>
           )
         }
-        subject="Guardian"
+        subject="Veli"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteGuardian}
         disabled={deleteBlocked}
         onClose={() => setConfirmDelete(false)}

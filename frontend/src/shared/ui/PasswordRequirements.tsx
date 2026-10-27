@@ -11,18 +11,18 @@ export default function PasswordRequirements({ password, confirm }: Props) {
   if (!password && !confirm) return null;
 
   const checks = [
-    [criteria.minLength, "At least 10 characters"],
-    [criteria.uppercase, "One uppercase letter"],
-    [criteria.lowercase, "One lowercase letter"],
-    [criteria.number, "One number"],
-    [criteria.special, "One special character"],
-    [criteria.notCommon, "No simple patterns, like 123456"],
-    [criteria.minLength && confirm.length > 0 && confirm === password, "Passwords match"],
+    [criteria.minLength, "En az 10 karakter"],
+    [criteria.uppercase, "Bir büyük harf"],
+    [criteria.lowercase, "Bir küçük harf"],
+    [criteria.number, "Bir rakam"],
+    [criteria.special, "Bir özel karakter"],
+    [criteria.notCommon, "123456 gibi basit desenler içermesin"],
+    [criteria.minLength && confirm.length > 0 && confirm === password, "Şifreler eşleşiyor"],
   ] as const;
 
   return (
     <div className="os-password-guidance" aria-live="polite">
-      <div className="os-password-guidance__title"><Information size={16} /> Password requirements</div>
+      <div className="os-password-guidance__title"><Information size={16} /> Şifre gereksinimleri</div>
       <div className="os-password-guidance__checks">
         {checks.map(([valid, label]) => (
           <span key={label} className={valid ? "is-valid" : "is-invalid"}>

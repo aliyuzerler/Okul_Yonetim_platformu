@@ -17,14 +17,14 @@ export default function ChangePasswordModal({ onClose }: { onClose: () => void }
   };
 
   return (
-    <ComposedModal open size="sm" onClose={onClose} aria-label="Change password">
-      <ModalHeader title="Change password" />
+    <ComposedModal open size="sm" onClose={onClose} aria-label="Şifre değiştir">
+      <ModalHeader title="Şifre değiştir" />
       <ModalBody>
         {done ? (
           <InlineNotification
             kind="success"
-            title="Password updated"
-            subtitle="Use your new password the next time you sign in."
+            title="Şifre güncellendi"
+            subtitle="Bir sonraki oturum açışınızda yeni şifrenizi kullanın."
             lowContrast
             hideCloseButton
             className="os-full-width"
@@ -34,8 +34,8 @@ export default function ChangePasswordModal({ onClose }: { onClose: () => void }
             <MutationErrorNotification
               isError={changePassword.isError}
               error={changePassword.error}
-              title="Could not update password"
-              fallback="Please try again."
+              title="Şifre güncellenemedi"
+              fallback="Lütfen yeniden deneyin."
             />
             <PasswordFields
               idPrefix="change-password"
@@ -49,12 +49,12 @@ export default function ChangePasswordModal({ onClose }: { onClose: () => void }
       </ModalBody>
       <ModalFooter>
         {done ? (
-          <Button kind="primary" onClick={onClose}>Done</Button>
+          <Button kind="primary" onClick={onClose}>Bitti</Button>
         ) : (
           <>
-            <Button kind="secondary" onClick={onClose}>Cancel</Button>
+            <Button kind="secondary" onClick={onClose}>İptal</Button>
             <Button kind="primary" onClick={handleSubmit} disabled={!valid || changePassword.isPending}>
-              {changePassword.isPending ? "Saving…" : "Save"}
+              {changePassword.isPending ? "Kaydediliyor…" : "Kaydet"}
             </Button>
           </>
         )}

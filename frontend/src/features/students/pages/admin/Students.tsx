@@ -22,11 +22,11 @@ import Avatar from "@/shared/ui/Avatar";
 import { displayName } from "@/shared/lib/name";
 
 const FILTER_LABELS: Record<string, string> = {
-  query: "Search",
-  grade: "Grade",
-  cls: "Class",
-  gender: "Gender",
-  house: "House",
+  query: "Arama",
+  grade: "Sınıf seviyesi",
+  cls: "Sınıf",
+  gender: "Cinsiyet",
+  house: "Kol",
 };
 
 
@@ -76,10 +76,10 @@ export default function Students() {
   };
 
   const columns: GridColumn<Student>[] = [
-    { key: "index_number", header: "Index no.", render: (s) => <span className="os-table__mono">{s.index_number}</span> },
+    { key: "index_number", header: "Okul numarası", render: (s) => <span className="os-table__mono">{s.index_number}</span> },
     {
       key: "full_name",
-      header: "Full name",
+      header: "Ad soyad",
       render: (s) => (
         <div className="os-flex os-items-center os-gap-2">
           <Avatar name={s.full_name} size="sm" />
@@ -87,26 +87,26 @@ export default function Students() {
         </div>
       ),
     },
-    { key: "class_name", header: "Class", render: (s) => <span className="os-table__muted">{s.class_name ?? "-"}</span> },
-    { key: "house_name", header: "House", render: (s) => <span className="os-table__muted">{s.house_name ?? "-"}</span> },
-    { key: "phone", header: "Phone", render: (s) => <span className="os-table__muted">{s.phone ?? "-"}</span> },
+    { key: "class_name", header: "Sınıf", render: (s) => <span className="os-table__muted">{s.class_name ?? "-"}</span> },
+    { key: "house_name", header: "Kol", render: (s) => <span className="os-table__muted">{s.house_name ?? "-"}</span> },
+    { key: "phone", header: "Telefon", render: (s) => <span className="os-table__muted">{s.phone ?? "-"}</span> },
     { key: "whatsapp", header: "WhatsApp", render: (s) => <span className="os-table__muted">{s.whatsapp ?? "-"}</span> },
     {
       key: "enrollment_status",
-      header: "Status",
+      header: "Durum",
       render: (s) =>
-        s.enrollment_status === "active" ? <Tag type="green" size="sm">Active</Tag> : <Tag type="red" size="sm">Left</Tag>,
+        s.enrollment_status === "active" ? <Tag type="green" size="sm">Aktif</Tag> : <Tag type="red" size="sm">Ayrıldı</Tag>,
     },
     {
       key: "actions",
-      header: "Actions",
+      header: "İşlemler",
       align: "end",
       render: (s) => (
         <div className="os-grid__actions">
-          <IconButton label="Edit profile" kind="ghost" size="sm" onClick={() => navigate(`/students/${s.id}`, { state: { edit: true } })}>
+          <IconButton label="Profili düzenle" kind="ghost" size="sm" onClick={() => navigate(`/students/${s.id}`, { state: { edit: true } })}>
             <Edit />
           </IconButton>
-          <IconButton label="Delete student" kind="ghost" size="sm" onClick={() => setToDelete(s)}>
+          <IconButton label="Öğrenciyi sil" kind="ghost" size="sm" onClick={() => setToDelete(s)}>
             <TrashCan />
           </IconButton>
         </div>
@@ -118,15 +118,15 @@ export default function Students() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Students</h1>
-          <p className="os-page__subtitle">Manage student enrolment and profiles</p>
+          <h1 className="os-page__title">Öğrenciler</h1>
+          <p className="os-page__subtitle">Öğrenci kayıtlarını ve profillerini yönetin</p>
         </div>
         <div className="os-flex os-gap-2">
           <Button renderIcon={Upload} kind="secondary" size="md" as={Link} to="/students/import">
-            Import students
+            Öğrencileri aktar
           </Button>
           <Button renderIcon={Add} kind="primary" size="md" as={Link} to="/students/new">
-            Enrol student
+            Öğrenci kaydı
           </Button>
         </div>
       </div>
@@ -135,10 +135,10 @@ export default function Students() {
 
       <div className="os-section">
         <FilterBar
-          search={{ value: filters.query, onChange: (v) => setFilter("query", v), placeholder: "Search by name or index number…" }}
+          search={{ value: filters.query, onChange: (v) => setFilter("query", v), placeholder: "Ad veya okul numarasına göre ara…" }}
           controls={[
             {
-              label: "Grade",
+              label: "Sınıf seviyesi",
               node: (
                 <EntityCombobox
                   id="filter-grade"
@@ -147,13 +147,13 @@ export default function Students() {
                   onSelect={(v) => { setFilter("grade", v); setFilter("cls", ""); }}
                   getId={(g) => g.name}
                   itemToString={(g) => g.name}
-                  ariaLabel="Grade"
-                  placeholder="All grades"
+                  ariaLabel="Sınıf seviyesi"
+                  placeholder="Tüm seviyeler"
                 />
               ),
             },
             {
-              label: "Class",
+              label: "Sınıf",
               node: (
                 <EntityCombobox
                   id="filter-class"
@@ -162,26 +162,26 @@ export default function Students() {
                   onSelect={(v) => setFilter("cls", v)}
                   getId={(c) => c.name}
                   itemToString={(c) => c.name}
-                  ariaLabel="Class"
-                  placeholder="All classes"
+                  ariaLabel="Sınıf"
+                  placeholder="Tüm sınıflar"
                 />
               ),
             },
             {
-              label: "Gender",
+              label: "Cinsiyet",
               node: (
-                <Select id="filter-gender" labelText="Gender" hideLabel size="md" value={filters.gender} onChange={(e) => setFilter("gender", e.target.value)}>
-                  <SelectItem value="" text="Any gender" />
-                  <SelectItem value="male" text="Male" />
-                  <SelectItem value="female" text="Female" />
+                <Select id="filter-gender" labelText="Cinsiyet" hideLabel size="md" value={filters.gender} onChange={(e) => setFilter("gender", e.target.value)}>
+                  <SelectItem value="" text="Tüm cinsiyetler" />
+                  <SelectItem value="male" text="Erkek" />
+                  <SelectItem value="female" text="Kız" />
                 </Select>
               ),
             },
             {
-              label: "House",
+              label: "Kol",
               node: (
-                <Select id="filter-house" labelText="House" hideLabel size="md" value={filters.house} onChange={(e) => setFilter("house", e.target.value)}>
-                  <SelectItem value="" text="All houses" />
+                <Select id="filter-house" labelText="Kol" hideLabel size="md" value={filters.house} onChange={(e) => setFilter("house", e.target.value)}>
+                  <SelectItem value="" text="Tüm kollar" />
                   {houses?.map((h) => <SelectItem key={h.id} value={h.name} text={h.name} />)}
                 </Select>
               ),
@@ -198,8 +198,8 @@ export default function Students() {
         <MutationErrorNotification
           isError={deleteStudent.isError}
           error={deleteStudent.error}
-          title="Could not delete student"
-          fallback="Please try again."
+          title="Öğrenci silinemedi"
+          fallback="Lütfen tekrar deneyin."
           onClose={() => deleteStudent.reset()}
           className="os-section__notice"
         />
@@ -208,16 +208,16 @@ export default function Students() {
           isLoading={isLoading}
           isError={isError}
           isEmpty={students.length === 0}
-          errorMessage="Failed to load students"
+          errorMessage="Öğrenci listesi yüklenemedi."
           onRetry={refetch}
           skeleton={<TableSkeleton headers={columns.map((c) => c.header)} />}
-          empty={{ title: "No students found", description: "Enrol your first student or adjust your search filters to get started." }}
+          empty={{ title: "Öğrenci bulunamadı", description: "İlk öğrencinizi kaydedin veya arama filtrelerinizi değiştirin." }}
         >
           <DataGrid
             rows={students}
             columns={columns}
             getRowId={(s) => s.id}
-            countLabel={(shown, total) => `Showing ${shown} of ${total} students`}
+            countLabel={(shown, total) => `Toplam ${total} öğrenciden ${shown} tanesi gösteriliyor`}
             server={{ page, pageSize, totalItems: data?.total ?? 0, onChange: ({ page: p, pageSize: ps }) => { setPage(p); setPageSize(ps); } }}
           />
         </ListState>
@@ -225,9 +225,12 @@ export default function Students() {
 
       <ConfirmDeleteModal
         open={!!toDelete}
-        title="Delete student"
-        description={<>Delete <strong>{toDelete ? displayName(toDelete) : ""}</strong>? This removes their account and cannot be undone.</>}
-        subject="Student"
+        title="Öğrenciyi sil"
+        description={<> <strong>{toDelete ? displayName(toDelete) : ""}</strong> silinsin mi? Bu işlem hesabını da kaldırır ve geri alınamaz.</>}
+        subject="Öğrenci"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteStudent}
         onClose={() => setToDelete(null)}
         onConfirm={() => toDelete && deleteStudent.mutate(toDelete.id)}

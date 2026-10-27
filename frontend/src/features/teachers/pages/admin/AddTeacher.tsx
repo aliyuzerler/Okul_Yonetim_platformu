@@ -26,7 +26,7 @@ type Touched = Partial<
 >;
 
 export default function AddTeacher() {
-  usePageTitle("Add teacher");
+  usePageTitle("Öğretmen ekle");
   const navigate = useNavigate();
   const createTeacher = useCreateTeacher();
 
@@ -67,7 +67,7 @@ export default function AddTeacher() {
   };
 
   const errorMessage = createTeacher.isError
-    ? getErrorMessage(createTeacher.error, "Failed to create teacher")
+    ? getErrorMessage(createTeacher.error, "Öğretmen oluşturulamadı")
     : null;
 
   const fullNameInvalid = !!touched.fullName && !names.full_name.trim();
@@ -87,11 +87,11 @@ export default function AddTeacher() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Add new teacher</h1>
-          <p className="os-page__subtitle">Create a teacher account and profile</p>
+          <h1 className="os-page__title">Yeni öğretmen ekle</h1>
+          <p className="os-page__subtitle">Öğretmen hesabı ve profili oluşturun</p>
         </div>
         <Button renderIcon={ArrowLeft} kind="ghost" size="md" as={Link} to="/teachers">
-          Back
+          Geri
         </Button>
       </div>
 
@@ -99,7 +99,7 @@ export default function AddTeacher() {
         {errorMessage && (
           <InlineNotification
             kind="error"
-            title="Error"
+            title="Hata"
             subtitle={errorMessage}
             lowContrast
             hideCloseButton
@@ -107,27 +107,27 @@ export default function AddTeacher() {
         )}
 
         <div className="os-form__section">
-          <div className="os-form__section-header">Account</div>
+          <div className="os-form__section-header">Hesap</div>
           <div className="os-form__section-body">
             <Select
               id="title"
-              labelText="Title (optional)"
+              labelText="Unvan (isteğe bağlı)"
               value={title}
               onChange={(e) => setTitle(e.target.value as TeacherTitle | "")}
             >
-              <SelectItem value="" text="None" />
+              <SelectItem value="" text="Yok" />
               {TITLES.map((t) => (
                 <SelectItem key={t} value={t} text={t} />
               ))}
             </Select>
             <RadioButtonGroup
-              legendText="Gender (optional)"
+              legendText="Cinsiyet (isteğe bağlı)"
               name="gender"
               valueSelected={gender}
               onChange={(value) => setGender(value as "male" | "female")}
             >
-              <RadioButton id="gender-male" labelText="Male" value="male" />
-              <RadioButton id="gender-female" labelText="Female" value="female" />
+              <RadioButton id="gender-male" labelText="Erkek" value="male" />
+              <RadioButton id="gender-female" labelText="Kız" value="female" />
             </RadioButtonGroup>
             <PersonNameFields
               idPrefix="teacher"
@@ -138,18 +138,18 @@ export default function AddTeacher() {
             />
             <TextInput
               id="email"
-              labelText="Email address"
-              placeholder="e.g. teacher@school.lk"
+              labelText="E-posta adresi"
+              placeholder="örn. teacher@school.lk"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() => markTouched("email")}
               invalid={emailInvalid}
-              invalidText="Enter a valid email address."
+              invalidText="Geçerli bir e-posta adresi girin."
             />
             <TextInput
               id="phone"
-              labelText="Phone (optional)"
-              placeholder="e.g. 077 123 4567"
+              labelText="Telefon (isteğe bağlı)"
+              placeholder="örn. 077 123 4567"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               onBlur={() => markTouched("phone")}
@@ -158,26 +158,26 @@ export default function AddTeacher() {
             />
             <TextInput
               id="nic-number"
-              labelText="NIC number"
-              placeholder="e.g. 199012345678 or 901234567V"
+              labelText="T.C. Kimlik No"
+              placeholder="örn. 199012345678 veya 901234567V"
               value={nicNumber}
               onChange={(e) => setNicNumber(e.target.value)}
               onBlur={() => markTouched("nicNumber")}
               invalid={nicNumberInvalid}
-              invalidText="NIC number is required."
-              helperText="Used as the teacher's initial one-time password."
+              invalidText="T.C. Kimlik No zorunludur."
+              helperText="Öğretmenin ilk tek kullanımlık şifresi olarak kullanılır."
             />
           </div>
         </div>
 
         <div className="os-form__section">
-          <div className="os-form__section-header">Employment details</div>
+          <div className="os-form__section-header">Göreve başlama</div>
           <div className="os-form__section-body">
             <DateField value={joinedDate} onChange={(ymd) => setJoinedDate(ymd)} id="joined-date"
-                labelText="Joining date"
+                labelText="İşe başlama tarihi"
                 onBlur={() => markTouched("joinedDate")}
                 invalid={joinedDateInvalid}
-                invalidText="Joining date is required." />
+                invalidText="İşe başlama tarihi zorunludur." />
           </div>
         </div>
 
@@ -188,10 +188,10 @@ export default function AddTeacher() {
             onClick={handleSubmit}
             disabled={!isValid || createTeacher.isPending}
           >
-            {createTeacher.isPending ? "Saving…" : "Save teacher"}
+            {createTeacher.isPending ? "Kaydediliyor…" : "Kaydet"}
           </Button>
           <Button kind="secondary" as={Link} to="/teachers">
-            Cancel
+            İptal
           </Button>
         </div>
       </div>

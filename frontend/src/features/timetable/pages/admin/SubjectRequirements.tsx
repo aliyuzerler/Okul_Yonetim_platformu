@@ -60,10 +60,10 @@ export default function SubjectRequirements({ inline = false }: { inline?: boole
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Subject period requirements</h1>
+            <h1 className="os-page__title">Ders gereksinimleri</h1>
             <div className="os-page__subtitle os-page__subtitle--tip">
-              Weekly periods each grade needs per subject.
-              <InfoTip>A class timetable must meet these before it can go for review. Double blocks are back-to-back pairs: 2 blocks out of 6 periods pairs up 4 and leaves 2 single. The generator places exactly that many.</InfoTip>
+              Her sınıf seviyesinin ders başına ihtiyaç duyduğu haftalık ders saatleri.
+              <InfoTip>Bir sınıf ders programı, incelemeye gönderilmeden önce bunları karşılamalıdır. Çift bloklar art arda gelen ikililerdir: 6 ders saatinden 2 blok, 4 saati eşleştirir ve 2 tek ders saati bırakır. Üretici tam bu kadarını yerleştirir.</InfoTip>
             </div>
           </div>
         </div>
@@ -73,8 +73,8 @@ export default function SubjectRequirements({ inline = false }: { inline?: boole
         <div className="os-max-w-20 os-mb-6">
           <Dropdown
             id="requirements-grade"
-            titleText="Grade"
-            label="Select a grade…"
+            titleText="Sınıf seviyesi"
+            label="Bir sınıf seviyesi seçin…"
             items={grades ?? []}
             itemToString={(g) => (g as Grade)?.name ?? ""}
             selectedItem={selectedGrade}
@@ -83,34 +83,34 @@ export default function SubjectRequirements({ inline = false }: { inline?: boole
         </div>
 
         {!currentYear ? (
-          <EmptyState title="No current academic year" description="Set an academic year as current first." />
+          <EmptyState title="Güncel eğitim-öğretim yılı yok" description="Önce bir eğitim-öğretim yılını güncel olarak ayarlayın." />
         ) : !selectedGrade ? (
-          <EmptyState title="Select a grade" description="Choose a grade above to configure its subject periods." />
+          <EmptyState title="Bir sınıf seviyesi seçin" description="Ders saatlerini yapılandırmak için yukarıdan bir sınıf seviyesi seçin." />
         ) : isLoading ? (
           <SkeletonText width="40%" />
         ) : !subjects || subjects.length === 0 ? (
-          <EmptyState title="No subjects yet" description="Add subjects under Subjects first." />
+          <EmptyState title="Henüz ders yok" description="Önce Dersler altına ders ekleyin." />
         ) : (
           <>
             <MutationErrorNotification
               isError={upsert.isError}
               error={upsert.error}
-              title="Could not save"
+              title="Kaydedilemedi"
               onClose={() => upsert.reset()} className="os-mb-4"
             />
             <MutationErrorNotification
               isError={remove.isError}
               error={remove.error}
-              title="Could not clear requirement"
+              title="Gereksinim temizlenemedi"
               onClose={() => remove.reset()} className="os-mb-4"
             />
             <table className="os-table">
               <thead>
                 <tr>
-                  <th>Subject</th>
-                  <th className="os-w-10">Periods / week</th>
-                  <th className="os-w-10">Lab periods / week</th>
-                  <th className="os-w-10">Double blocks / week</th>
+                  <th>Ders</th>
+                  <th className="os-w-10">Ders saati / hafta</th>
+                  <th className="os-w-10">Lab ders saati / hafta</th>
+                  <th className="os-w-10">Çift blok / hafta</th>
                   <th className="os-w-4">{null}</th>
                 </tr>
               </thead>
@@ -155,14 +155,14 @@ export default function SubjectRequirements({ inline = false }: { inline?: boole
                           max={maxBlocks}
                           value={doubleBlocks}
                           disabled={maxBlocks === 0}
-                          helperText={maxBlocks > 0 ? `up to ${maxBlocks}` : undefined}
+                          helperText={maxBlocks > 0 ? `en fazla ${maxBlocks}` : undefined}
                           onChange={(_e, { value }) => handleChange(s.id, periods, labPeriodsFor(s.id), Number(value ?? 0))}
                         />
                       </td>
                       <td>
                         {/* Clearing removes the row (unset), distinct from setting 0 periods (checked by the validator as zero). */}
                         <RemoveIconButton
-                          label="Clear requirement"
+                          label="Gereksinimi temizle"
                           disabled={!requirement || remove.isPending}
                           onClick={() => requirement && setToRemove(requirement)}
                         />
@@ -178,19 +178,18 @@ export default function SubjectRequirements({ inline = false }: { inline?: boole
 
       <ConfirmDeleteModal
         open={!!toRemove}
-        title="Clear requirement"
+        title="Gereksinimi temizle"
         description={
           <>
-            Clear the weekly period requirement for{" "}
-            <strong>{toRemove?.subject_name}</strong> in {selectedGrade?.name}?
-            The timetable validator will stop checking this subject for this
-            grade until a requirement is set again.
+            {selectedGrade?.name} için <strong>{toRemove?.subject_name}</strong> dersinin haftalık ders saati
+            gereksinimi temizlensin mi? Yeniden bir gereksinim ayarlanana kadar ders programı denetçisi bu
+            seviye için bu dersi denetlemeyi bırakır.
           </>
         }
-        confirmLabel="Clear"
-        pendingLabel="Clearing…"
-        subject="Requirement"
-        successVerb="cleared"
+        confirmLabel="Temizle"
+        pendingLabel="Temizleniyor…"
+        subject="Gereksinim"
+        successVerb="temizlendi"
         mutation={remove}
         onClose={() => setToRemove(null)}
         onConfirm={() => {

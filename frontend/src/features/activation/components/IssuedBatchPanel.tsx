@@ -17,7 +17,7 @@ export default function IssuedBatchPanel({ batch, onDone, reopened = false }: { 
   const { selected, print } = usePrintSheet();
 
   if (batch.codes.length === 0) {
-    return <InlineNotification kind="info" lowContrast hideCloseButton title="Nobody to issue" subtitle="Everyone in this selection already has a login." className="os-max-w-full" />;
+    return <InlineNotification kind="info" lowContrast hideCloseButton title="Düzenlenecek kimse yok" subtitle="Bu seçimdeki herkesin zaten giriş bilgisi var." className="os-max-w-full" />;
   }
 
   return (
@@ -26,25 +26,25 @@ export default function IssuedBatchPanel({ batch, onDone, reopened = false }: { 
         kind="warning"
         lowContrast
         hideCloseButton
-        title={`${batch.codes.length} codes in ${groups.length} ${groups.length === 1 ? "class" : "classes"}, valid until ${formatDate(batch.expires_at)}`}
+        title={`${batch.codes.length} kod · ${groups.length} sınıfta · ${formatDate(batch.expires_at)} tarihine kadar geçerli`}
         subtitle={reopened
-          ? "Unused codes from this batch. Print a class or save it as a PDF (choose Save as PDF in the print window); Ctrl+P also prints the code sheets. Opening codes is recorded in the audit log."
-          : "Print a class or save it as a PDF (choose Save as PDF in the print window); Ctrl+P also prints the code sheets. You can reopen unused codes later from Issued batches."}
+          ? "Bu gruptaki kullanılmayan kodlar. Bir sınıfı yazdırın veya PDF olarak kaydedin (yazdırma penceresinde PDF olarak kaydet'i seçin); Ctrl+P kod sayfalarını da yazdırır. Kodların açılması denetim kaydına işlenir."
+          : "Bir sınıfı yazdırın veya PDF olarak kaydedin (yazdırma penceresinde PDF olarak kaydet'i seçin); Ctrl+P kod sayfalarını da yazdırır. Kullanılmayan kodları daha sonra Düzenlenen kod gruplarından yeniden açabilirsiniz."}
         className="os-max-w-full"
       />
       <div className="os-flex os-gap-2 os-items-center os-wrap os-my-4">
-        <Button kind="primary" size="sm" renderIcon={Printer} onClick={() => print(null)}>Print all classes</Button>
-        <Button kind="secondary" size="sm" renderIcon={Download} onClick={() => downloadBatchCsv(batch)}>Download CSV</Button>
-        <Checkbox id="codes-hand-out" labelText="Include the class hand-out list" checked={withHandOutList} onChange={(_e, { checked }) => setWithHandOutList(checked)} />
-        <Button kind="ghost" size="sm" onClick={onDone}>Done</Button>
+        <Button kind="primary" size="sm" renderIcon={Printer} onClick={() => print(null)}>Tüm sınıfları yazdır</Button>
+        <Button kind="secondary" size="sm" renderIcon={Download} onClick={() => downloadBatchCsv(batch)}>CSV indir</Button>
+        <Checkbox id="codes-hand-out" labelText="Sınıf dağıtım listesini ekle" checked={withHandOutList} onChange={(_e, { checked }) => setWithHandOutList(checked)} />
+        <Button kind="ghost" size="sm" onClick={onDone}>Bitti</Button>
       </div>
       <table className="os-table">
         <thead>
           <tr>
-            <th>Class</th>
-            <th>Form teacher</th>
-            <th>Codes</th>
-            <th aria-label="Actions" />
+            <th>Sınıf</th>
+            <th>Sınıf öğretmeni</th>
+            <th>Kodlar</th>
+            <th aria-label="İşlemler" />
           </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@ export default function IssuedBatchPanel({ batch, onDone, reopened = false }: { 
               <td>{g.title}</td>
               <td>{g.formTeacher || "-"}</td>
               <td>{g.codes.length}</td>
-              <td><Button kind="ghost" size="sm" renderIcon={Printer} onClick={() => print([g.key])}>Print / PDF</Button></td>
+              <td><Button kind="ghost" size="sm" renderIcon={Printer} onClick={() => print([g.key])}>Yazdır / PDF</Button></td>
             </tr>
           ))}
         </tbody>

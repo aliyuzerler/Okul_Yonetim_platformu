@@ -19,14 +19,14 @@ export default function ActiveFilterTags({ filters, onClear, onClearAll }: Props
   if (filters.length === 0) return null;
   return (
     <div className="os-filter-tags">
-      <span className="os-filter-tags__label">Active filters:</span>
+      <span className="os-filter-tags__label">Etkin filtreler:</span>
       {filters.map((f, i) => (
         <Tag key={f.key} type={TAG_TYPES[i % TAG_TYPES.length]} filter onClose={() => onClear(f.key)}>
           {f.label}: {f.value}
         </Tag>
       ))}
       <Button kind="ghost" size="sm" renderIcon={Close} onClick={onClearAll}>
-        Clear all
+        Tümünü temizle
       </Button>
     </div>
   );

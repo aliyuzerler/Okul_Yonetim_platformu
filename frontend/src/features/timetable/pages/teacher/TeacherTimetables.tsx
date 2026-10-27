@@ -20,8 +20,8 @@ export default function TeacherTimetables() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">All timetables</h1>
-          <p className="os-page__subtitle">Every class timetable for {currentYear?.label ?? "the current academic year"}.</p>
+          <h1 className="os-page__title">Tüm ders programları</h1>
+          <p className="os-page__subtitle">{currentYear?.label ?? "güncel eğitim-öğretim yılı"} için tüm sınıf ders programları.</p>
         </div>
       </div>
 
@@ -29,9 +29,9 @@ export default function TeacherTimetables() {
         {isLoading ? (
           <div className="os-p-6"><SkeletonText width="40%" /></div>
         ) : isError ? (
-          <ErrorMessage message="Could not load timetables." onRetry={refetch} />
+          <ErrorMessage message="Ders programları yüklenemedi." onRetry={refetch} />
         ) : !timetables?.length ? (
-          <EmptyState title="No timetables yet" description="No class timetables have been created for this academic year." />
+          <EmptyState title="Henüz ders programı yok" description="Bu eğitim-öğretim yılı için henüz sınıf ders programı oluşturulmadı." />
         ) : (
           <DataGrid
             rows={timetables}
@@ -39,11 +39,11 @@ export default function TeacherTimetables() {
             pageSize={20}
             onRowClick={(t) => navigate(`/timetables/${t.id}`)}
             columns={[
-              { key: "grade", header: "Grade", render: (t) => t.grade_name },
-              { key: "class", header: "Class", render: (t) => t.class_name },
-              { key: "version", header: "Version", render: (t) => `v${t.version}` },
-              { key: "status", header: "Status", render: (t) => <Tag type={statusTag(t.status)?.type ?? "gray"} size="sm">{statusTag(t.status)?.label ?? t.status}</Tag> },
-              { key: "updated", header: "Updated", render: (t) => formatDateTime(t.updated_at) },
+              { key: "grade", header: "Sınıf seviyesi", render: (t) => t.grade_name },
+              { key: "class", header: "Sınıf", render: (t) => t.class_name },
+              { key: "version", header: "Sürüm", render: (t) => `v${t.version}` },
+              { key: "status", header: "Durum", render: (t) => <Tag type={statusTag(t.status)?.type ?? "gray"} size="sm">{statusTag(t.status)?.label ?? t.status}</Tag> },
+              { key: "updated", header: "Son güncelleme", render: (t) => formatDateTime(t.updated_at) },
             ]}
           />
         )}

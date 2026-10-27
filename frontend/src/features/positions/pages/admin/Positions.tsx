@@ -35,43 +35,43 @@ export default function Positions() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Principal and VPs</h1>
-          <p className="os-page__subtitle">Principal and vice principals. They decide who can send school-wide notices.</p>
+          <h1 className="os-page__title">Müdür ve müdür yardımcıları</h1>
+          <p className="os-page__subtitle">Müdür ve müdür yardımcıları. Okul genelinde duyuru gönderebilecek kişileri belirler.</p>
         </div>
-        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setVpOpen(true)}>Add vice principal</Button>
+        <Button renderIcon={Add} kind="primary" size="md" onClick={() => setVpOpen(true)}>Müdür yardımcısı ekle</Button>
       </div>
 
-      {isError && <div className="os-mb-6"><ErrorMessage message="Could not load positions." onRetry={refetch} /></div>}
-      <MutationErrorNotification isError={removePosition.isError} error={removePosition.error} title="Could not remove position" fallback="Please try again." onClose={() => removePosition.reset()} />
+      {isError && <div className="os-mb-6"><ErrorMessage message="Görevler yüklenemedi." onRetry={refetch} /></div>}
+      <MutationErrorNotification isError={removePosition.isError} error={removePosition.error} title="Görev kaldırılamadı" fallback="Lütfen tekrar deneyin." onClose={() => removePosition.reset()} />
 
       {!isError && (
         <>
-          <SectionCard title={<Title text="Principal" />} flush>
+          <SectionCard title={<Title text="Müdür" />} flush>
             {isLoading ? (
               skeleton
             ) : !principal ? (
               <EmptyState
-                title="No principal assigned"
-                description="Assign the school's Principal."
-                action={<Button kind="tertiary" size="sm" onClick={() => setPrincipalOpen(true)}>Assign principal</Button>}
+                title="Henüz müdür atanmadı"
+                description="Okulun müdürünü atayın."
+                action={<Button kind="tertiary" size="sm" onClick={() => setPrincipalOpen(true)}>Müdür ata</Button>}
               />
             ) : (
               <div className="os-flex os-items-center os-gap-4 os-py-3 os-px-6">
                 <Avatar name={principal.teacher_name} size="sm" />
                 <div className="os-flex-1 os-min-w-0">
                   <Link to={`/teachers/${principal.teacher_id}`} className="os-table__link os-text-md os-fw-500">{principal.teacher_name}</Link>
-                  <p className="os-mt-h os-mx-0 os-mb-0 os-text-xs os-c-secondary">Notifies the whole school</p>
+                  <p className="os-mt-h os-mx-0 os-mb-0 os-text-xs os-c-secondary">Tüm okulu bilgilendirebilir</p>
                 </div>
-                <Button kind="ghost" size="sm" onClick={() => setPrincipalOpen(true)}>Change</Button>
+                <Button kind="ghost" size="sm" onClick={() => setPrincipalOpen(true)}>Değiştir</Button>
               </div>
             )}
           </SectionCard>
 
-          <SectionCard title={<Title text="Vice principals" />} meta={<span className="os-section__meta">{vicePrincipals.length}</span>} flush>
+          <SectionCard title={<Title text="Müdür yardımcıları" />} meta={<span className="os-section__meta">{vicePrincipals.length}</span>} flush>
             {isLoading ? (
               skeleton
             ) : vicePrincipals.length === 0 ? (
-              <EmptyState title="No vice principals yet" description="Add a Vice Principal and set their notification reach." />
+              <EmptyState title="Henüz müdür yardımcısı yok" description="Bir müdür yardımcısı ekleyin ve bildirim kapsamını belirleyin." />
             ) : (
               vicePrincipals.map((vp) => (
                 <div key={vp.id} className="os-list-row os-py-3 os-px-6">
@@ -79,7 +79,7 @@ export default function Positions() {
                   <div className="os-flex-1 os-min-w-0">
                     <Link to={`/teachers/${vp.teacher_id}`} className="os-table__link os-text-md os-fw-500">{vp.teacher_name}</Link>
                   </div>
-                  <Tag type={vp.notify_whole_school ? "blue" : "gray"} size="sm">{vp.notify_whole_school ? "Whole school" : "Scoped to assigned grades"}</Tag>
+                  <Tag type={vp.notify_whole_school ? "blue" : "gray"} size="sm">{vp.notify_whole_school ? "Tüm okul" : "Atanmış seviyelerle sınırlı"}</Tag>
                   <RemoveIconButton disabled={removePosition.isPending} onClick={() => setVpToRemove(vp)} />
                 </div>
               ))
@@ -93,12 +93,12 @@ export default function Positions() {
 
       <ConfirmDeleteModal
         open={!!vpToRemove}
-        title="Remove vice principal"
-        description={<>Remove <strong>{vpToRemove?.teacher_name}</strong> as Vice Principal? They will stop receiving notifications for their assigned scope.</>}
-        confirmLabel="Remove"
-        pendingLabel="Removing…"
-        subject="Vice Principal"
-        successVerb="removed"
+        title="Müdür yardımcısını kaldır"
+        description={<> <strong>{vpToRemove?.teacher_name}</strong> müdür yardımcılığından kaldırılsın mı? Artık atanmış kapsamına gelen bildirimleri almayacak.</>}
+        confirmLabel="Kaldır"
+        pendingLabel="Kaldırılıyor…"
+        subject="Müdür yardımcısı"
+        successVerb="kaldırıldı"
         mutation={removePosition}
         onClose={() => setVpToRemove(null)}
         onConfirm={() => vpToRemove && removePosition.mutate(vpToRemove.id)}

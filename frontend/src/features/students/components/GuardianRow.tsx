@@ -31,35 +31,35 @@ export default function GuardianRow({
           </Tag>
           {g.is_primary_contact && (
             <Tag size="sm" type="teal">
-              Primary contact
+              Birincil iletişim
             </Tag>
           )}
           {g.user_id && (
             <Tag size="sm" type="green">
               <Locked size={12} className="os-mr-1" />
-              Portal access
+              Portal erişimi
             </Tag>
           )}
         </div>
         <p className="os-m-0 os-text-sm os-c-secondary">
           {g.phone}
           {g.email ? ` · ${g.email}` : ""}
-          {g.nic_number ? ` · NIC ${g.nic_number}` : ""}
+          {g.nic_number ? ` · T.C. Kimlik No ${g.nic_number}` : ""}
         </p>
       </div>
       <div className="os-flex os-gap-2 os-shrink-0">
         {!g.is_primary_contact && (
           <Button kind="ghost" size="sm" onClick={onSetPrimary} disabled={isSettingPrimary}>
-            Set primary
+            Birincil yap
           </Button>
         )}
         {!g.user_id && (
           <Button renderIcon={UserFollow} kind="ghost" size="sm" onClick={onSetUpLogin}>
-            Set up login
+            Portal girişi oluştur
           </Button>
         )}
         <Button kind="danger--ghost" size="sm" onClick={onRemove}>
-          Remove
+          Kaldır
         </Button>
       </div>
     </div>

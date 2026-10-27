@@ -25,22 +25,22 @@ export default function PersonNameFields({ idPrefix, value, onChange, fullNameIn
       <div className="os-col-span-full">
         <TextInput
           id={`${idPrefix}-full-name`}
-          labelText="Full name"
-          helperText={readOnly ? undefined : "As on the birth certificate or NIC, e.g. Hettiwatta Arachchige Hasitha Erandika Wickramasinghe."}
+          labelText="Ad soyad"
+          helperText={readOnly ? undefined : "Doğum belgesi veya T.C. Kimlik Belgesi'ndeki gibi, örn. Zeynep Elif Yıldırım."}
           value={value.full_name}
           disabled={disabled}
           readOnly={readOnly}
           invalid={fullNameInvalid}
-          invalidText="Full name is required."
+          invalidText="Ad soyad zorunludur."
           onChange={(e) => setFullName(e.target.value)}
           onBlur={onFullNameBlur}
         />
       </div>
       <TextInput
         id={`${idPrefix}-name-with-initials`}
-        labelText="Name with initials"
-        helperText={readOnly ? undefined : "Filled in from the full name. Change it if needed, e.g. for Tamil or Muslim names."}
-        placeholder="H.A.H.E. Wickramasinghe"
+        labelText="Baş harfli ad soyad"
+        helperText={readOnly ? undefined : "Ad soyaddan otomatik doldurulur. Gerekirse değiştirebilirsiniz."}
+        placeholder="Z.E. Yıldırım"
         value={value.name_with_initials}
         disabled={disabled}
         readOnly={readOnly}
@@ -48,9 +48,9 @@ export default function PersonNameFields({ idPrefix, value, onChange, fullNameIn
       />
       <TextInput
         id={`${idPrefix}-calling-name`}
-        labelText="Calling name (optional)"
-        helperText={readOnly ? undefined : "What they are usually called day to day, e.g. by teachers."}
-        placeholder="Hasitha"
+        labelText="Kullanılan ad (isteğe bağlı)"
+        helperText={readOnly ? undefined : "Günlük hayatta genellikle kendisine hitap edildiği ad, örn. öğretmenlerince kullanılan."}
+        placeholder="Zeynep"
         value={value.calling_name}
         disabled={disabled}
         readOnly={readOnly}

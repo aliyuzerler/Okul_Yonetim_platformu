@@ -9,7 +9,7 @@ interface Props {
 }
 
 // Ghost icon-only trash button, for the row-level remove action repeated across admin list pages.
-export default function RemoveIconButton({ label = "Remove", onClick, disabled, size = "sm" }: Props) {
+export default function RemoveIconButton({ label = "Kaldır", onClick, disabled, size = "sm" }: Props) {
   return (
     <Button
       hasIconOnly

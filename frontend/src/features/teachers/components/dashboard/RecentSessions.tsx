@@ -11,22 +11,22 @@ export default function RecentSessions({ sessions }: { sessions: Row[] }) {
   return (
     <div className="os-section">
       <div className="os-section__header">
-        <h2 className="os-section__title">Recent sessions</h2>
-        <Link to="/t/attendance" className="os-text-xs os-c-accent os-no-underline">View all →</Link>
+        <h2 className="os-section__title">Son oturumlar</h2>
+        <Link to="/t/attendance" className="os-text-xs os-c-accent os-no-underline">Tümünü gör →</Link>
       </div>
       {sessions.length === 0 ? (
-        <EmptyState title="No attendance sessions recorded yet" description="Sessions you take will appear here." />
+        <EmptyState title="Henüz yoklama oturumu yok" description="Aldığınız oturumlar burada görünecek." />
       ) : (
         <DataGrid
           rows={sessions}
           getRowId={(r) => r.session.id}
           pagination={false}
           columns={[
-            { key: "date", header: "Date", render: (r) => <span className="os-text-sm os-c-secondary">{formatDayMonthYear(r.session.date)}</span> },
-            { key: "class", header: "Class", render: (r) => <Link to={`/attendance/sessions/${r.session.id}/mark`} className="os-table__link">{r.className}</Link> },
-            { key: "present", header: "Present", render: (r) => <SessionCountCell count={r.session.present_count} status="present" /> },
-            { key: "absent", header: "Absent", render: (r) => <SessionCountCell count={r.session.absent_count} status="absent" /> },
-            { key: "late", header: "Late", render: (r) => <SessionCountCell count={r.session.late_count} status="late" /> },
+            { key: "date", header: "Tarih", render: (r) => <span className="os-text-sm os-c-secondary">{formatDayMonthYear(r.session.date)}</span> },
+            { key: "class", header: "Sınıf", render: (r) => <Link to={`/attendance/sessions/${r.session.id}/mark`} className="os-table__link">{r.className}</Link> },
+            { key: "present", header: "Mevcut", render: (r) => <SessionCountCell count={r.session.present_count} status="present" /> },
+            { key: "absent", header: "Devamsız", render: (r) => <SessionCountCell count={r.session.absent_count} status="absent" /> },
+            { key: "late", header: "Geç", render: (r) => <SessionCountCell count={r.session.late_count} status="late" /> },
           ]}
         />
       )}

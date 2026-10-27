@@ -24,10 +24,10 @@ class Boundary extends Component<{ children: ReactNode }, State> {
       <div className="os-error-fallback">
         <div className="os-error-fallback__inner">
           <WarningAltFilled size={32} className="os-error-fallback__icon" />
-          <h1 className="os-error-fallback__title">This page hit an error</h1>
-          <p className="os-error-fallback__text">The rest of the app still works. Reload to try this page again.</p>
+          <h1 className="os-error-fallback__title">Bu sayfada hata oluştu</h1>
+          <p className="os-error-fallback__text">Uygulamanın geri kalanı çalışıyor. Bu sayfayı yeniden denemek için sayfayı yenileyin.</p>
           <Button kind="primary" onClick={() => window.location.reload()}>
-            Reload page
+            Sayfayı yenile
           </Button>
         </div>
       </div>

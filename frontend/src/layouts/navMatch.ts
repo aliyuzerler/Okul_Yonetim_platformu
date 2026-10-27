@@ -33,7 +33,7 @@ export function matchNav(pathname: string, groups: NavGroup[], aliases: Record<s
 // Fallback label for the last breadcrumb when the page does not set its own title.
 export function leafLabel(pathname: string, t: Translate) {
   const last = pathname.split("/").filter(Boolean).pop() ?? "";
-  if (last === "new") return "New";
-  if (last === "mark") return "Mark attendance";
+  if (last === "new") return "Yeni";
+  if (last === "mark") return "Yoklama al";
   return t("shell.details");
 }

@@ -17,7 +17,7 @@ describe("option block periods", () => {
   it("show the block name in the editor grid", () => {
     render(<TimetableGrid periods={[period]} entryAt={(d, p) => (d === 1 && p === 1 ? block : undefined)} editable={false} onOpenCell={() => {}} />);
     expect(screen.getByText("Basket 1")).toBeTruthy();
-    expect(screen.getByText("Option block")).toBeTruthy();
+    expect(screen.getByText("Seçmeli ders bloğu")).toBeTruthy();
   });
 
   it("show the block name as the subject in the day view", () => {

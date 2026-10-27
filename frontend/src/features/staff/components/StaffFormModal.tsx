@@ -68,49 +68,49 @@ export default function StaffFormModal({ staff, onClose }: { staff: StaffRow | n
   };
 
   return (
-    <ComposedModal open size="sm" onClose={onClose} aria-label={isEdit ? "Edit staff member" : "Add staff member"}>
-      <ModalHeader title={isEdit ? "Edit staff member" : "Add staff member"} />
+    <ComposedModal open size="sm" onClose={onClose} aria-label={isEdit ? "Personeli düzenle" : "Personel ekle"}>
+      <ModalHeader title={isEdit ? "Personeli düzenle" : "Personel ekle"} />
       <ModalBody>
         <MutationErrorNotification
           isError={!!error}
           error={error}
-          title="Could not save staff member" fallback="Please try again." className="os-mb-4"
+          title="Personel kaydedilemedi" fallback="Lütfen tekrar deneyin." className="os-mb-4"
         />
         <div className="os-grid os-gap-4">
           <TextInput
             id="staff-name"
-            labelText="Full name"
+            labelText="Ad soyad"
             value={form.full_name}
             onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))}
             onBlur={() => setTouched((t) => ({ ...t, full_name: true }))}
             invalid={!!touched.full_name && !form.full_name.trim()}
-            invalidText="A name is required."
+            invalidText="Ad soyad zorunludur."
           />
           <Select
             id="staff-designation"
-            labelText="Designation"
+            labelText="Unvan"
             value={form.designation}
             onChange={(e) => setForm((f) => ({ ...f, designation: e.target.value as NonAcademicDesignation }))}
             invalid={!!touched.designation && !form.designation}
-            invalidText="Select a designation."
+            invalidText="Bir unvan seçin."
           >
-            <SelectItem value="" text="Select…" />
+            <SelectItem value="" text="Seçin…" />
             {NON_ACADEMIC_DESIGNATIONS.map((d) => (
               <SelectItem key={d.value} value={d.value} text={d.label} />
             ))}
           </Select>
           <RadioButtonGroup
-            legendText="Gender (optional)"
+            legendText="Cinsiyet (isteğe bağlı)"
             name="staff-gender"
             valueSelected={form.gender}
             onChange={(value) => setForm((f) => ({ ...f, gender: value as "male" | "female" }))}
           >
-            <RadioButton id="staff-gender-male" labelText="Male" value="male" />
-            <RadioButton id="staff-gender-female" labelText="Female" value="female" />
+            <RadioButton id="staff-gender-male" labelText="Erkek" value="male" />
+            <RadioButton id="staff-gender-female" labelText="Kız" value="female" />
           </RadioButtonGroup>
           <TextInput
             id="staff-phone"
-            labelText="Phone (optional)"
+            labelText="Telefon (isteğe bağlı)"
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           />
@@ -119,16 +119,16 @@ export default function StaffFormModal({ staff, onClose }: { staff: StaffRow | n
                 if (ymd) {
                   setForm((f) => ({ ...f, joined_date: ymd }));
                 }
-              }} id="staff-joined-date" labelText="Joining date" />
+              }} id="staff-joined-date" labelText="İşe başlama tarihi" />
           )}
         </div>
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Cancel
+          İptal
         </Button>
         <Button kind="primary" onClick={handleSave} disabled={!isValid || pending}>
-          {pending ? "Saving…" : "Save"}
+          {pending ? "Kaydediliyor…" : "Kaydet"}
         </Button>
       </ModalFooter>
     </ComposedModal>

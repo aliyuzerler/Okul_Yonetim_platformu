@@ -22,7 +22,7 @@ type Touched = Partial<
 >;
 
 export default function AddStudent() {
-  usePageTitle("Enrol student");
+  usePageTitle("Öğrenci kaydı");
   const navigate = useNavigate();
   const createStudent = useCreateStudent();
 
@@ -66,7 +66,7 @@ export default function AddStudent() {
   };
 
   const errorMessage = createStudent.isError
-    ? getErrorMessage(createStudent.error, "Failed to enrol student")
+    ? getErrorMessage(createStudent.error, "Öğrenci kaydedilemedi")
     : null;
 
   const fullNameInvalid = !!touched.fullName && !names.full_name.trim();
@@ -86,9 +86,9 @@ export default function AddStudent() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Enrol new student</h1>
+          <h1 className="os-page__title">Yeni öğrenci kaydı</h1>
           <p className="os-page__subtitle">
-            Create a student account and profile
+            Öğrenci hesabı ve profili oluşturun
           </p>
         </div>
         <Button
@@ -98,15 +98,15 @@ export default function AddStudent() {
           as={Link}
           to="/students"
         >
-          Back
+          Geri
         </Button>
       </div>
 
       <div className="os-form">
         <InlineNotification
           kind="info"
-          title="Initial password"
-          subtitle="The student's index number is their initial one-time password. They'll be prompted to change it on first sign-in."
+          title="İlk şifre"
+          subtitle="Öğrencinin ilk tek kullanımlık şifresi okul numarasıdır. İlk oturum açışında değiştirmesi istenir."
           lowContrast
           hideCloseButton className="os-max-w-full os-mb-6"
         />
@@ -114,7 +114,7 @@ export default function AddStudent() {
         {errorMessage && (
           <InlineNotification
             kind="error"
-            title="Error"
+            title="Hata"
             subtitle={errorMessage}
             lowContrast
             hideCloseButton
@@ -122,7 +122,7 @@ export default function AddStudent() {
         )}
 
         <div className="os-form__section">
-          <div className="os-form__section-header">Account</div>
+          <div className="os-form__section-header">Hesap</div>
           <div className="os-form__section-body">
             <PersonNameFields
               idPrefix="student"
@@ -133,18 +133,18 @@ export default function AddStudent() {
             />
             <TextInput
               id="email"
-              labelText="Email address"
-              placeholder="e.g. student@school.lk"
+              labelText="E-posta adresi"
+              placeholder="örn. ogrenci@okul.example"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() => markTouched("email")}
               invalid={emailInvalid}
-              invalidText="Enter a valid email address."
+              invalidText="Geçerli bir e-posta adresi girin."
             />
             <TextInput
               id="phone"
-              labelText="Phone (optional)"
-              placeholder="e.g. 077 123 4567"
+              labelText="Telefon (isteğe bağlı)"
+              placeholder="örn. 077 123 4567"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               onBlur={() => markTouched("phone")}
@@ -155,22 +155,22 @@ export default function AddStudent() {
         </div>
 
         <div className="os-form__section">
-          <div className="os-form__section-header">Student profile</div>
+          <div className="os-form__section-header">Öğrenci bilgileri</div>
           <div className="os-form__section-body">
             <TextInput
               id="index-number"
-              labelText="Index number"
-              placeholder="e.g. 2026/0145"
+              labelText="Okul numarası"
+              placeholder="örn. 2026/0145"
               value={indexNumber}
               onChange={(e) => setIndexNumber(e.target.value)}
               onBlur={() => markTouched("indexNumber")}
               invalid={indexNumberInvalid}
-              invalidText="Index number is required."
+              invalidText="Okul numarası zorunludur."
             />
             <TextInput
               id="whatsapp"
-              labelText="WhatsApp (optional)"
-              placeholder="e.g. 077 123 4567"
+              labelText="WhatsApp (isteğe bağlı)"
+              placeholder="örn. 077 123 4567"
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
               onBlur={() => markTouched("whatsapp")}
@@ -178,23 +178,23 @@ export default function AddStudent() {
               invalidText={PHONE_INVALID_TEXT}
             />
             <RadioButtonGroup
-              legendText="Gender (optional)"
+              legendText="Cinsiyet (isteğe bağlı)"
               name="gender"
               valueSelected={gender}
               onChange={(value) => setGender(value as "male" | "female")}
             >
-              <RadioButton id="gender-male" labelText="Male" value="male" />
+              <RadioButton id="gender-male" labelText="Erkek" value="male" />
               <RadioButton
                 id="gender-female"
-                labelText="Female"
+                labelText="Kız"
                 value="female"
               />
             </RadioButtonGroup>
             <div className="os-form__full-col">
               <TextInput
                 id="address"
-                labelText="Address (optional)"
-                placeholder="e.g. 23, Kandy Road, Kelaniya"
+                labelText="Adres (isteğe bağlı)"
+                placeholder="örn. Cumhuriyet Cad. No: 23"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
@@ -202,8 +202,8 @@ export default function AddStudent() {
             <div className="os-form__full-col">
               <TextArea
                 id="special-remarks"
-                labelText="Special remarks (optional)"
-                placeholder="Any notes about the student"
+                labelText="Özel notlar (isteğe bağlı)"
+                placeholder="Öğrenciyle ilgili notlar"
                 rows={3}
                 value={specialRemarks}
                 onChange={(e) => setSpecialRemarks(e.target.value)}
@@ -219,10 +219,10 @@ export default function AddStudent() {
             onClick={handleSubmit}
             disabled={!isValid || createStudent.isPending}
           >
-            {createStudent.isPending ? "Saving…" : "Save and enrol"}
+            {createStudent.isPending ? "Kaydediliyor…" : "Kaydet"}
           </Button>
           <Button kind="secondary" as={Link} to="/students">
-            Cancel
+            İptal
           </Button>
         </div>
       </div>

@@ -86,14 +86,14 @@ export default function AddGuardianModal({
   };
 
   return (
-    <ComposedModal open size="sm" onClose={onClose} aria-label={step === "search" ? "Add guardian" : "Create new guardian"}>
-      <ModalHeader title={step === "search" ? "Add guardian" : "Create new guardian"} />
+    <ComposedModal open size="sm" onClose={onClose} aria-label={step === "search" ? "Veli ekle" : "Yeni veli oluştur"}>
+      <ModalHeader title={step === "search" ? "Veli ekle" : "Yeni veli oluştur"} />
       <ModalBody>
         {created && (
           <InlineNotification
             kind="warning"
-            title="Possible duplicate"
-            subtitle={`${created.name} was added, but ${created.duplicates} existing guardian(s) share the same phone or email. Check the Guardians directory if this might be the same person.`}
+            title="Olası mükerrer kayıt"
+            subtitle={`${created.name} eklendi, ancak aynı telefon veya e-postayı paylaşan ${created.duplicates} kayıtlı veli var. Aynı kişi olabilir mi diye Veliler dizininden kontrol edin.`}
             lowContrast
             hideCloseButton className="os-mb-4 os-max-w-full"
           />
@@ -102,14 +102,14 @@ export default function AddGuardianModal({
         {step === "search" && !created && (
           <>
             <p className="os-text-sm os-c-secondary os-mt-0 os-mx-0 os-mb-4">
-              Search first - siblings often share a guardian already on file.
+              Önce arayın - kardeşlerin velisi çoğu zaman sistemde kayıtlıdır.
             </p>
             <div className="os-search os-mb-4">
               <Search size={16} className="os-search__icon" />
               <input
                 className="os-search__input"
-                aria-label="Search guardians by name, phone, or email"
-                placeholder="Search by name, phone, or email…"
+                aria-label="Veliyi ad, telefon veya e-posta ile ara"
+                placeholder="Ada, telefona veya e-postaya göre ara…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 autoFocus
@@ -119,7 +119,7 @@ export default function AddGuardianModal({
             {query.trim().length > 0 && (
               <div className="os-grid os-gap-2 os-mb-4">
                 {results.length === 0 && !search.isLoading && (
-                  <p className="os-text-sm os-c-tertiary">No matching guardians found.</p>
+                  <p className="os-text-sm os-c-tertiary">Eşleşen veli bulunamadı.</p>
                 )}
                 {results.map((g) => (
                   <div
@@ -130,7 +130,7 @@ export default function AddGuardianModal({
                       <div className="os-text-xs os-c-tertiary">{g.phone}</div>
                     </div>
                     <Button size="sm" kind="tertiary" onClick={() => handleLink(g.id)} disabled={linkGuardian.isPending}>
-                      Link
+                      Bağla
                     </Button>
                   </div>
                 ))}
@@ -140,7 +140,7 @@ export default function AddGuardianModal({
             <MutationErrorNotification
               isError={linkGuardian.isError}
               error={linkGuardian.error}
-              title="Could not link guardian" fallback="Please try again." className="os-mb-4"
+              title="Veli bağlanamadı" fallback="Lütfen tekrar deneyin." className="os-mb-4"
             />
           </>
         )}
@@ -150,7 +150,7 @@ export default function AddGuardianModal({
             <MutationErrorNotification
               isError={addGuardian.isError}
               error={addGuardian.error}
-              title="Could not add guardian" fallback="Please try again." className="os-mb-4"
+              title="Veli eklenemedi" fallback="Lütfen tekrar deneyin." className="os-mb-4"
             />
             <div className="os-grid os-gap-4">
 <PersonNameFields
@@ -162,7 +162,7 @@ export default function AddGuardianModal({
         />
               <Select
                 id="guardian-relationship"
-                labelText="Relationship"
+                labelText="Yakınlık"
                 value={form.relationship}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, relationship: e.target.value as GuardianRelationship }))
@@ -174,29 +174,29 @@ export default function AddGuardianModal({
               </Select>
               <TextInput
                 id="guardian-phone"
-                labelText="Phone"
+                labelText="Telefon"
                 value={form.phone}
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                 onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
                 invalid={!!touched.phone && (!form.phone.trim() || !isValidSriLankanPhone(form.phone))}
-                invalidText={form.phone.trim() ? PHONE_INVALID_TEXT : "A phone number is required."}
+                invalidText={form.phone.trim() ? PHONE_INVALID_TEXT : "Telefon numarası zorunludur."}
               />
               <TextInput
                 id="guardian-email"
-                labelText="Email (optional, needed to provision a portal login later)"
+                labelText="E-posta (isteğe bağlı; ileride portal girişi açmak için gerekir)"
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               />
               <TextInput
                 id="guardian-nic"
-                labelText="NIC number"
+                labelText="T.C. Kimlik No"
                 value={form.nic_number}
                 onChange={(e) => setForm((f) => ({ ...f, nic_number: e.target.value }))}
                 onBlur={() => setTouched((t) => ({ ...t, nic_number: true }))}
                 invalid={!!touched.nic_number && !form.nic_number.trim()}
-                invalidText="NIC number is required."
-                helperText="Used as the guardian's initial one-time portal password."
+                invalidText="T.C. Kimlik No zorunludur."
+                helperText="Velinin ilk tek kullanımlık portal şifresi olarak kullanılır."
               />
             </div>
           </>
@@ -205,24 +205,24 @@ export default function AddGuardianModal({
       <ModalFooter>
         {created ? (
           <Button kind="primary" onClick={onClose}>
-            Done
+            Tamam
           </Button>
         ) : step === "search" ? (
           <>
             <Button kind="secondary" onClick={onClose}>
-              Cancel
+              İptal
             </Button>
             <Button kind="tertiary" onClick={() => setStep("create")}>
-              None of these - create new
+              Bunlardan biri değil - yeni oluştur
             </Button>
           </>
         ) : (
           <>
             <Button kind="secondary" onClick={() => setStep("search")}>
-              Back to search
+              Aramaya dön
             </Button>
             <Button kind="primary" onClick={handleAdd} disabled={!isValid || addGuardian.isPending}>
-              {addGuardian.isPending ? "Adding…" : "Add guardian"}
+              {addGuardian.isPending ? "Ekleniyor…" : "Veli ekle"}
             </Button>
           </>
         )}

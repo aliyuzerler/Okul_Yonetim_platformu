@@ -12,7 +12,7 @@ function looksUnsafe(message: string): boolean {
 
 export function getErrorMessage(
   error: unknown,
-  fallback = "Something went wrong. Please try again.",
+  fallback = "Bir sorun oluştu. Lütfen yeniden deneyin.",
 ): string {
   if (error instanceof AxiosError) {
     const backendMessage = (error.response?.data as { error?: string } | undefined)?.error;

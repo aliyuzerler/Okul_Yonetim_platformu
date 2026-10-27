@@ -44,9 +44,9 @@ export default function GuardiansDirectory() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Guardians</h1>
+          <h1 className="os-page__title">Veliler</h1>
           <p className="os-page__subtitle">
-            Directory of parents and guardians linked to student profiles.
+            Öğrenci profillerine bağlı ebeveyn ve velilerin dizini.
           </p>
         </div>
       </div>
@@ -56,14 +56,14 @@ export default function GuardiansDirectory() {
           <div className="os-flex-basis-18 os-min-w-14">
             <TableToolbarSearch
               persistent
-              placeholder="Search guardians by name, phone, email or NIC…"
+              placeholder="Veliyi ad, telefon, e-posta veya T.C. Kimlik No ile ara…"
               value={search}
               onChange={(e) => { setSearch(typeof e === "string" ? e : e.target.value); setPage(1); }}
             />
           </div>
           <Checkbox
             id="orphans-only"
-            labelText="Unlinked guardians only (orphans)"
+            labelText="Yalnızca bağısız veliler"
             checked={orphansOnly}
             onChange={(_e, { checked }) => { setOrphansOnly(checked); setPage(1); }}
           />
@@ -71,17 +71,17 @@ export default function GuardiansDirectory() {
 
         {(search || orphansOnly) && (
           <div className="os-flex os-items-center os-gap-2 os-wrap os-mt-3">
-            <span className="os-text-xs os-fw-600 os-c-tertiary">Active filters:</span>
-            {orphansOnly && <Tag type="magenta" filter onClose={() => { setOrphansOnly(false); setPage(1); }}>Filter: Unlinked Only</Tag>}
-            {search && <Tag type="blue" filter onClose={() => { setSearch(""); setPage(1); }}>Search: "{search}"</Tag>}
+            <span className="os-text-xs os-fw-600 os-c-tertiary">Etkin filtreler:</span>
+            {orphansOnly && <Tag type="magenta" filter onClose={() => { setOrphansOnly(false); setPage(1); }}>Filtre: Yalnızca bağısız</Tag>}
+            {search && <Tag type="blue" filter onClose={() => { setSearch(""); setPage(1); }}>Arama: "{search}"</Tag>}
             <Button kind="ghost" size="sm" renderIcon={Close} onClick={() => { setSearch(""); setOrphansOnly(false); setPage(1); }}>
-              Clear all
+              Tümünü temizle
             </Button>
           </div>
         )}
       </div>
 
-      {isError && <ErrorMessage message="Could not load guardian records." onRetry={refetch} />}
+      {isError && <ErrorMessage message="Veli kayıtları yüklenemedi." onRetry={refetch} />}
 
       <div className="os-grid os-grid-cols-side os-gap-6 os-items-grid-start">
         <div className="os-section os-bg-layer os-mt-0 os-p-0 os-overflow-hidden">
@@ -96,11 +96,11 @@ export default function GuardiansDirectory() {
           {!isLoading && !isError && ordered.length === 0 && (
             <div className="os-p-6">
               <EmptyState
-                title={isSearching ? "No matching guardians" : "No guardians found"}
+                title={isSearching ? "Eşleşen veli yok" : "Henüz veli yok"}
                 description={
                   isSearching
-                    ? "Try a different name, phone number, email address or NIC number."
-                    : "Guardians are automatically linked when adding or editing student profiles."
+                    ? "Farklı bir ad, telefon numarası, e-posta adresi veya T.C. Kimlik No ile deneyin."
+                    : "Veliler, öğrenci profilleri eklenirken veya düzenlenirken otomatik bağlanır."
                 }
               />
             </div>
@@ -121,7 +121,7 @@ export default function GuardiansDirectory() {
                       {displayName(g)}
                     </div>
                     <div className="os-text-xs os-c-tertiary">
-                      {relationshipLabel(g.relationship)} · {g.phone}{g.nic_number ? ` · NIC ${g.nic_number}` : ""}
+                      {relationshipLabel(g.relationship)} · {g.phone}{g.nic_number ? ` · T.C. Kimlik No ${g.nic_number}` : ""}
                     </div>
                   </div>
                 </ClickableTile>
@@ -144,7 +144,7 @@ export default function GuardiansDirectory() {
           <GuardianDetail key={selected.id} guardian={selected} onDeleted={() => setSelectedId(null)} />
         ) : (
           <Tile className="os-section os-bg-layer os-mt-0 os-text-center os-py-12 os-px-6">
-            <EmptyState title="Select a guardian" description="Choose a guardian from the directory list to view contact info and linked students." />
+            <EmptyState title="Bir veli seçin" description="İletişim bilgilerini ve bağlı öğrencileri görmek için dizin listesinden bir veli seçin." />
           </Tile>
         )}
       </div>

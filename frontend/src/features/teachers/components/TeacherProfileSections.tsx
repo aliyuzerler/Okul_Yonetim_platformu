@@ -10,6 +10,13 @@ import { formatDateOnly, formatISODate } from "@/shared/lib/date";
 import InfoTip from "@/shared/ui/InfoTip";
 import SectionCard from "@/shared/ui/SectionCard";
 
+// shared/lib EMPLOYMENT_STATUSES is English; display labels are translated here.
+const employmentStatusLabel: Record<string, string> = {
+  active: "Aktif",
+  resigned: "İstifa etti",
+  transferred: "Başka okula atandı",
+};
+
 export type TeacherProfileForm = {
   full_name: string;
   name_with_initials: string;
@@ -49,16 +56,16 @@ export default function TeacherProfileSections(p: Props) {
 
   return (
     <>
-      <SectionCard title="Profile">
+      <SectionCard title="Profil">
           <MutationErrorNotification isError={!!p.updateError} error={null} fallback={p.updateError ?? ""} />
           <div className="os-grid os-grid-cols-2 os-gap-5">
-            <Select id="title" labelText="Title" value={form.title} disabled={!editing} onChange={(e) => p.onTitleChange(e.target.value as TeacherTitle | "")}>
-              <SelectItem value="" text="None" />
+            <Select id="title" labelText="Unvan" value={form.title} disabled={!editing} onChange={(e) => p.onTitleChange(e.target.value as TeacherTitle | "")}>
+              <SelectItem value="" text="Yok" />
               {TITLES.map((t) => <SelectItem key={t} value={t} text={t} />)}
             </Select>
-            <RadioButtonGroup legendText="Gender" name="gender" valueSelected={form.gender} disabled={!editing} onChange={(value) => p.onGenderChange(value as "male" | "female")}>
-              <RadioButton id="edit-gender-male" labelText="Male" value="male" />
-              <RadioButton id="edit-gender-female" labelText="Female" value="female" />
+            <RadioButtonGroup legendText="Cinsiyet" name="gender" valueSelected={form.gender} disabled={!editing} onChange={(value) => p.onGenderChange(value as "male" | "female")}>
+              <RadioButton id="edit-gender-male" labelText="Erkek" value="male" />
+              <RadioButton id="edit-gender-female" labelText="Kız" value="female" />
             </RadioButtonGroup>
             <PersonNameFields
               idPrefix="teacher-profile"
@@ -71,18 +78,18 @@ export default function TeacherProfileSections(p: Props) {
                 });
               }}
             />
-            <TextInput id="employee-number" labelText="Employee number" value={teacher.employee_number} readOnly />
-            <TextInput id="email" labelText="Email" value={teacher.email ?? "-"} readOnly />
-            <TextInput {...field("phone", "Phone", "phone_number")} />
-            <TextInput {...field("nic-number", "NIC number", "nic_number")} />
-            <TextInput id="joined-date" labelText="Joined date" value={formatDateOnly(teacher.joined_date)} readOnly />
-            <TextInput id="created-at" labelText="Created" value={formatISODate(teacher.created_at)} readOnly />
+            <TextInput id="employee-number" labelText="Sicil numarası" value={teacher.employee_number} readOnly />
+            <TextInput id="email" labelText="E-posta" value={teacher.email ?? "-"} readOnly />
+            <TextInput {...field("phone", "Telefon", "phone_number")} />
+            <TextInput {...field("nic-number", "T.C. Kimlik No", "nic_number")} />
+            <TextInput id="joined-date" labelText="İşe başlama tarihi" value={formatDateOnly(teacher.joined_date)} readOnly />
+            <TextInput id="created-at" labelText="Oluşturulma" value={formatISODate(teacher.created_at)} readOnly />
           </div>
       </SectionCard>
 
       <TeacherSubjectsSection subjects={p.subjects} editing={editing} assignSubject={p.assignSubject} removeSubject={p.removeSubject} />
 
-      <SectionCard title="House">
+      <SectionCard title="Kol">
           {currentHouse && (
             <div className="os-flex os-items-center os-gap-2 os-mb-3">
               <span className="os-dot os-w-3q os-h-3q" style={{ backgroundColor: currentHouse.color }} />
@@ -91,27 +98,27 @@ export default function TeacherProfileSections(p: Props) {
           )}
           <Select
             id="teacher-house"
-            labelText={<>Assigned house <InfoTip>Only a system administrator can change it. Every change is recorded in the audit log.</InfoTip></>}
-            helperText="Assigned automatically to balance houses."
+            labelText={<>Atanmış kol <InfoTip>Yalnızca sistem yöneticisi değiştirebilir. Her değişiklik denetim kaydına işlenir.</InfoTip></>}
+            helperText="Kolları dengelemek için otomatik atanır."
             value={teacher.house_id ?? ""}
             disabled={p.updateHouse.isPending}
             onChange={(e) => p.updateHouse.mutate({ id: teacher.id, houseId: e.target.value })}
           >
-            <SelectItem value="" text="No house" />
+            <SelectItem value="" text="Kol yok" />
             {p.houses?.map((h) => <SelectItem key={h.id} value={h.id} text={h.name} />)}
           </Select>
       </SectionCard>
 
-      <SectionCard title="Employment status">
+      <SectionCard title="Çalışma durumu">
           <Select
             id="teacher-employment-status"
-            labelText="Status"
-            helperText="Mark resigned or transferred when a teacher leaves the school."
+            labelText="Durum"
+            helperText="Öğretmen okuldan ayrıldığında “İstifa etti” veya “Başka okula atandı” olarak işaretleyin."
             value={teacher.employment_status}
             disabled={p.updateStatus.isPending}
             onChange={(e) => p.updateStatus.mutate({ id: teacher.id, status: e.target.value as TeacherEmploymentStatus })}
           >
-            {EMPLOYMENT_STATUSES.map((s) => <SelectItem key={s.value} value={s.value} text={s.label} />)}
+            {EMPLOYMENT_STATUSES.map((s) => <SelectItem key={s.value} value={s.value} text={employmentStatusLabel[s.value] ?? s.label} />)}
           </Select>
       </SectionCard>
     </>

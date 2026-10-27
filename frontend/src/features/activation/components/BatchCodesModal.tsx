@@ -18,13 +18,13 @@ export default function BatchCodesModal({ batch, onClose }: { batch: ActivationB
   }, [batch.batch_id, mutate]);
 
   return (
-    <ComposedModal open size="lg" onClose={onClose} aria-label="Activation codes">
-      <ModalHeader title={`${ROLE_LABELS[batch.role].one} codes issued ${formatDate(batch.created_at)}`} />
+    <ComposedModal open size="lg" onClose={onClose} aria-label="Etkinleştirme kodları">
+      <ModalHeader title={`${ROLE_LABELS[batch.role].one} kodları — ${formatDate(batch.created_at)} tarihinde düzenlendi`} />
       <ModalBody>
         {codes.isPending && <LoadingSpinner />}
-        <MutationErrorNotification isError={codes.isError} error={codes.error} title="Could not open these codes" />
+        <MutationErrorNotification isError={codes.isError} error={codes.error} title="Bu kodlar açılamadı" />
         {codes.data && codes.data.codes.length === 0 && (
-          <InlineNotification kind="info" lowContrast hideCloseButton title="No unused codes" subtitle="Every code in this batch was used, cancelled or has expired." className="os-max-w-full" />
+          <InlineNotification kind="info" lowContrast hideCloseButton title="Kullanılmayan kod yok" subtitle="Bu gruptaki tüm kodlar kullanılmış, iptal edilmiş ya da süresi dolmuş." className="os-max-w-full" />
         )}
         {codes.data && codes.data.codes.length > 0 && <IssuedBatchPanel batch={codes.data} onDone={onClose} reopened />}
       </ModalBody>

@@ -37,11 +37,11 @@ export default function ConfirmDeleteModal({
   title,
   description,
   subject,
-  successVerb = "deleted",
+  successVerb = "silindi",
   mutation,
   disabled,
-  confirmLabel = "Delete",
-  pendingLabel = "Deleting…",
+  confirmLabel = "Sil",
+  pendingLabel = "Siliniyor…",
   onClose,
   onConfirm,
   onSuccess,
@@ -65,7 +65,7 @@ export default function ConfirmDeleteModal({
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onClose}>
-          Cancel
+          İptal
         </Button>
         <Button kind="danger" onClick={onConfirm} disabled={mutation.isPending || disabled}>
           {mutation.isPending ? pendingLabel : confirmLabel}

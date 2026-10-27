@@ -8,10 +8,10 @@ import TimetableSettings from "@/features/timetable/pages/admin/TimetableSetting
 export type TimetableHubTab = "timetables" | "generate" | "requirements" | "settings";
 
 const TABS: { key: TimetableHubTab; label: string; path: string }[] = [
-  { key: "timetables", label: "Timetables", path: "/timetables" },
-  { key: "generate", label: "Generate", path: "/timetables/generate" },
-  { key: "requirements", label: "Requirements", path: "/subject-requirements" },
-  { key: "settings", label: "Settings", path: "/timetable-settings" },
+  { key: "timetables", label: "Ders programları", path: "/timetables" },
+  { key: "generate", label: "Üret", path: "/timetables/generate" },
+  { key: "requirements", label: "Gereksinimler", path: "/subject-requirements" },
+  { key: "settings", label: "Ayarlar", path: "/timetable-settings" },
 ];
 
 export default function TimetableHub({ tab }: { tab: TimetableHubTab }) {
@@ -22,12 +22,12 @@ export default function TimetableHub({ tab }: { tab: TimetableHubTab }) {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Timetable</h1>
+          <h1 className="os-page__title">Ders programı</h1>
         </div>
       </div>
 
       <Tabs selectedIndex={selectedIndex} onChange={({ selectedIndex: i }) => navigate(TABS[i].path)}>
-        <TabList aria-label="Timetable sections">
+        <TabList aria-label="Ders programı bölümleri">
           {TABS.map((t) => (
             <Tab key={t.key}>{t.label}</Tab>
           ))}

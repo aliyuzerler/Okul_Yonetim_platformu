@@ -49,9 +49,9 @@ export function useWorkflowPage(key: string) {
     const failed = checksFrom(error);
     if (failed) {
       setChecks(failed);
-      showToast({ kind: "warning", title: "Some preconditions are not met", subtitle: "Fix the items marked below, then try again." });
+      showToast({ kind: "warning", title: "Bazı önkoşullar karşılanmadı", subtitle: "Aşağıda işaretlenen maddeleri düzeltin, sonra yeniden deneyin." });
     } else {
-      showToast({ kind: "error", title, subtitle: getErrorMessage(error, "Please try again.") });
+      showToast({ kind: "error", title, subtitle: getErrorMessage(error, "Lütfen yeniden deneyin.") });
     }
   };
 
@@ -66,40 +66,40 @@ export function useWorkflowPage(key: string) {
     openRun: setSelectedRun,
     busy: { check: check.isPending, propose: propose.isPending, apply: apply.isPending, discard: discard.isPending, revert: revert.isPending },
     editingRow: edit.isPending ? (edit.variables?.rowId ?? null) : null,
-    runCheck: () => check.mutate(inputs(), { onSuccess: setChecks, onError: (e) => fail("Could not check", e) }),
+    runCheck: () => check.mutate(inputs(), { onSuccess: setChecks, onError: (e) => fail("Önkoşul denetimi yapılamadı", e) }),
     runPropose: () =>
       propose.mutate(inputs(), {
         onSuccess: ({ run: created, checks: passed }) => {
           setChecks(passed);
           setSelectedRun(created.id);
-          showToast({ kind: "success", title: "Proposal ready", subtitle: "Review it below, then apply." });
+          showToast({ kind: "success", title: "Öneri hazır", subtitle: "Aşağıdan inceleyin, sonra uygulayın." });
         },
-        onError: (e) => fail("Could not create the proposal", e),
+        onError: (e) => fail("Öneri oluşturulamadı", e),
       }),
     editCell: (section: string, rowId: string, cells: Record<string, string>) =>
-      runId && edit.mutate({ id: runId, section, rowId, cells }, { onError: (e) => fail("Could not change that row", e) }),
+      runId && edit.mutate({ id: runId, section, rowId, cells }, { onError: (e) => fail("Bu satır değiştirilemedi", e) }),
     runApply: (onDone: () => void) =>
       runId &&
       apply.mutate(runId, {
         onSuccess: (applied) => {
-          showToast({ kind: "success", title: "Applied", subtitle: applied.summary });
+          showToast({ kind: "success", title: "Uygulandı", subtitle: applied.summary });
           onDone();
         },
         onError: (e) => {
-          fail("Could not apply", e);
+          fail("Uygulanamadı", e);
           onDone();
         },
       }),
-    runDiscard: () => runId && discard.mutate(runId, { onSuccess: () => setSelectedRun(undefined), onError: (e) => fail("Could not discard", e) }),
+    runDiscard: () => runId && discard.mutate(runId, { onSuccess: () => setSelectedRun(undefined), onError: (e) => fail("Vazgeçilemedi", e) }),
     runRevert: (onDone: () => void) =>
       runId &&
       revert.mutate(runId, {
         onSuccess: () => {
-          showToast({ kind: "success", title: "Reverted", subtitle: "The changes from this run were undone." });
+          showToast({ kind: "success", title: "Geri alındı", subtitle: "Bu çalıştırmanın değişiklikleri geri alındı." });
           onDone();
         },
         onError: (e) => {
-          fail("Could not revert", e);
+          fail("Geri alınamadı", e);
           onDone();
         },
       }),

@@ -11,10 +11,20 @@ const RANK_TAG_TYPE: Record<PositionRankLabel, "purple" | "blue" | "teal" | "cya
   Teacher: "gray",
 };
 
+// rank_label values come from the API as English codes; display labels are translated here.
+const RANK_LABELS: Record<PositionRankLabel, string> = {
+  Principal: "Müdür",
+  "Vice Principal": "Müdür Yardımcısı",
+  "Section Head": "Şube rehber öğretmeni",
+  "Class Teacher": "Sınıf öğretmeni",
+  "Subject Teacher": "Branş öğretmeni",
+  Teacher: "Öğretmen",
+};
+
 export default function RoleBadge({ rankLabel }: { rankLabel: PositionRankLabel }) {
   return (
     <Tag type={RANK_TAG_TYPE[rankLabel]} size="sm">
-      {rankLabel}
+      {RANK_LABELS[rankLabel] ?? rankLabel}
     </Tag>
   );
 }

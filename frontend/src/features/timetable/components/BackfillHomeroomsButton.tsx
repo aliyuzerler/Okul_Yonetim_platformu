@@ -16,15 +16,15 @@ export default function BackfillHomeroomsButton({ size = "md" }: { size?: "sm" |
       onSuccess: ({ linked }) =>
         showToast({
           kind: "success",
-          title: linked ? `Homerooms added to ${linked} class${linked === 1 ? "" : "es"}` : "Every class already has a homeroom",
+          title: linked ? `${linked} sınıfa sınıf öğretmenliği eklendi` : "Tüm sınıfların zaten sınıf öğretmenliği var",
         }),
-      onError: () => showToast({ kind: "error", title: "Could not add homerooms", subtitle: "Please try again." }),
+      onError: () => showToast({ kind: "error", title: "Sınıf öğretmenlikleri eklenemedi", subtitle: "Lütfen yeniden deneyin." }),
     });
   };
 
   return (
     <Button renderIcon={Home} kind="tertiary" size={size} onClick={run} disabled={!year || backfill.isPending}>
-      {backfill.isPending ? "Adding homerooms…" : "Add missing homerooms"}
+      {backfill.isPending ? "Ekleniyor…" : "Eksik sınıf öğretmenliklerini ekle"}
     </Button>
   );
 }

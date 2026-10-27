@@ -21,12 +21,12 @@ export default function TeacherSubjectsSection({ subjects, editing, assignSubjec
   const available = allSubjects?.filter((s) => !assignedIds.has(s.id)) ?? [];
 
   return (
-    <SectionCard title="Subjects" meta={<span className="os-text-xs os-c-tertiary">{subjects?.length ?? 0} assigned</span>}>
+    <SectionCard title="Dersler" meta={<span className="os-text-xs os-c-tertiary">{subjects?.length ?? 0} atanmış</span>}>
         <div className={`os-flex os-gap-2 os-wrap ${editing ? "os-mb-4" : "os-mb-0"}`}>
           {subjects?.length ? (
             subjects.map((s) =>
               editing ? (
-                <Tag key={s.id} type="blue" size="md" filter title="Unassign subject" onClose={() => removeSubject.mutate(s.id)} disabled={removeSubject.isPending}>
+                <Tag key={s.id} type="blue" size="md" filter title="Dersi kaldır" onClose={() => removeSubject.mutate(s.id)} disabled={removeSubject.isPending}>
                   {s.name} ({s.code})
                 </Tag>
               ) : (
@@ -38,19 +38,19 @@ export default function TeacherSubjectsSection({ subjects, editing, assignSubjec
               ),
             )
           ) : (
-            <span className="os-text-md os-c-tertiary">No subjects assigned.</span>
+            <span className="os-text-md os-c-tertiary">Atanmış ders yok.</span>
           )}
         </div>
         {editing && (
           <div className="os-flex os-gap-3 os-items-end os-max-w-28 os-border-t os-pt-4">
             <div className="os-flex-1">
-              <Select id="assign-subject-select" labelText="Assign new subject" value={selectedId} onChange={(e) => setSelectedId(e.target.value)} disabled={assignSubject.isPending}>
-                <SelectItem value="" text="Choose a subject..." />
+              <Select id="assign-subject-select" labelText="Yeni ders ata" value={selectedId} onChange={(e) => setSelectedId(e.target.value)} disabled={assignSubject.isPending}>
+                <SelectItem value="" text="Bir ders seçin…" />
                 {available.map((s) => <SelectItem key={s.id} value={s.id} text={`${s.name} (${s.code})`} />)}
               </Select>
             </div>
             <Button kind="primary" size="md" disabled={!selectedId || assignSubject.isPending} onClick={() => assignSubject.mutate(selectedId, { onSuccess: () => setSelectedId("") })}>
-              {assignSubject.isPending ? "Assigning…" : "Assign"}
+              {assignSubject.isPending ? "Atanıyor…" : "Ata"}
             </Button>
           </div>
         )}

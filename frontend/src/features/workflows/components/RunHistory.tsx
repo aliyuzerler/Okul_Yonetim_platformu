@@ -6,7 +6,7 @@ import DataGrid from "@/shared/ui/DataGrid";
 
 
 export default function RunHistory({ runs, onOpen }: { runs: RunSummary[]; onOpen: (id: string) => void }) {
-  if (runs.length === 0) return <p className="os-px-6 os-py-4 os-m-0 os-text-sm os-c-tertiary">No runs yet.</p>;
+  if (runs.length === 0) return <p className="os-px-6 os-py-4 os-m-0 os-text-sm os-c-tertiary">Henüz çalıştırma yok.</p>;
   return (
     <DataGrid
       rows={runs}
@@ -14,11 +14,11 @@ export default function RunHistory({ runs, onOpen }: { runs: RunSummary[]; onOpe
       pagination={false}
       onRowClick={(r) => onOpen(r.id)}
       columns={[
-        { key: "created", header: "Proposed", render: (r) => formatDateTime(r.created_at) },
-        { key: "by", header: "By", render: (r) => r.created_by_name ?? "-" },
-        { key: "state", header: "State", render: (r) => <Tag type={RUN_STATE_TAG[r.state].type} size="sm">{RUN_STATE_TAG[r.state].label}</Tag> },
-        { key: "summary", header: "Result", render: (r) => r.summary ?? r.error ?? "-" },
-        { key: "applied", header: "Applied", render: (r) => (r.applied_at ? `${formatDateTime(r.applied_at)}${r.applied_by_name ? ` by ${r.applied_by_name}` : ""}` : "-") },
+        { key: "created", header: "Önerildi", render: (r) => formatDateTime(r.created_at) },
+        { key: "by", header: "Oluşturan", render: (r) => r.created_by_name ?? "-" },
+        { key: "state", header: "Durum", render: (r) => <Tag type={RUN_STATE_TAG[r.state].type} size="sm">{RUN_STATE_TAG[r.state].label}</Tag> },
+        { key: "summary", header: "Sonuç", render: (r) => r.summary ?? r.error ?? "-" },
+        { key: "applied", header: "Uygulandı", render: (r) => (r.applied_at ? `${formatDateTime(r.applied_at)}${r.applied_by_name ? ` · ${r.applied_by_name}` : ""}` : "-") },
       ]}
     />
   );

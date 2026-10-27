@@ -19,7 +19,7 @@ function ClassResultCard({ result }: { result: ClassGenerationResult }) {
         <div className="os-flex os-justify-between os-items-center">
           <span className="os-fw-500">{result.class_name}</span>
           <Tag type="gray" size="sm">
-            Skipped
+            Atlandı
           </Tag>
         </div>
         <p className="os-mt-1 os-mx-0 os-mb-0 os-text-sm os-c-tertiary">{result.skip_reason}</p>
@@ -35,11 +35,11 @@ function ClassResultCard({ result }: { result: ClassGenerationResult }) {
         <span className="os-fw-500">{result.class_name}</span>
         <div className="os-flex os-gap-2 os-items-center">
           <Tag type={complete ? "green" : result.placed > 0 ? "blue" : "gray"} size="sm">
-            {result.placed} / {result.required} periods placed
+            {result.placed} / {result.required} ders saati yerleştirildi
           </Tag>
           {result.timetable_id && (
             <Button kind="ghost" size="sm" as={Link} to={`/timetables/${result.timetable_id}`}>
-              Open draft →
+              Taslağı aç →
             </Button>
           )}
         </div>
@@ -48,7 +48,7 @@ function ClassResultCard({ result }: { result: ClassGenerationResult }) {
         <ul className="os-mt-2 os-mx-0 os-mb-0 os-pl-5 os-text-sm os-c-warning-text">
           {result.gaps.map((g, i) => (
             <li key={i}>
-              {g.subject_name || "Unresolved subject"}
+              {g.subject_name || "Bilinmeyen ders"}
               {g.teacher_name ? ` (${g.teacher_name})` : ""} - {g.reason}
             </li>
           ))}
@@ -77,10 +77,10 @@ export default function GenerateTimetable({ inline = false }: { inline?: boolean
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Generate timetable</h1>
+            <h1 className="os-page__title">Ders programı üret</h1>
             <div className="os-page__subtitle os-page__subtitle--tip">
-              Fill draft timetables for every class in a grade section at once.
-              <InfoTip>Students stay in their homeroom, teachers move, and lab periods go to a matching lab. Anything it cannot place is left for you to finish by hand.</InfoTip>
+              Bir seviye şubesindeki tüm sınıflar için taslak ders programlarını tek seferde doldurur.
+              <InfoTip>Öğrenciler sınıf öğretmenliklerinde kalır, öğretmenler hareket eder ve lab ders saatleri uygun bir laboratuvara atanır. Yerleştirilemeyen her şey elle tamamlamanız için bırakılır.</InfoTip>
             </div>
           </div>
         </div>
@@ -88,31 +88,31 @@ export default function GenerateTimetable({ inline = false }: { inline?: boolean
 
       <div className="os-section os-p-6">
         {!currentYear ? (
-          <EmptyState title="No current academic year" description="Set an academic year as current first." />
+          <EmptyState title="Güncel eğitim-öğretim yılı yok" description="Önce bir eğitim-öğretim yılını güncel olarak ayarlayın." />
         ) : !gradeSections ? (
           <SkeletonText width="40%" />
         ) : gradeSections.length === 0 ? (
           <EmptyState
-            title="No grade sections yet"
-            description="Create a grade section with a period grid under Timetable Settings first."
+            title="Henüz seviye şubesi yok"
+            description="Önce Ders programı ayarları altında ders saati düzeni olan bir seviye şubesi oluşturun."
           />
         ) : (
           <div className="os-flex os-gap-3 os-items-end os-mb-4">
             <div className="os-w-20">
               <Select
                 id="generate-grade-section"
-                labelText="Grade section"
+                labelText="Seviye şubesi"
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
               >
-                <SelectItem value="" text="Select a grade section…" />
+                <SelectItem value="" text="Bir seviye şubesi seçin…" />
                 {gradeSections.map((gs) => (
                   <SelectItem key={gs.id} value={gs.id} text={gs.name} />
                 ))}
               </Select>
             </div>
             <Button renderIcon={Rocket} kind="primary" onClick={handleGenerate} disabled={!sectionId || generate.isPending}>
-              {generate.isPending ? "Generating…" : "Generate"}
+              {generate.isPending ? "Üretiliyor…" : "Üret"}
             </Button>
           </div>
         )}
@@ -120,7 +120,7 @@ export default function GenerateTimetable({ inline = false }: { inline?: boolean
         <MutationErrorNotification
           isError={generate.isError}
           error={generate.error}
-          title="Could not generate timetables"
+          title="Ders programları üretilemedi"
           onClose={() => generate.reset()} className="os-mb-4"
         />
 

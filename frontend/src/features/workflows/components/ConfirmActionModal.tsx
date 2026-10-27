@@ -20,10 +20,10 @@ export default function ConfirmActionModal({ open, title, body, confirmLabel, bu
       </ModalBody>
       <ModalFooter>
         <Button kind="secondary" onClick={onCancel}>
-          Cancel
+          İptal
         </Button>
         <Button kind={danger ? "danger" : "primary"} onClick={onConfirm} disabled={busy}>
-          {busy ? "Working…" : confirmLabel}
+          {busy ? "İşleniyor…" : confirmLabel}
         </Button>
       </ModalFooter>
     </ComposedModal>

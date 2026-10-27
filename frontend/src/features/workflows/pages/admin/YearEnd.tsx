@@ -16,23 +16,23 @@ export default function YearEnd() {
     <div className="os-page">
       <div className="os-page__header">
         <div className="os-page__header-left">
-          <h1 className="os-page__title">Year-end</h1>
+          <h1 className="os-page__title">Yıl sonu</h1>
           <div className="os-page__subtitle os-page__subtitle--tip">
-            Prepare next year step by step. Nothing changes until you review and apply.
-            <InfoTip>Every step proposes first, shows why it decided each row, and can be undone until real attendance or marks depend on it. Each step can also be done by hand on the usual pages.</InfoTip>
+            Gelecek yılı adım adım hazırlayın. İnceleyip uygulayana kadar hiçbir şey değişmez.
+            <InfoTip>Her adım önce öneri hazırlar, her satır için karar gerekçesini gösterir ve gerçek yoklama veya notlara bağımlılık oluşana kadar geri alınabilir. Her adım ayrıca ilgili sayfalardan elle de yapılabilir.</InfoTip>
           </div>
         </div>
-        <Button kind="tertiary" size="md" as={Link} to="/promotion">Promote by hand</Button>
+        <Button kind="tertiary" size="md" as={Link} to="/promotion">Sınıf geçmeyi elle yap</Button>
       </div>
 
       <ListState
         isLoading={isLoading}
         isError={isError}
         onRetry={refetch}
-        errorMessage="Could not load the year-end steps."
+        errorMessage="Yıl sonu adımları yüklenemedi."
         isEmpty={!catalog?.length}
-        empty={{ title: "No year-end steps available", description: "The server did not return any workflows." }}
-        skeleton={<div className="os-section os-p-6">Loading…</div>}
+        empty={{ title: "Henüz yıl sonu adımı yok", description: "Sunucu hiçbir akış döndürmedi." }}
+        skeleton={<div className="os-section os-p-6">Yükleniyor…</div>}
       >
         <ol className="os-pipeline">
           {catalog?.map((w) => (
@@ -51,7 +51,7 @@ export default function YearEnd() {
                 )}
               </div>
               <Button kind="ghost" size="sm" renderIcon={ArrowRight} as={Link} to={`/year-end/${w.key}`}>
-                Open
+                Aç
               </Button>
             </li>
           ))}

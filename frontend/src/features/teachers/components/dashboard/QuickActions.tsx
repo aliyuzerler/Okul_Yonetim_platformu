@@ -3,16 +3,16 @@ import { EventSchedule, UserMultiple, Notification, ArrowRight } from "@carbon/i
 import type { PositionRankLabel } from "@/features/positions/api/position";
 
 function notifyDescription(rankLabel: PositionRankLabel, notifyWholeSchool: boolean): string {
-  if (notifyWholeSchool) return "Notify the whole school";
+  if (notifyWholeSchool) return "Tüm okulu bilgilendirin";
   switch (rankLabel) {
     case "Section Head":
-      return "Notify your assigned grade(s)";
+      return "Atanmış sınıf seviyelerinizi bilgilendirin";
     case "Class Teacher":
-      return "Notify your class and its guardians";
+      return "Sınıfınızı ve velilerini bilgilendirin";
     case "Subject Teacher":
-      return "Notify students in your subject";
+      return "Dersinizdeki öğrencileri bilgilendirin";
     default:
-      return "Send a scoped announcement";
+      return "Kapsamlı bir duyuru gönderin";
   }
 }
 
@@ -24,14 +24,14 @@ export default function QuickActions({
   notifyWholeSchool: boolean;
 }) {
   const actions = [
-    { label: "Mark attendance", desc: "Record today's session", path: "/t/attendance", Icon: EventSchedule },
-    { label: "My classes", desc: "View class rosters", path: "/t/classes", Icon: UserMultiple },
-    { label: "Send notification", desc: notifyDescription(rankLabel, notifyWholeSchool), path: "/t/notifications", Icon: Notification },
+    { label: "Yoklama al", desc: "Bugünün oturumunu kaydedin", path: "/t/attendance", Icon: EventSchedule },
+    { label: "Sınıflarım", desc: "Sınıf listelerini görüntüleyin", path: "/t/classes", Icon: UserMultiple },
+    { label: "Bildirim gönder", desc: notifyDescription(rankLabel, notifyWholeSchool), path: "/t/notifications", Icon: Notification },
   ];
 
   return (
     <div className="os-section">
-      <div className="os-section__header"><h2 className="os-section__title">Quick actions</h2></div>
+      <div className="os-section__header"><h2 className="os-section__title">Hızlı işlemler</h2></div>
       <div className="os-p-3">
         {actions.map(({ label, desc, path, Icon }) => (
           <Link key={label} to={path} className="os-no-underline">

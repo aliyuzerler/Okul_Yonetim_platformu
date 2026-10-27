@@ -16,7 +16,7 @@ export default function PasswordFields({ idPrefix, password, confirm, onPassword
     <div className="os-stack os-gap-4">
       <PasswordInput
         id={`${idPrefix}-new`}
-        labelText="New password"
+        labelText="Yeni şifre"
         value={password}
         onChange={(e) => onPasswordChange(e.target.value)}
         invalid={!!passwordError}
@@ -24,7 +24,7 @@ export default function PasswordFields({ idPrefix, password, confirm, onPassword
       />
       <PasswordInput
         id={`${idPrefix}-confirm`}
-        labelText="Confirm new password"
+        labelText="Yeni şifre (tekrar)"
         value={confirm}
         onChange={(e) => onConfirmChange(e.target.value)}
         invalid={!!confirmError}

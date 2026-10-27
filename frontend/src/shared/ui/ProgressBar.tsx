@@ -18,7 +18,7 @@ export default function ProgressBar({ value, max, label, tone = "accent", size =
       aria-valuemin={0}
       aria-valuemax={max}
       aria-valuenow={value}
-      aria-valuetext={`${value} of ${max} (${pct}%)`}
+      aria-valuetext={`${value} / ${max} (%${pct})`}
     >
       <div className={`os-progress__bar os-progress__bar--${tone}`} style={{ width: `${pct}%` }} />
     </div>

@@ -19,7 +19,7 @@ function Brand({ schoolName, small = false }: { schoolName: string; small?: bool
       <img src="/favicon.webp" alt="OpenSchool" />
       <div>
         <strong>{schoolName}</strong>
-        <span>OpenSchool account activation</span>
+        <span>OpenSchool hesap etkinleştirme</span>
       </div>
     </div>
   );
@@ -34,24 +34,24 @@ export default function CodeSlips({ role, groups, schoolName, expiresAt, withHan
   return createPortal(
     <div className="os-slip-sheet">
       {groups.map((group) => {
-        const classLine = group.formTeacher ? `${group.title} · Class teacher: ${group.formTeacher}` : group.title;
+        const classLine = group.formTeacher ? `${group.title} · Sınıf öğretmeni: ${group.formTeacher}` : group.title;
         return (
           <section key={group.key} className="os-code-class">
             {withHandOutList && (
               <div className="os-code-roster">
                 <Brand schoolName={schoolName} />
-                <h1>{ROLE_LABELS[role].one} activation codes</h1>
-                <p><strong>Class:</strong> {group.title}</p>
-                {group.formTeacher && <p><strong>Class teacher:</strong> {group.formTeacher}</p>}
-                <p>{group.codes.length} {group.codes.length === 1 ? "slip" : "slips"} · valid until {expires}</p>
-                <p>Give each slip only to the person named on it and ask them to sign below. This list has no codes, so it is safe to keep on file.</p>
+                <h1>{ROLE_LABELS[role].one} etkinleştirme kodları</h1>
+                <p><strong>Sınıf:</strong> {group.title}</p>
+                {group.formTeacher && <p><strong>Sınıf öğretmeni:</strong> {group.formTeacher}</p>}
+                <p>{group.codes.length} kupon · {expires} tarihine kadar geçerli</p>
+                <p>Her kuponu yalnızca adı yazılı kişiye verin ve aşağıyı imzalamalarını isteyin. Bu listede kod bulunmaz, dosyada saklamak için uygundur.</p>
                 <table>
                   <thead>
                     <tr>
-                      <th>No.</th>
-                      <th>Name</th>
-                      <th>{isStudent ? "Index no." : "Children"}</th>
-                      <th>Received (signature)</th>
+                      <th>Sıra</th>
+                      <th>Ad</th>
+                      <th>{isStudent ? "Okul numarası" : "Çocuklar"}</th>
+                      <th>Teslim aldı (imza)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -72,11 +72,11 @@ export default function CodeSlips({ role, groups, schoolName, expiresAt, withHan
                 <div key={c.code} className="os-slip">
                   <Brand schoolName={schoolName} small />
                   <strong>{c.name}</strong>
-                  {!isStudent && <span className="os-slip__detail">Guardian of {c.detail}</span>}
-                  <span className="os-slip__detail">Class: {classLine}</span>
+                  {!isStudent && <span className="os-slip__detail">Çocuk: {c.detail}</span>}
+                  <span className="os-slip__detail">Sınıf: {classLine}</span>
                   <span className="os-slip__code">{c.code}</span>
-                  <span>Go to {url}, enter this code and your {ROLE_LABELS[role].identifier}, then choose a password.</span>
-                  <span className="os-slip__detail">Valid until {expires}. Keep this code private.</span>
+                  <span>{url} adresine gidin, bu kodu ve {ROLE_LABELS[role].identifier} bilgisini girin, ardından bir şifre seçin.</span>
+                  <span className="os-slip__detail">{expires} tarihine kadar geçerlidir. Bu kodu gizli tutun.</span>
                 </div>
               ))}
             </div>

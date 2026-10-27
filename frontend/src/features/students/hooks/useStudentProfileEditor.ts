@@ -68,7 +68,7 @@ export function useStudentProfileEditor(id: string, student: StudentWithClass | 
     },
     isValid: !!form.full_name.trim(),
     updateStudent,
-    updateError: updateStudent.isError ? getErrorMessage(updateStudent.error, "Failed to update student") : null,
+    updateError: updateStudent.isError ? getErrorMessage(updateStudent.error, "Öğrenci güncellenemedi") : null,
     save: (onDone: () => void) =>
       updateStudent.mutate(
         {

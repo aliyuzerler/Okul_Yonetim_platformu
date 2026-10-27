@@ -70,11 +70,11 @@ export default function Timetables({ inline = false }: { inline?: boolean }) {
 
 
   const columns: GridColumn<TimetableWithClass>[] = [
-    { key: "grade", header: "Grade", render: (t) => t.grade_name },
-    { key: "class", header: "Class", render: (t) => t.class_name },
-    { key: "version", header: "Version", render: (t) => `v${t.version}` },
-    { key: "status", header: "Status", render: (t) => <Tag type={statusTag(t.status)?.type ?? "gray"} size="sm">{statusTag(t.status)?.label ?? t.status}</Tag> },
-    { key: "updated", header: "Updated", render: (t) => formatDateTime(t.updated_at) },
+    { key: "grade", header: "Sınıf seviyesi", render: (t) => t.grade_name },
+    { key: "class", header: "Sınıf", render: (t) => t.class_name },
+    { key: "version", header: "Sürüm", render: (t) => `v${t.version}` },
+    { key: "status", header: "Durum", render: (t) => <Tag type={statusTag(t.status)?.type ?? "gray"} size="sm">{statusTag(t.status)?.label ?? t.status}</Tag> },
+    { key: "updated", header: "Son güncelleme", render: (t) => formatDateTime(t.updated_at) },
     {
       key: "menu",
       header: "",
@@ -82,9 +82,9 @@ export default function Timetables({ inline = false }: { inline?: boolean }) {
       render: (t) => (
         <div onClick={(e) => e.stopPropagation()}>
           <OverflowMenu size="sm" flipped>
-            <OverflowMenuItem itemText="Copy to another class" onClick={() => openCopy(t)} />
-            {t.status === "published" && <OverflowMenuItem itemText="Revise (new draft)" onClick={() => handleRevise(t)} />}
-            <OverflowMenuItem itemText="Delete" isDelete onClick={() => { deleteTimetable.reset(); setDeleteTarget(t); }} />
+            <OverflowMenuItem itemText="Başka bir sınıfa kopyala" onClick={() => openCopy(t)} />
+            {t.status === "published" && <OverflowMenuItem itemText="Revize et (yeni taslak)" onClick={() => handleRevise(t)} />}
+            <OverflowMenuItem itemText="Sil" isDelete onClick={() => { deleteTimetable.reset(); setDeleteTarget(t); }} />
           </OverflowMenu>
         </div>
       ),
@@ -96,10 +96,10 @@ export default function Timetables({ inline = false }: { inline?: boolean }) {
       {!inline && (
         <div className="os-page__header">
           <div className="os-page__header-left">
-            <h1 className="os-page__title">Timetables</h1>
+            <h1 className="os-page__title">Ders programları</h1>
             <div className="os-page__subtitle os-page__subtitle--tip">
-              Class timetables for {currentYear?.label ?? "the current academic year"}.
-              <InfoTip>Only the published version is shown to teachers, students and guardians.</InfoTip>
+              {currentYear?.label ?? "güncel eğitim-öğretim yılı"} için sınıf ders programları.
+              <InfoTip>Yalnızca yayınlanmış sürüm öğretmenlere, öğrencilere ve velilere gösterilir.</InfoTip>
             </div>
           </div>
         </div>
@@ -115,42 +115,42 @@ export default function Timetables({ inline = false }: { inline?: boolean }) {
               onSelect={setNewClassId}
               getId={(c) => c.id}
               itemToString={(c) => `${c.grade_name} - ${c.name}`}
-              labelText="Create a draft timetable for a class"
-              placeholder="Search classes…"
+              labelText="Bir sınıf için taslak ders programı oluştur"
+              placeholder="Sınıflarda ara…"
             />
           </div>
           <Button renderIcon={Add} kind="primary" onClick={handleCreate} disabled={!newClassId || createTimetable.isPending}>
-            {createTimetable.isPending ? "Creating…" : "New draft"}
+            {createTimetable.isPending ? "Oluşturuluyor…" : "Yeni taslak"}
           </Button>
         </div>
 
         <MutationErrorNotification
           isError={createTimetable.isError}
           error={createTimetable.error}
-          title="Could not create timetable"
+          title="Ders programı oluşturulamadı"
           onClose={() => createTimetable.reset()} className="os-mb-4"
         />
         <MutationErrorNotification
           isError={reviseTimetable.isError}
           error={reviseTimetable.error}
-          title="Could not revise timetable"
+          title="Ders programı revize edilemedi"
           onClose={() => reviseTimetable.reset()} className="os-mb-4"
         />
         <MutationErrorNotification
           isError={deleteTimetable.isError}
           error={deleteTimetable.error}
-          title="Could not delete timetable"
+          title="Ders programı silinemedi"
           onClose={() => deleteTimetable.reset()} className="os-mb-4"
         />
 
         {!currentYear ? (
-          <EmptyState title="No current academic year" description="Set an academic year as current first." />
+          <EmptyState title="Güncel eğitim-öğretim yılı yok" description="Önce bir eğitim-öğretim yılını güncel olarak ayarlayın." />
         ) : isLoading ? (
           <SkeletonText width="40%" />
         ) : isError ? (
-          <ErrorMessage message="Could not load timetables." onRetry={refetch} />
+          <ErrorMessage message="Ders programları yüklenemedi." onRetry={refetch} />
         ) : !timetables || timetables.length === 0 ? (
-          <EmptyState title="No timetables yet" description="Create a draft timetable for a class above to get started." />
+          <EmptyState title="Henüz ders programı yok" description="Başlamak için yukarıda bir sınıf için taslak ders programı oluşturun." />
         ) : (
           <DataGrid rows={timetables} columns={columns} getRowId={(t) => t.id} pageSize={20} onRowClick={(t) => navigate(`/timetables/${t.id}`)} />
         )}
@@ -158,33 +158,36 @@ export default function Timetables({ inline = false }: { inline?: boolean }) {
 
       <FormModal
         open={!!copySource}
-        title="Copy timetable"
+        title="Ders programını kopyala"
         onClose={() => setCopySource(null)}
         onSubmit={handleCopy}
         isPending={copyTimetable.isPending}
-        pendingLabel="Copying…"
-        submitLabel="Copy"
+        pendingLabel="Kopyalanıyor…"
+        submitLabel="Kopyala"
         submitDisabled={!copyTargetClassId}
         isError={copyTimetable.isError}
         error={copyTimetable.error}
-        errorFallback="Failed to copy timetable"
+        errorFallback="Ders programı kopyalanamadı"
       >
         <p className="os-text-sm os-c-secondary os-mb-4">
-          Copies {copySource?.grade_name} - {copySource?.class_name}'s periods into a new draft for another class, for example carrying 6A's timetable over to 7A in a new year.
+          {copySource?.grade_name} - {copySource?.class_name} sınıfının ders saatlerini başka bir sınıf için yeni bir taslağa kopyalar; örneğin yeni bir yılda 6A&apos;nın ders programını 7A&apos;ya taşımak gibi.
         </p>
-        <EntityCombobox id="copy-target-class" labelText="Target class" items={classes ?? []} selectedId={copyTargetClassId} onSelect={setCopyTargetClassId} getId={(c) => c.id} itemToString={(c) => `${c.grade_name} - ${c.name}`} placeholder="Search classes…" />
+        <EntityCombobox id="copy-target-class" labelText="Hedef sınıf" items={classes ?? []} selectedId={copyTargetClassId} onSelect={setCopyTargetClassId} getId={(c) => c.id} itemToString={(c) => `${c.grade_name} - ${c.name}`} placeholder="Sınıflarda ara…" />
       </FormModal>
 
       <ConfirmDeleteModal
         open={!!deleteTarget}
-        title="Delete timetable"
+        title="Ders programını sil"
         description={
           <>
-            Delete the {deleteTarget?.grade_name} - {deleteTarget?.class_name} v{deleteTarget?.version} timetable?
-            This cannot be undone.
+            {deleteTarget?.grade_name} - {deleteTarget?.class_name} v{deleteTarget?.version} ders programı silinsin mi?
+            Bu işlem geri alınamaz.
           </>
         }
-        subject="Timetable"
+        subject="Ders programı"
+        successVerb="silindi"
+        confirmLabel="Sil"
+        pendingLabel="Siliniyor…"
         mutation={deleteTimetable}
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {

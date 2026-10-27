@@ -28,9 +28,9 @@ export default function ResetPassword() {
           <div className="os-auth-card__success-icon">
             <CheckmarkFilled size={28} />
           </div>
-          <h1 className="os-auth-card__title">Password updated</h1>
-          <p className="os-auth-card__subtitle">You can now sign in with your new password.</p>
-          <Button href="/signin" className="os-full-width-btn">Go to sign in</Button>
+          <h1 className="os-auth-card__title">Şifre güncellendi</h1>
+          <p className="os-auth-card__subtitle">Artık yeni şifrenizle oturum açabilirsiniz.</p>
+          <Button href="/signin" className="os-full-width-btn">Oturum açmaya git</Button>
         </div>
       </div>
     );
@@ -43,14 +43,14 @@ export default function ResetPassword() {
           <img src="/favicon.webp" alt="OpenSchool" width={36} height={36} className="os-auth-card__logo" />
           <span className="os-auth-card__brand-name">OpenSchool</span>
         </div>
-        <h1 className="os-auth-card__title">Reset password</h1>
-        <p className="os-auth-card__subtitle">Choose a new password for your account.</p>
+        <h1 className="os-auth-card__title">Şifre sıfırlama</h1>
+        <p className="os-auth-card__subtitle">Hesabınız için yeni bir şifre seçin.</p>
 
         {!token && (
           <InlineNotification
             kind="error"
-            title="Invalid reset link"
-            subtitle="This link is missing its reset token. Request a new one below."
+            title="Geçersiz sıfırlama bağlantısı"
+            subtitle="Bu bağlantıda sıfırlama anahtarı eksik. Aşağıdan yeni bir bağlantı talep edin."
             lowContrast
             hideCloseButton
             className="os-full-width os-mb-4"
@@ -59,8 +59,8 @@ export default function ResetPassword() {
         <MutationErrorNotification
           isError={resetPassword.isError}
           error={resetPassword.error}
-          title="Could not reset password"
-          fallback="The reset link is invalid, already used, or has expired."
+          title="Şifre sıfırlanamadı"
+          fallback="Sıfırlama bağlantısı geçersiz, kullanılmış veya süresi dolmuş."
         />
         <div className="os-auth-card__form">
           <PasswordFields
@@ -73,11 +73,11 @@ export default function ResetPassword() {
         </div>
         <div className="os-auth-card__actions">
           <Button className="os-full-width-btn" onClick={handleReset} disabled={!canReset || resetPassword.isPending}>
-            {resetPassword.isPending ? "Saving…" : "Set new password"}
+            {resetPassword.isPending ? "Kaydediliyor…" : "Yeni şifreyi belirle"}
           </Button>
         </div>
         <div className="os-auth-card__footer">
-          <Link to="/forgot-password">Request a new link</Link> · <Link to="/signin">Back to sign in</Link>
+          <Link to="/forgot-password">Yeni bağlantı talep et</Link> · <Link to="/signin">Oturum açmaya dön</Link>
         </div>
       </div>
     </div>
