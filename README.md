@@ -116,6 +116,11 @@ Tüm ekran görüntüleri: [docs/screenshots/](docs/screenshots/)
 - **Bildirimler:** uygulama içi gelen kutusu (doğruluk kaynağı,
   [ADR 0004](docs/adr/0004-in-app-only-notifications.md)) + Expo push
   ikinci kanal ([ADR 0010](docs/adr/0010-push-notifications.md))
+- **SaaS platform:** okul başına kurulum modeli ile abonelik geliri —
+  ayrı kontrol düzlemi (`cmd/platform`) üzerinden kayıt olma, 14 gün
+  ücretsiz deneme, iyzico ödeme (aylık otomatik + yıllık tek çekim) ve
+  süper admin paneli; bkz. [docs/SAAS.md](docs/SAAS.md) ve
+  [ADR 0011](docs/adr/0011-saas-platform-control-plane.md)
 
 ## 🚀 Kurulum
 
@@ -133,6 +138,20 @@ make dev       # backend :8080 + frontend :5173
 
 `http://localhost:5173` → ilk kurulum sihirbazı (First-run setup) ile okulu
 tanımlayın. ThunderID konsolu: `https://localhost:8090/console`.
+
+### Abonelik platformu (SaaS kontrol düzlemi)
+
+```bash
+make dev-platform             # kontrol düzlemi API :8090 (kendi PLATFORM_DB_* veritabanı)
+make dev-platform-frontend    # platform arayüzü :5174
+```
+
+`.env` içindeki `PLATFORM_*` ve `IYZICO_*` bölümünü doldurun (bkz.
+[backend/.env.example](backend/.env.example)). iyzico anahtarı yoksa ödeme
+akışı otomatik **mock** modda çalışır — kayıt → deneme → ödeme → admin
+akışının tamamı ağ bağlantısı olmadan test edilebilir. Okul kaydı, e-posta
+doğrulaması, deneme süresi, aylık otomatik yenileme ve süper admin paneli:
+[docs/SAAS.md](docs/SAAS.md).
 
 ### Mobil uygulama
 
@@ -229,8 +248,9 @@ veritabanı, ThunderID OIDC, e-posta (Resend/SMTP/console) ve push bölümü:
 | [docs/FEATURES.md](docs/FEATURES.md) | Modül modül özellik listesi |
 | [docs/THUNDERID.md](docs/THUNDERID.md) | IdP yapılandırması |
 | [docs/MOBILE.tr.md](docs/MOBILE.tr.md) | Mobil uygulama + push + canlıya alma |
+| [docs/SAAS.md](docs/SAAS.md) | Abonelik platformu: model, fazlar, kurulum |
 | [docs/TERMINOLOGY.tr.md](docs/TERMINOLOGY.tr.md) | Türkçe terim sözlüğü |
-| [docs/adr/](docs/adr/) | Mimari karar kayıtları (ADR 0001–0010) |
+| [docs/adr/](docs/adr/) | Mimari karar kayıtları (ADR 0001–0012) |
 | [CHANGELOG.md](CHANGELOG.md) | Sürüm geçmişi |
 
 ## 🤝 Katkı ve lisans

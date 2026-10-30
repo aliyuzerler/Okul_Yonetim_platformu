@@ -9,6 +9,18 @@ and follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **SaaS abonelik platformu (Faz 1 + Faz 2):** kontrol düzlemi binary'si
+  (`cmd/platform`), ayrı veritabanı şeması (`db/migrations_platform`),
+  okul kaydı + e-posta doğrulaması ile 14 günlük ücretsiz deneme,
+  platform hesapları için PBKDF2 kimlik doğrulama ve HS256 oturumlar,
+  hibrit iyzico entegrasyonu (aylık otomatik yenileme + yıllık tek çekim,
+  `IYZICO_MODE=mock` ile çevrimdışı uçtan uca test), süper admin paneli
+  API'si (okul dizini, manuel müdahale, ödeme defteri, MRR/gelir özeti)
+  ve React + Carbon tabanlı platform arayüzü
+  (`platform/frontend`). Bkz. [docs/SAAS.md](docs/SAAS.md),
+  [ADR 0011](docs/adr/0011-saas-platform-control-plane.md),
+  [ADR 0012](docs/adr/0012-iyzico-hybrid-billing.md) ve
+  Makefile'da `dev-platform` / `build-platform` / `test-platform` hedefleri.
 - Turkish (TR) as a first-class language: full frontend translation of all
   20 feature areas and portal UIs, a Turkish message catalog made the
   deployment default (`tr`), backend user-facing messages, emails and
