@@ -21,6 +21,9 @@ current behavior.
 | [0007](./0007-plain-comments-over-swaggo.md) | Plain one-line doc comments in handlers instead of swaggo annotations | Accepted |
 | [0008](./0008-self-service-account-activation.md) | Self-service account activation with school-issued codes | Accepted |
 | [0009](./0009-transactional-email.md) | Branded transactional email through Resend or SMTP | Accepted |
+| [0010](./0010-push-notifications.md) | Expo push as a second notification channel | Accepted |
+| [0011](./0011-saas-platform-control-plane.md) | SaaS platform: separate control plane, instance-per-school delivery | Accepted |
+| [0012](./0012-iyzico-hybrid-billing.md) | iyzico billing: hybrid cycles, mock-first integration | Accepted |
 
 ## Adding a new ADR
 
